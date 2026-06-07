@@ -8,35 +8,71 @@
 </head>
 <body>
     <div id="game-container">
-        <h1>☢️ FART CLICKER</h1>
-        <div class="stats-panel">
-            <p>Stink: <span id="points">0</span></p>
-            <p>Spam Bonus: <span id="spam-mult">1.0</span>x</p>
-            <p>Rebirths: <span id="rebirths">0</span> | World: <span id="world-name">Basement</span></p>
+        <div class="header">
+            <h1>☢️ FART CLICKER</h1>
+            <div class="stats-panel">
+                <div class="stat-row">
+                    <span class="stat-label">Stink:</span>
+                    <span id="points" class="stat-value">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Per Click:</span>
+                    <span id="per-click" class="stat-value">1</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Spam Bonus:</span>
+                    <span id="spam-mult" class="stat-value">1.0x</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Passive Income:</span>
+                    <span id="passive-income" class="stat-value">0/s</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Rebirths: <span id="rebirths">0</span> | World: <span id="world-name">Basement</span></span>
+                </div>
+            </div>
         </div>
 
-        <button id="main-btn">💨 CLICK</button>
+        <button id="main-btn" class="main-click-btn">💨 CLICK ME!</button>
 
         <div class="tabs">
-            <button onclick="showTab('upgrades')">🛒 Upgrades</button>
-            <button onclick="showTab('pets')">🐶 Pets</button>
-            <button onclick="showTab('worlds')">🌍 Worlds</button>
+            <button class="tab-btn active" onclick="showTab('upgrades', this)">🛒 Upgrades</button>
+            <button class="tab-btn" onclick="showTab('pets', this)">🐶 Pets</button>
+            <button class="tab-btn" onclick="showTab('worlds', this)">🌍 Worlds</button>
         </div>
 
-        <div id="upgrades" class="tab-content"></div>
-        <div id="pets" class="tab-content">
-            <div id="egg-menu">
-                <button class="egg-btn" onclick="openEgg()">Open Egg (Cost: 500)</button>
-            </div>
-            <h3>Equipped Pets</h3>
-            <div id="equipped-pets"></div>
-        </div>
-        <div id="worlds" class="tab-content">
-            <div id="world-list"></div>
-        </div>
+        <div id="upgrades" class="tab-content active"></div>
+        <div id="pets" class="tab-content"></div>
+        <div id="worlds" class="tab-content"></div>
 
-        <button onclick="rebirth()" id="rebirth-btn">REBIRTH (Req: 10,000)</button>
+        <div class="bottom-section">
+            <button onclick="rebirth()" id="rebirth-btn" class="rebirth-btn">REBIRTH (Req: 10,000)</button>
+        </div>
     </div>
+
+    <!-- Egg Modal -->
+    <div id="egg-modal" class="modal hidden">
+        <div class="modal-content egg-modal">
+            <button class="close-btn" onclick="closeEggModal()">&times;</button>
+            <h2>🥚 Hatch Egg</h2>
+            <div id="egg-odds"></div>
+            <button class="modal-btn" onclick="hatchEgg()">Hatch Egg (Cost: <span id="egg-cost">500</span>)</button>
+        </div>
+    </div>
+
+    <!-- Pet Modal -->
+    <div id="pet-modal" class="modal hidden">
+        <div class="modal-content pet-modal">
+            <button class="close-btn" onclick="closePetModal()">&times;</button>
+            <h2>🐾 Pet Details</h2>
+            <div id="pet-details"></div>
+            <div class="modal-buttons">
+                <button class="modal-btn" onclick="equipPet()">Equip</button>
+                <button class="modal-btn secondary" onclick="closePetModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
