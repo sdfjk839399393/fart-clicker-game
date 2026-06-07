@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Fart Clicker: Ultimate</title>
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="style-mobile.css">
 </head>
 <body>
     <!-- Animated Background -->
@@ -20,56 +20,57 @@
     <div id="game-container">
         <!-- Logo Container -->
         <div class="logo-container">
-            <h1 id="logo-title">💨 FART CLICKER 💨</h1>
+            <h1 id="game-title">💨 FART CLICKER 💨</h1>
         </div>
 
+        <!-- Stats Panel -->
         <div class="stats-panel">
             <div class="stat-row">
-                <span class="stat-label"> Stink Level</span>
+                <span class="stat-label">Stink Level</span>
                 <span id="points" class="stat-value">0</span>
             </div>
             <div class="stat-row">
-                <span class="stat-label"> Per Click</span>
+                <span class="stat-label">Per Click</span>
                 <span id="per-click" class="stat-value">1</span>
             </div>
             <div class="stat-row">
-                <span class="stat-label"> Spam Multiplier</span>
+                <span class="stat-label">Spam Multiplier</span>
                 <span id="spam-mult" class="stat-value">1.0x</span>
             </div>
             <div class="stat-row">
-                <span class="stat-label"> Passive Income</span>
+                <span class="stat-label">Passive Income</span>
                 <span id="passive-income" class="stat-value">0/s</span>
             </div>
             <div class="stat-row">
-                <span class="stat-label"> Rebirths</span>
+                <span class="stat-label">Rebirths</span>
                 <span id="rebirths" class="stat-value">0</span>
             </div>
             <div class="stat-row">
-                <span class="stat-label"> Current World</span>
+                <span class="stat-label">Current World</span>
                 <span id="world-name" class="stat-value">Basement</span>
             </div>
         </div>
 
-        <!-- Centered Main Button -->
+        <!-- GIANT Main Clicker Button -->
         <button id="main-btn" class="main-click-btn">
             <span>💨</span>
             <span>CLICK ME!</span>
         </button>
 
-        <!-- NCS BGM Button -->
+        <!-- NCS BGM Toggle -->
         <button id="bgm-toggle-btn" class="bgm-toggle-btn" onclick="toggleBGM()">
             <span>🎵</span>
-            <span>BGM: ON</span>
+            <span id="bgm-status">BGM: OFF</span>
         </button>
 
-        <!-- Modern Sliding Upgrades Menu -->
+        <!-- Upgrades Toggle Button -->
         <div id="upgrades-btn-container">
             <button class="upgrades-toggle-btn" onclick="toggleUpgradesMenu()">
                 <span>🛒 Upgrades</span>
             </button>
         </div>
 
-        <!-- Sliding Panel -->
+        <!-- Sliding Upgrades Panel -->
         <div class="upgrades-overlay" id="upgrades-overlay" onclick="toggleUpgradesMenu()"></div>
         <div id="upgrades-panel">
             <div id="upgrades-panel-header">
@@ -77,17 +78,14 @@
                 <button class="close-upgrades-btn" onclick="toggleUpgradesMenu()">&times;</button>
             </div>
             <div id="upgrades-panel-content">
-                <!-- Click Power Section -->
                 <div class="upgrades-panel-section">
                     <h3>⬆️ Click Power</h3>
                     <div id="upgrades-panel-click"></div>
                 </div>
-                <!-- Passive Income Section -->
                 <div class="upgrades-panel-section">
                     <h3>💰 Passive Income</h3>
                     <div id="upgrades-panel-passive"></div>
                 </div>
-                <!-- Pet Slots Section -->
                 <div class="upgrades-panel-section">
                     <h3>🐾 Pet Slots</h3>
                     <div id="upgrades-panel-pets"></div>
@@ -95,17 +93,16 @@
             </div>
         </div>
 
+        <!-- Tabs -->
         <div class="tabs">
-            <button class="tab-btn active" onclick="showTab('upgrades', this)">🛒 Upgrades</button>
-            <button class="tab-btn" onclick="showTab('pets', this)">🐶 Pets</button>
+            <button class="tab-btn active" onclick="showTab('pets', this)">🐶 Pets</button>
             <button class="tab-btn" onclick="showTab('worlds', this)">🌍 Worlds</button>
         </div>
 
-        <div id="upgrades" class="tab-content active"></div>
-        <div id="pets" class="tab-content"></div>
+        <div id="pets" class="tab-content active"></div>
         <div id="worlds" class="tab-content"></div>
 
-        <button onclick="rebirth()" id="rebirth-btn" class="rebirth-btn">REBIRTH (Req: 10,000)</button>
+        <button onclick="rebirth()" id="rebirth-btn" class="rebirth-btn">REBIRTH</button>
     </div>
 
     <!-- Egg Modal -->
@@ -123,7 +120,7 @@
             <button class="close-btn" onclick="closePetModal()">&times;</button>
             <h2>🐾 Pet Details</h2>
             <div id="pet-details"></div>
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <div class="modal-actions">
                 <button class="modal-btn" onclick="equipPet()">Equip</button>
                 <button class="modal-btn secondary" onclick="closePetModal()">Close</button>
             </div>
