@@ -73,7 +73,7 @@ function fmt(num) {
 
 // ---------- Upgrades (brainrot themed) ----------
 const UPGRADES = [
-    { name: "Fart Bean",          baseCost: 15,            clickPower: 1,          type: "click", icon: "🫘" },
+    { name: "Fart Bean",          baseCost: 15,            clickPower: 1,          type: "click", icon: "🌱" },
     { name: "Rizzler Cabbage",    baseCost: 100,           clickPower: 4,          type: "click", icon: "🥬" },
     { name: "Taco Bomb",          baseCost: 600,           clickPower: 18,         type: "click", icon: "🌮" },
     { name: "Skibidi Gas",        baseCost: 3500,          clickPower: 70,         type: "click", icon: "🚽" },
