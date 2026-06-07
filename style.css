@@ -18,7 +18,7 @@ body {
     background:
         radial-gradient(circle at 18% 18%, rgba(177,78,255,0.22), transparent 42%),
         radial-gradient(circle at 84% 72%, rgba(0,224,255,0.18), transparent 42%),
-        radial-gradient(circle at 50% 100%, rgba(255,61,154,0.16), transparent 52%),
+        radial-gradient(circle at 50% 100%, rgba(255,61,154,0.06), transparent 40%),
         linear-gradient(160deg,var(--bg1),var(--bg0));
     background-size:200% 200%; animation:bgShift 24s ease-in-out infinite;
 }
@@ -475,7 +475,7 @@ body.slowmo .hatch-egg, body.slowmo .hatch-rays { animation-duration:2s !importa
 .sheet {
     background:linear-gradient(180deg, #221140 0%, #150a2c 60%, #0e0620 100%);
     border-top:2px solid rgba(177,78,255,0.5);
-    box-shadow:0 -24px 70px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.08);
+    box-shadow:0 -8px 20px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08);
 }
 .sheet::before {
     content:""; position:absolute; top:8px; left:50%; transform:translateX(-50%);
