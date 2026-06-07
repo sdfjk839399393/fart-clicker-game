@@ -653,9 +653,20 @@ function handleMainClick(e) {
     game.points += dmg; game.totalEarned += dmg;
 
     sfxClick();
-    floatText(e.clientX, e.clientY, "+" + fmt(dmg), criticalMultiplier > 1 ? "#FFD54A" : (comboValue > 60 ? "#00E0FF" : "#7FFF00"), criticalMultiplier > 1);
-    if (comboValue > 50 && Math.random() < 0.4) ringAt(e.clientX, e.clientY, comboValue > 80 ? "#FF3D9A" : "#00E0FF");
+    const w = WORLDS[game.worldIdx || 0];
+    const wColor = (w && w.theme) ? w.theme.p : "#7FFF00";
+    const textColor = criticalMultiplier > 1 ? "#FFD54A" : (comboValue > 60 ? "#00E0FF" : wColor);
+    floatText(e.clientX, e.clientY, "+" + fmt(dmg), textColor, criticalMultiplier > 1);
+    // rings scale with combo
+    if (comboValue > 30) ringAt(e.clientX, e.clientY, wColor);
+    if (comboValue > 60) ringAt(e.clientX, e.clientY, comboValue > 80 ? "#FF3D9A" : "#00E0FF");
+    if (comboValue > 90) ringAt(e.clientX, e.clientY, "#FFD54A");
     clickPuff(e.clientX, e.clientY);
+    // extra world-colored puffs at high combo
+    if (comboValue > 50 && Math.random() < 0.5) burstAt(e.clientX, e.clientY, wColor, 6);
+    if (comboValue > 80 && Math.random() < 0.4) burstAt(e.clientX, e.clientY, "#FF3D9A", 8);
+    // milestone combo flash
+    if (comboValue >= 100 && Math.random() < 0.08) screenFlash(wColor);
     popButton();
     maybeBrainrotPop();
     refreshCombo();
