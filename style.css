@@ -400,9 +400,9 @@ body.slowmo .hatch-egg, body.slowmo .hatch-rays { animation-duration:2s !importa
 
 /* ---- readable bottom nav ---- */
 .bottom-nav {
-    background:linear-gradient(180deg, rgba(36,18,60,0.98), rgba(18,8,36,0.99));
-    border-top:2px solid rgba(177,78,255,0.6);
-    box-shadow:0 -8px 30px rgba(0,0,0,0.6), 0 -1px 0 rgba(255,255,255,0.06);
+    background:linear-gradient(180deg, rgba(60,35,100,0.97), rgba(40,20,70,0.97));
+    border-top:2px solid rgba(200,130,255,0.8);
+    box-shadow:0 -8px 30px rgba(0,0,0,0.4), 0 -1px 0 rgba(255,255,255,0.12);
     padding:10px 6px calc(10px + env(safe-area-inset-bottom));
 }
 .nav-btn {
@@ -410,12 +410,12 @@ body.slowmo .hatch-egg, body.slowmo .hatch-rays { animation-duration:2s !importa
     position:relative;
 }
 .nav-btn .nav-ico {
-    font-size:1.55rem; filter:drop-shadow(0 2px 6px rgba(0,0,0,0.6));
+    font-size:1.55rem; filter:drop-shadow(0 2px 6px rgba(0,0,0,0.3));
     transition:transform 0.15s ease;
 }
 .nav-btn .nav-txt {
-    font-size:0.74rem; font-weight:700; letter-spacing:0.4px;
-    color:#c8b8ff; text-shadow:0 1px 4px rgba(0,0,0,0.8);
+    font-size:0.76rem; font-weight:800; letter-spacing:0.4px;
+    color:#f0e0ff; text-shadow:0 1px 6px rgba(180,100,255,0.6);
 }
 .nav-btn:active { transform:scale(0.9); }
 .nav-btn:active .nav-ico { transform:translateY(-3px) scale(1.15); }
