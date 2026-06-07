@@ -73,21 +73,21 @@ function fmt(num) {
 
 // ---------- Upgrades (brainrot themed) ----------
 const UPGRADES = [
-    { name: "Fart Bean",          baseCost: 15,            clickPower: 1,          type: "click", icon: "🫘" },
+    { name: "Fart Bean",          baseCost: 15,            clickPower: 1,          type: "click", icon: "🌱" },
     { name: "Rizzler Cabbage",    baseCost: 100,           clickPower: 4,          type: "click", icon: "🥬" },
     { name: "Taco Bomb",          baseCost: 600,           clickPower: 18,         type: "click", icon: "🌮" },
     { name: "Skibidi Gas",        baseCost: 3500,          clickPower: 70,         type: "click", icon: "🚽" },
     { name: "Gyatt Blast",        baseCost: 20000,         clickPower: 300,        type: "click", icon: "🍑" },
     { name: "Fanum Tax Fart",     baseCost: 120000,        clickPower: 1300,       type: "click", icon: "🍔" },
     { name: "Sigma Stench",       baseCost: 750000,        clickPower: 5500,       type: "click", icon: "😤" },
-    { name: "Durian Nuke",        baseCost: 4500000,       clickPower: 24000,      type: "click", icon: "🥟" },
+    { name: "Durian Nuke",        baseCost: 4500000,       clickPower: 24000,      type: "click", icon: "🍈" },
     { name: "Ohio Cannon",        baseCost: 28000000,      clickPower: 110000,     type: "click", icon: "🌽" },
     { name: "Mewing Methane",     baseCost: 180000000,     clickPower: 520000,     type: "click", icon: "😐" },
     { name: "Grimace Eruption",   baseCost: 1200000000,    clickPower: 2500000,    type: "click", icon: "🟣" },
     { name: "Gigachad Surge",     baseCost: 8000000000,    clickPower: 12500000,   type: "click", icon: "💪" },
     { name: "Quantum Flatulence", baseCost: 55000000000,   clickPower: 65000000,   type: "click", icon: "⚛️" },
     { name: "Apocalyptic Gas",    baseCost: 400000000000,  clickPower: 350000000,  type: "click", icon: "☢️" },
-    { name: "Reality Fart",       baseCost: 3000000000000, clickPower: 2000000000, type: "click", icon: "🌀" },
+    { name: "Reality Fart",       baseCost: 3000000000000, clickPower: 2000000000, type: "click", icon: "🌊" },
     { name: "Sus Fan",            baseCost: 50,            passivePower: 1,        type: "passive", icon: "📴" },
     { name: "NPC Blower",         baseCost: 400,           passivePower: 6,        type: "passive", icon: "🤖" },
     { name: "Industrial Vent",    baseCost: 2500,          passivePower: 28,       type: "passive", icon: "🏭" },
@@ -101,7 +101,7 @@ const UPGRADES = [
     { name: "Supernova Core",     baseCost: 6500000000,    passivePower: 7500000,  type: "passive", icon: "💥" },
     { name: "Quantum CPU",        baseCost: 45000000000,   passivePower: 38000000, type: "passive", icon: "💻" },
     { name: "Cosmic Amp",         baseCost: 320000000000,  passivePower: 200000000,type: "passive", icon: "📡" },
-    { name: "Dimension Pump",     baseCost: 2300000000000, passivePower: 1100000000,type:"passive", icon: "🌀" },
+    { name: "Dimension Pump",     baseCost: 2300000000000, passivePower: 1100000000,type:"passive", icon: "🔄" },
     { name: "Reality Warper",     baseCost: 17000000000000,passivePower: 6000000000,type:"passive", icon: "✨" },
     // more click upgrades
     { name: "Skibidi Singularity",baseCost: 22000000000000,   clickPower: 11000000000,  type: "click", icon: "🌀" },
@@ -111,9 +111,9 @@ const UPGRADES = [
     { name: "Final Boss Fart",    baseCost: 60000000000000000,clickPower: 13000000000000,type:"click", icon: "👹" },
     { name: "Omega Rizz",         baseCost: 450000000000000000,clickPower:78000000000000,type:"click", icon: "💞" },
     // more passive upgrades
-    { name: "Multiverse Pump",    baseCost: 130000000000000,  passivePower: 35000000000,  type: "passive", icon: "🌌" },
+    { name: "Multiverse Pump",    baseCost: 130000000000000,  passivePower: 35000000000,  type: "passive", icon: "🪐" },
     { name: "Infinity Reactor",   baseCost: 900000000000000,  passivePower: 200000000000, type: "passive", icon: "♾️" },
-    { name: "Aura Generator",     baseCost: 6500000000000000, passivePower: 1200000000000,type: "passive", icon: "🔮" },
+    { name: "Aura Generator",     baseCost: 6500000000000000, passivePower: 1200000000000,type: "passive", icon: "🔯" },
     { name: "Cosmic Singularity", baseCost: 48000000000000000,passivePower: 7000000000000,type: "passive", icon: "🌟" },
     { name: "Omega Stench Engine",baseCost: 340000000000000000,passivePower:42000000000000,type:"passive",icon: "👑" }
 ];
