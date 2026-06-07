@@ -940,9 +940,9 @@ function fuseGroups() {
 }
 // ---------- FUSION: combine N identical pets → one ⭐ stronger pet ----------
 const MAX_STAR = 5;
-function fuseNeeded(star) { return 3 + star * 3; } // 3,6,9,12,15
+function fuseNeeded(star) { return Math.min(4 + star * 4, 20); } // 4,8,12,16,20 — caps at 20
 function renderFuse() {
-    let html = '<p class="fuse-info">Fuse identical pets into a ⭐ stronger one (2.2x power each star). Higher stars need more pets — max <b>' + MAX_STAR + '⭐</b>.</p><div class="pet-grid">';
+    let html = '<p class="fuse-info">Fuse identical pets into a ⭐ stronger one (2.2x power each star). Higher stars need more pets — starts at 4, scales up, max <b>' + MAX_STAR + '⭐</b>.</p><div class="pet-grid">';
     const groups = fuseGroups();
     const fusable = groups.filter(g => g.star < MAX_STAR && g.items.length >= fuseNeeded(g.star));
     if (fusable.length === 0) html += '<p class="empty-text">No fusions ready. Collect more copies of the same pet (same ⭐ level).</p>';
