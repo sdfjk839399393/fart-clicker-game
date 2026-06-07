@@ -3,18 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fart Clicker: Sigma Gacha</title>
+    <title>Fart Clicker: Ultimate</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="game-container">
-        <div id="header">
-            <h1>☢️ FART CLICKER</h1>
-            <div class="stats">
-                <p>Stink: <span id="points">0</span></p>
-                <p>Spam Bonus: <span id="spam-mult">1.0</span>x</p>
-                <p>Rebirths: <span id="rebirths">0</span> | World: <span id="world-name">Basement</span></p>
-            </div>
+        <h1>☢️ FART CLICKER</h1>
+        <div class="stats-panel">
+            <p>Stink: <span id="points">0</span></p>
+            <p>Spam Bonus: <span id="spam-mult">1.0</span>x</p>
+            <p>Rebirths: <span id="rebirths">0</span> | World: <span id="world-name">Basement</span></p>
         </div>
 
         <button id="main-btn">💨 CLICK</button>
@@ -25,17 +23,19 @@
             <button onclick="showTab('worlds')">🌍 Worlds</button>
         </div>
 
-        <div id="upgrades" class="tab-content scrollable"></div>
-        <div id="pets" class="tab-content scrollable">
-            <div id="egg-container"></div>
-            <h3>Equipped Pets (Max 3)</h3>
+        <div id="upgrades" class="tab-content"></div>
+        <div id="pets" class="tab-content">
+            <div id="egg-menu">
+                <button class="egg-btn" onclick="openEgg()">Open Egg (Cost: 500)</button>
+            </div>
+            <h3>Equipped Pets</h3>
             <div id="equipped-pets"></div>
         </div>
-        <div id="worlds" class="tab-content scrollable">
+        <div id="worlds" class="tab-content">
             <div id="world-list"></div>
         </div>
 
-        <button onclick="rebirth()" id="rebirth-btn">REBIRTH (Cost: 10,000)</button>
+        <button onclick="rebirth()" id="rebirth-btn">REBIRTH (Req: 10,000)</button>
     </div>
     <script src="script.js"></script>
 </body>
