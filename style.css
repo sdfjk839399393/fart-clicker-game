@@ -289,6 +289,7 @@ body {
 .hatch-name { font-family:'Russo One',sans-serif; font-size:2rem; color:#fff; margin:4px 0; }
 .hatch-power { font-size:1rem; font-weight:700; }
 .hatch-skip { margin-top:30px; padding:12px 28px; border:1px solid var(--stroke); border-radius:30px; background:rgba(255,255,255,0.08); color:var(--text); font-family:'Fredoka',sans-serif; font-weight:600; cursor:pointer; transition:opacity 0.3s ease; }
+.hatch-skip[style*="opacity: 0"], .hatch-skip[style*="opacity:0"] { pointer-events:none; }
 
 /* ---- floating fx ---- */
 .float-text { position:fixed; z-index:250; pointer-events:none; transform:translate(-50%,0); font-family:'Russo One',sans-serif; font-size:1.2rem; font-weight:700; text-shadow:0 2px 8px rgba(0,0,0,0.6); animation:floatUpFx 0.85s ease-out forwards; }

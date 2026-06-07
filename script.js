@@ -1152,7 +1152,7 @@ function playHatch(pet, egg) {
     rays.style.background = "conic-gradient(from 0deg," + r.color + "00," + r.color + "66," + r.color + "00," + r.color + "66," + r.color + "00)";
     overlay.style.setProperty("--rc", r.color);
     overlay.className = "hatch-overlay tier" + r.tier;
-    skip.style.opacity = "0";
+    skip.style.opacity = "0"; skip.style.pointerEvents = "none";
     overlay.classList.remove("hidden");
     sfxWhoosh();
 
@@ -1194,7 +1194,7 @@ function playHatch(pet, egg) {
                 '<div class="hatch-power" style="color:' + r.color + '">' + pet.power.toFixed(2) + 'x click power</div>';
             resEl.classList.add("show");
             if (r.tier >= 3) bigBanner(r.label + "!!!", r.color);
-            skip.style.opacity = "1";
+            skip.style.opacity = "1"; skip.style.pointerEvents = "auto";
             document.body.classList.remove("slowmo");
         }, 300 + r.tier * 60);
     }, shakeTime);
