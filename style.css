@@ -86,11 +86,29 @@ body {
 }
 
 h1 {
-    color: var(--neon-green);
-    font-size: 2.5rem;
-    text-shadow: 0 0 20px rgba(127, 255, 0, 0.5);
+    background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-green) 25%, var(--neon-pink) 50%, var(--neon-purple) 75%, var(--neon-cyan) 100%);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 3.5rem;
+    font-weight: 900;
     margin-bottom: 15px;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
+    animation: titleGlow 4s ease infinite, titleShift 6s ease infinite;
+    text-transform: uppercase;
+    filter: drop-shadow(0 0 15px rgba(0, 217, 255, 0.6)) drop-shadow(0 0 30px rgba(127, 255, 0, 0.3));
+}
+
+@keyframes titleGlow {
+    0%, 100% { text-shadow: 0 0 20px rgba(0, 217, 255, 0.5), 0 0 40px rgba(127, 255, 0, 0.3); }
+    50% { text-shadow: 0 0 30px rgba(218, 112, 214, 0.6), 0 0 50px rgba(255, 0, 110, 0.4); }
+}
+
+@keyframes titleShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 .stats-panel {
@@ -261,9 +279,126 @@ h1 {
     color: var(--neon-pink);
 }
 
-@media (max-width: 768px) {
+/* Mobile Optimization */
+@media (max-width: 1024px) {
+    #game-container {
+        max-width: 100%;
+        padding: 10px;
+    }
+    
+    h1 {
+        font-size: 2.5rem;
+    }
+    
     .upgrades-split {
         grid-template-columns: 1fr;
+    }
+    
+    .main-click-btn {
+        height: 120px;
+        font-size: 2rem;
+    }
+    
+    .stats-panel {
+        padding: 10px;
+    }
+    
+    .stat-row {
+        padding: 6px 0;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    #game-container {
+        max-width: 100%;
+        padding: 8px;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+        margin-bottom: 8px;
+        letter-spacing: 2px;
+    }
+    
+    .header {
+        margin-bottom: 10px;
+    }
+    
+    .stats-panel {
+        padding: 8px;
+        margin-bottom: 12px;
+    }
+    
+    .stat-row {
+        padding: 4px 0;
+        font-size: 0.8rem;
+    }
+    
+    .stat-value {
+        font-size: 0.95rem;
+    }
+    
+    .main-click-btn {
+        height: 100px;
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+        padding: 10px;
+    }
+    
+    .tabs {
+        gap: 5px;
+        padding: 8px;
+        margin-bottom: 12px;
+    }
+    
+    .tab-btn {
+        padding: 10px 12px;
+        font-size: 0.85rem;
+    }
+    
+    .tab-content {
+        padding: 12px;
+        min-height: 300px;
+        max-height: 400px;
+    }
+    
+    .upgrade-section {
+        padding: 10px;
+    }
+    
+    .upgrade-btn {
+        padding: 10px;
+        margin: 6px 0;
+        font-size: 0.85rem;
+    }
+    
+    .upgrade-name {
+        font-size: 0.9rem;
+    }
+    
+    .upgrade-level {
+        font-size: 0.7rem;
+        padding: 1px 4px;
+    }
+    
+    .upgrade-cost {
+        font-size: 0.85rem;
+    }
+    
+    .rebirth-btn {
+        padding: 14px;
+        font-size: 1rem;
+        margin-top: 12px;
+    }
+    
+    .modal-content {
+        padding: 20px;
+        max-width: 90vw;
+    }
+    
+    .modal-content h2 {
+        font-size: 1.2rem;
     }
 }
 
@@ -687,23 +822,66 @@ h1 {
     background: linear-gradient(135deg, var(--neon-green), var(--neon-cyan));
 }
 
-/* Click Effect */
-.click-pop {
+/* Critical Hit Effect */
+.critical-hit {
     position: fixed;
+    font-size: 3rem;
+    font-weight: 900;
+    color: #FFD700;
+    text-shadow: 0 0 20px #FFD700, 0 0 40px #FF6B35;
     pointer-events: none;
-    font-size: 2rem;
-    font-weight: bold;
-    animation: popFloat 1s ease-out forwards;
-    z-index: 500;
+    z-index: 999;
+    animation: criticalPulse 0.8s ease-out forwards;
 }
 
-@keyframes popFloat {
+@keyframes criticalPulse {
     0% {
         opacity: 1;
-        transform: translate(0, 0) scale(1);
+        transform: translate(0, 0) scale(0.5) rotate(0deg);
+    }
+    50% {
+        transform: translate(0, -30px) scale(1.2) rotate(5deg);
     }
     100% {
         opacity: 0;
-        transform: translate(0, -80px) scale(1.5);
+        transform: translate(0, -100px) scale(1) rotate(-5deg);
+    }
+}
+
+/* Rare Popup Notification */
+.rare-popup {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    border: 3px solid #FF6B35;
+    color: #000;
+    padding: 20px 30px;
+    border-radius: 15px;
+    font-weight: bold;
+    z-index: 1001;
+    animation: popupSlide 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    box-shadow: 0 0 30px rgba(255, 107, 53, 0.8);
+}
+
+@keyframes popupSlide {
+    from {
+        transform: translateX(400px) scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+}
+
+.rare-popup.fade-out {
+    animation: popupFade 0.5s ease-out forwards;
+}
+
+@keyframes popupFade {
+    to {
+        transform: translateX(400px) scale(0.8);
+        opacity: 0;
     }
 }
