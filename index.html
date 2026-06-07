@@ -3,31 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fart Clicker: Sigma Edition</title>
+    <title>Fart Clicker: Sigma Gacha</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="game">
-        <h1>☢️ FART CLICKER ☢️</h1>
-        <div class="stats">
-            <p>Stink: <span id="points">0</span></p>
-            <p>Multiplier: <span id="mult">1.0</span>x | Rebirths: <span id="rebirths">0</span></p>
+    <div id="game-container">
+        <div id="header">
+            <h1>☢️ FART CLICKER</h1>
+            <div class="stats">
+                <p>Stink: <span id="points">0</span></p>
+                <p>Spam Bonus: <span id="spam-mult">1.0</span>x</p>
+                <p>Rebirths: <span id="rebirths">0</span> | World: <span id="world-name">Basement</span></p>
+            </div>
         </div>
-        
-        <button id="main-btn">💨 PUSH 💨</button>
+
+        <button id="main-btn">💨 CLICK</button>
 
         <div class="tabs">
             <button onclick="showTab('upgrades')">🛒 Upgrades</button>
             <button onclick="showTab('pets')">🐶 Pets</button>
+            <button onclick="showTab('worlds')">🌍 Worlds</button>
         </div>
 
-        <div id="upgrades" class="tab-content"></div>
-        <div id="pets" class="tab-content" style="display:none;">
-            <button onclick="rollPet()" style="background:#FF4500; width:100%; padding:15px; margin-bottom:10px; cursor:pointer;">Roll Pet (Cost: 500)</button>
-            <div id="pet-list"></div>
+        <div id="upgrades" class="tab-content scrollable"></div>
+        <div id="pets" class="tab-content scrollable">
+            <div id="egg-container"></div>
+            <h3>Equipped Pets (Max 3)</h3>
+            <div id="equipped-pets"></div>
+        </div>
+        <div id="worlds" class="tab-content scrollable">
+            <div id="world-list"></div>
         </div>
 
-        <button onclick="rebirth()" id="rebirth-btn">REBIRTH (Requirement: 10,000)</button>
+        <button onclick="rebirth()" id="rebirth-btn">REBIRTH (Cost: 10,000)</button>
     </div>
     <script src="script.js"></script>
 </body>
