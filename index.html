@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Fart Clicker: Ultimate</title>
+    <title>Fart Clicker: Brainrot Edition</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Russo+One&display=swap" rel="stylesheet">
@@ -12,85 +12,127 @@
 <body>
     <div id="animated-bg"></div>
     <div id="particle-overlay"></div>
+    <div id="screen-flash"></div>
+    <div id="golden-layer"></div>
 
     <div id="game-container">
-        <div class="logo-container">
-            <h1 id="game-title">💨 FART CLICKER</h1>
-            <p class="subtitle">The Ultimate Idle Stink Empire</p>
-        </div>
+        <header class="top-bar">
+            <div class="logo-mini">💨 FART CLICKER</div>
+            <button class="gear-btn" onclick="openSheet('settings')" aria-label="Settings">⚙️</button>
+        </header>
 
         <div class="stats-panel">
-            <div class="stat-cell big">
-                <span class="stat-label">Stink Level</span>
-                <span id="points" class="stat-value">0</span>
+            <div class="stat-hero">
+                <span id="points" class="hero-value">0</span>
+                <span class="hero-label">STINK 💨</span>
             </div>
             <div class="stat-grid">
                 <div class="stat-cell"><span class="stat-label">Per Click</span><span id="per-click" class="stat-value">1</span></div>
-                <div class="stat-cell"><span class="stat-label">Passive</span><span id="passive-income" class="stat-value">0/s</span></div>
-                <div class="stat-cell"><span class="stat-label">Combo</span><span id="spam-mult" class="stat-value">1.0x</span></div>
+                <div class="stat-cell"><span class="stat-label">Per Sec</span><span id="passive-income" class="stat-value">0</span></div>
                 <div class="stat-cell"><span class="stat-label">Rebirths</span><span id="rebirths" class="stat-value">0</span></div>
-            </div>
-            <div class="stat-cell world-cell">
-                <span class="stat-label">Current World</span>
-                <span id="world-name" class="stat-value">Basement</span>
+                <div class="stat-cell"><span class="stat-label">World</span><span id="world-name" class="stat-value">Basement</span></div>
             </div>
         </div>
 
 
         <div class="clicker-zone">
+            <div class="combo-wrap">
+                <div class="combo-track"><div id="combo-bar"></div></div>
+                <span id="combo-label">COMBO x1.0</span>
+            </div>
             <button id="main-btn" class="main-click-btn">
                 <span class="main-emoji">💨</span>
-                <span class="main-label">CLICK ME!</span>
+                <span class="main-label">CLICK</span>
             </button>
         </div>
 
-        <div class="control-row">
-            <button class="ctrl-btn upgrades-toggle-btn" onclick="toggleUpgradesMenu()">🛒 Upgrades</button>
-            <button id="bgm-toggle-btn" class="ctrl-btn bgm-toggle-btn" onclick="toggleBGM()">🎵 <span id="bgm-status">BGM: OFF</span></button>
-        </div>
-
         <button onclick="rebirth()" id="rebirth-btn" class="rebirth-btn">🔄 REBIRTH<span class="rb-cost">1M 💨</span></button>
-
-        <div class="tabs">
-            <button class="tab-btn active" onclick="showTab('pets', this)">🐶 Pets</button>
-            <button class="tab-btn" onclick="showTab('worlds', this)">🌍 Worlds</button>
-        </div>
-
-        <div id="pets" class="tab-content active"></div>
-        <div id="worlds" class="tab-content"></div>
     </div>
 
-    <!-- Sliding Upgrades Panel -->
-    <div class="upgrades-overlay" id="upgrades-overlay" onclick="toggleUpgradesMenu()"></div>
-    <div id="upgrades-panel">
-        <div id="upgrades-panel-header">
-            <h2>🛒 Upgrades</h2>
-            <button class="close-panel-btn" onclick="toggleUpgradesMenu()">&times;</button>
+    <!-- Bottom Nav -->
+    <nav class="bottom-nav">
+        <button class="nav-btn" onclick="openSheet('upgrades')"><span class="nav-ico">🛒</span><span class="nav-txt">Upgrades</span></button>
+        <button class="nav-btn" onclick="openSheet('pets')"><span class="nav-ico">🐾</span><span class="nav-txt">Pets</span></button>
+        <button class="nav-btn" onclick="openSheet('worlds')"><span class="nav-ico">🌍</span><span class="nav-txt">Worlds</span></button>
+        <button class="nav-btn" onclick="openSheet('settings')"><span class="nav-ico">⚙️</span><span class="nav-txt">Settings</span></button>
+    </nav>
+
+    <div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()"></div>
+
+    <!-- Upgrades Sheet -->
+    <div class="sheet" id="sheet-upgrades">
+        <div class="sheet-head"><h2>🛒 Upgrades</h2><button class="sheet-close" onclick="closeSheet()">&times;</button></div>
+        <div class="sheet-tabs">
+            <button class="stab active" onclick="showUpTab('click', this)">⬆️ Click</button>
+            <button class="stab" onclick="showUpTab('passive', this)">💰 Passive</button>
+            <button class="stab" onclick="showUpTab('slots', this)">🐾 Slots</button>
         </div>
-        <div id="upgrades-panel-content">
-            <div class="upgrades-panel-section">
-                <h3>⬆️ Click Power</h3>
-                <div id="upgrades-panel-click"></div>
+        <div class="sheet-body">
+            <div id="up-click" class="up-tab active"></div>
+            <div id="up-passive" class="up-tab"></div>
+            <div id="up-slots" class="up-tab"></div>
+        </div>
+    </div>
+
+
+    <!-- Pets Sheet -->
+    <div class="sheet" id="sheet-pets">
+        <div class="sheet-head"><h2>🐾 Pets</h2><button class="sheet-close" onclick="closeSheet()">&times;</button></div>
+        <div class="sheet-body" id="pets-body"></div>
+    </div>
+
+    <!-- Worlds Sheet -->
+    <div class="sheet" id="sheet-worlds">
+        <div class="sheet-head"><h2>🌍 Worlds</h2><button class="sheet-close" onclick="closeSheet()">&times;</button></div>
+        <div class="sheet-body" id="worlds-body"></div>
+    </div>
+
+    <!-- Settings Sheet -->
+    <div class="sheet" id="sheet-settings">
+        <div class="sheet-head"><h2>⚙️ Settings</h2><button class="sheet-close" onclick="closeSheet()">&times;</button></div>
+        <div class="sheet-body">
+            <div class="set-group">
+                <label class="set-row"><span>🎵 Music Volume</span><span id="music-vol-val" class="set-val">35%</span></label>
+                <input type="range" id="music-vol" min="0" max="100" value="35" class="slider" oninput="setMusicVol(this.value)">
             </div>
-            <div class="upgrades-panel-section">
-                <h3>💰 Passive Income</h3>
-                <div id="upgrades-panel-passive"></div>
+            <div class="set-group">
+                <label class="set-row"><span>🔊 SFX Volume</span><span id="sfx-vol-val" class="set-val">70%</span></label>
+                <input type="range" id="sfx-vol" min="0" max="100" value="70" class="slider" oninput="setSfxVol(this.value)">
             </div>
-            <div class="upgrades-panel-section">
-                <h3>🐾 Pet Slots</h3>
-                <div id="upgrades-panel-pets"></div>
+            <div class="set-group toggles">
+                <button class="toggle-row" id="tg-music" onclick="toggleSetting('musicOn', this)"><span>🎶 Music</span><span class="toggle-pill">ON</span></button>
+                <button class="toggle-row" id="tg-particles" onclick="toggleSetting('particles', this)"><span>✨ Particles</span><span class="toggle-pill">ON</span></button>
+                <button class="toggle-row" id="tg-shake" onclick="toggleSetting('screenShake', this)"><span>📳 Screen Shake</span><span class="toggle-pill">ON</span></button>
+                <button class="toggle-row" id="tg-brainrot" onclick="toggleSetting('brainrot', this)"><span>🧠 Brainrot Mode</span><span class="toggle-pill">ON</span></button>
             </div>
+            <div class="set-group">
+                <button class="set-action" onclick="exportSave()">📤 Export Save</button>
+                <button class="set-action" onclick="importSave()">📥 Import Save</button>
+                <button class="set-action danger" onclick="hardReset()">🗑️ Reset Everything</button>
+            </div>
+            <p class="set-credit">Fart Clicker: Brainrot Edition · made with 💨</p>
         </div>
     </div>
 
 
     <!-- Egg Modal -->
     <div id="egg-modal" class="modal hidden">
-        <div class="modal-content">
+        <div class="modal-content egg-modal-content">
             <button class="close-btn" onclick="closeEggModal()">&times;</button>
-            <h2>🥚 Open Eggs</h2>
+            <h2>🥚 Hatch Eggs</h2>
+            <p class="egg-balance">You have <b id="egg-balance">0</b> 💨</p>
             <div id="egg-selection"></div>
         </div>
+    </div>
+
+    <!-- Hatch Animation Overlay -->
+    <div id="hatch-overlay" class="hatch-overlay hidden">
+        <div class="hatch-rays" id="hatch-rays"></div>
+        <div class="hatch-stage">
+            <div id="hatch-egg" class="hatch-egg">🥚</div>
+            <div id="hatch-result" class="hatch-result"></div>
+        </div>
+        <button id="hatch-skip" class="hatch-skip" onclick="finishHatch()">Tap to continue</button>
     </div>
 
     <!-- Pet Modal -->
@@ -102,6 +144,17 @@
                 <button id="equip-btn" class="modal-btn" onclick="equipPet()">Equip</button>
                 <button class="modal-btn secondary" onclick="closePetModal()">Close</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Offline earnings modal -->
+    <div id="offline-modal" class="modal hidden">
+        <div class="modal-content offline-content">
+            <div class="offline-emoji">😴💨</div>
+            <h2>Welcome Back!</h2>
+            <p class="offline-text">While you were gone your farts earned:</p>
+            <div id="offline-amount" class="offline-amount">0 💨</div>
+            <button class="modal-btn" onclick="claimOffline()">Collect 🤑</button>
         </div>
     </div>
 
