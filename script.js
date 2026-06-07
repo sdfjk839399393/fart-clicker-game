@@ -178,8 +178,8 @@ const EGG_TEMPLATES = [
 ];
 
 function eggCost(t, world) { return Math.floor(t.baseCost * Math.pow(t.growth, world)); }
-// pet power scales exponentially per world so later-world pets are always worth getting
-function petPower(base, world) { return +(base * Math.pow(1.4, world)).toFixed(2); }
+// pet power: much flatter base values, gentler world scaling
+function petPower(base, world) { return +(Math.sqrt(base) * Math.pow(1.18, world)).toFixed(2); }
 function allPetsForWorld() {
     // flatten all egg pets (the 15 base pets)
     let arr = [];
@@ -721,7 +721,7 @@ function auraLevel(effect) {
     return lvl;
 }
 function auraMult(effect) { return 1 + auraLevel(effect) * (AURA_UPGRADES.find(u=>u.effect===effect).per); }
-function rebirthBonus() { return 1 + (game.rebirths || 0) * 0.25; }
+function rebirthBonus() { return 1 + (game.rebirths || 0) * 0.08; }
 
 function completedWorlds() {
     let c = 0;
@@ -745,15 +745,16 @@ function getPassive() {
     return p * rebirthBonus() * auraMult("passive") * dexBonus();
 }
 function getPetMult() {
+    // additive stacking so 3 pets don't multiply into insane numbers
     let m = 1;
-    (game.equippedPets || []).forEach(p => { m *= (p.power || 1); });
-    return m;
+    (game.equippedPets || []).forEach(p => { m += (p.power || 1) - 1; });
+    return Math.max(1, m);
 }
 function upgradeCost(i) {
     const u = UPGRADES[i]; if (!u) return Infinity;
     return Math.floor(u.baseCost * Math.pow(1.15, game.upgrades[i] || 0));
 }
-function getRebirthCost() { return 1000000 * Math.pow(3, game.rebirths || 0); }
+function getRebirthCost() { return 5000000 * Math.pow(4, game.rebirths || 0); }
 function auraGainPreview() {
     return Math.max(1, Math.floor(Math.pow(game.rebirths + 1, 1.35) * auraMult("auragain")));
 }
