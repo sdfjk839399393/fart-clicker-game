@@ -118,8 +118,15 @@ const UPGRADES = [
 ];
 
 const PET_SLOTS = [
-    { slot: 4, cost: 250000 }, { slot: 5, cost: 5000000 }, { slot: 6, cost: 90000000 },
-    { slot: 7, cost: 1500000000 }, { slot: 8, cost: 28000000000 }
+    { slot: 4,  cost: 5000000,            reqRebirths: 1 },
+    { slot: 5,  cost: 400000000,          reqRebirths: 3 },
+    { slot: 6,  cost: 35000000000,        reqRebirths: 6 },
+    { slot: 7,  cost: 3000000000000,      reqRebirths: 10 },
+    { slot: 8,  cost: 280000000000000,    reqRebirths: 16 },
+    { slot: 9,  cost: 25000000000000000,  reqRebirths: 24 },
+    { slot: 10, cost: 2400000000000000000,reqRebirths: 34 },
+    { slot: 11, cost: 2.2e23,             reqRebirths: 48 },
+    { slot: 12, cost: 2e26,               reqRebirths: 64 }
 ];
 
 // ---------- Prestige: Aura upgrades (permanent) ----------
@@ -255,109 +262,124 @@ const PHONK = { idx: 0, step: 0, timer: null, playing: false, bars: 0 };
 function midiHz(s) { return 220 * Math.pow(2, s / 12); }
 
 function phonkKick(ctx, t) {
+    const m = ensureMaster();
     const o = ctx.createOscillator(), g = ctx.createGain();
-    o.type = "sine"; o.frequency.setValueAtTime(170, t);
-    o.frequency.exponentialRampToValueAtTime(45, t + 0.13);
-    g.gain.setValueAtTime(0.95 * game.settings.musicVol, t);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
-    o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t + 0.24);
+    o.type = "sine"; o.frequency.setValueAtTime(165, t);
+    o.frequency.exponentialRampToValueAtTime(48, t + 0.12);
+    g.gain.setValueAtTime(1.0 * game.settings.musicVol, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.26);
+    o.connect(g); g.connect(m || ctx.destination); o.start(t); o.stop(t + 0.28);
 }
 function phonkHat(ctx, t) {
+    const m = ensureMaster();
     const s = ctx.createBufferSource(), g = ctx.createGain(), f = ctx.createBiquadFilter();
-    s.buffer = getNoise(ctx); f.type = "highpass"; f.frequency.value = 7500;
-    g.gain.setValueAtTime(0.18 * game.settings.musicVol, t);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
-    s.connect(f); f.connect(g); g.connect(ctx.destination); s.start(t); s.stop(t + 0.06);
+    s.buffer = getNoise(ctx); f.type = "bandpass"; f.frequency.value = 9000; f.Q.value = 1.2;
+    g.gain.setValueAtTime(0.10 * game.settings.musicVol, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+    s.connect(f); f.connect(g); g.connect(m || ctx.destination); s.start(t); s.stop(t + 0.05);
 }
-function phonkBell(ctx, t, semi, wave) {
-    const o = ctx.createOscillator(), g = ctx.createGain();
-    o.type = wave || "square"; o.frequency.value = midiHz(semi + 24);
-    g.gain.setValueAtTime(0.15 * game.settings.musicVol, t);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
-    o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t + 0.2);
-}
+function phonkBell(ctx, t, semi, wave) { phonkLead(ctx, t, semi, wave); }
 function phonk808(ctx, t, semi) {
-    const o = ctx.createOscillator(), g = ctx.createGain();
-    o.type = "sine"; o.frequency.value = midiHz(semi - 12);
-    g.gain.setValueAtTime(0.5 * game.settings.musicVol, t);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
-    o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t + 0.42);
+    const m = ensureMaster();
+    const o = ctx.createOscillator(), g = ctx.createGain(), f = ctx.createBiquadFilter();
+    f.type = "lowpass"; f.frequency.value = 1800;
+    o.type = "sine"; o.frequency.setValueAtTime(midiHz(semi - 11), t);
+    o.frequency.exponentialRampToValueAtTime(midiHz(semi - 12), t + 0.08);
+    g.gain.setValueAtTime(0.55 * game.settings.musicVol, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+    o.connect(f); f.connect(g); g.connect(m || ctx.destination); o.start(t); o.stop(t + 0.52);
 }
 
 
-// ---------- Rich audio bus: master + reverb (less "8-bit") ----------
+// ---------- Rich audio bus: master + warm filter + compressor + reverb ----------
 let masterGain = null, reverbNode = null, reverbSend = null;
 function ensureMaster() {
     const ctx = getCtx(); if (!ctx) return null;
     if (masterGain) return masterGain;
-    masterGain = ctx.createGain(); masterGain.gain.value = 0.9;
-    masterGain.connect(ctx.destination);
-    // simple algorithmic reverb impulse
+    masterGain = ctx.createGain(); masterGain.gain.value = 0.85;
+    // warm low-pass so highs aren't harsh/8-bit
+    const warm = ctx.createBiquadFilter(); warm.type = "lowpass"; warm.frequency.value = 6500; warm.Q.value = 0.6;
+    // glue compressor
+    const comp = ctx.createDynamicsCompressor();
+    comp.threshold.value = -18; comp.knee.value = 24; comp.ratio.value = 3.5;
+    comp.attack.value = 0.004; comp.release.value = 0.22;
+    masterGain.connect(warm); warm.connect(comp); comp.connect(ctx.destination);
     try {
         reverbNode = ctx.createConvolver();
-        const len = ctx.sampleRate * 1.6, buf = ctx.createBuffer(2, len, ctx.sampleRate);
+        const len = ctx.sampleRate * 2.0, buf = ctx.createBuffer(2, len, ctx.sampleRate);
         for (let ch = 0; ch < 2; ch++) {
             const d = buf.getChannelData(ch);
-            for (let i = 0; i < len; i++) d[i] = (Math.random()*2-1) * Math.pow(1 - i/len, 2.6);
+            for (let i = 0; i < len; i++) d[i] = (Math.random()*2-1) * Math.pow(1 - i/len, 3.0);
         }
         reverbNode.buffer = buf;
-        reverbSend = ctx.createGain(); reverbSend.gain.value = 0.22;
+        reverbSend = ctx.createGain(); reverbSend.gain.value = 0.3;
         reverbSend.connect(reverbNode); reverbNode.connect(masterGain);
     } catch (e) { reverbNode = null; }
     return masterGain;
 }
 function routeWet(node) { if (reverbSend) node.connect(reverbSend); }
 
-// supersaw lead (catchy melodic phonk lead)
+// warm melodic lead: detuned saws + sine sub + vibrato, gentle filter
 function phonkLead(ctx, t, semi, wave) {
     const master = ensureMaster(); if (!master) return;
     const f = ctx.createBiquadFilter(); f.type = "lowpass";
-    f.frequency.setValueAtTime(900, t); f.frequency.exponentialRampToValueAtTime(2600, t + 0.04);
-    f.frequency.exponentialRampToValueAtTime(700, t + 0.34); f.Q.value = 6;
+    f.frequency.setValueAtTime(700, t); f.frequency.exponentialRampToValueAtTime(2200, t + 0.06);
+    f.frequency.exponentialRampToValueAtTime(800, t + 0.4); f.Q.value = 3;
     const g = ctx.createGain();
     g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(0.16 * game.settings.musicVol, t + 0.02);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.36);
+    g.gain.exponentialRampToValueAtTime(0.13 * game.settings.musicVol, t + 0.03);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.42);
     const base = midiHz(semi + 12);
-    [-0.12, 0, 0.12].forEach(det => {
+    // vibrato LFO
+    const lfo = ctx.createOscillator(), lfoG = ctx.createGain();
+    lfo.frequency.value = 5.5; lfoG.gain.value = base * 0.006;
+    lfo.connect(lfoG); lfo.start(t); lfo.stop(t + 0.44);
+    [-0.08, 0.08].forEach(det => {
         const o = ctx.createOscillator();
-        o.type = wave || "sawtooth"; o.frequency.value = base * (1 + det/12);
-        o.connect(f); o.start(t); o.stop(t + 0.38);
+        o.type = "sawtooth"; o.frequency.value = base * (1 + det/12);
+        lfoG.connect(o.frequency); o.connect(f); o.start(t); o.stop(t + 0.44);
     });
+    const sub = ctx.createOscillator(); sub.type = "sine"; sub.frequency.value = base/2;
+    sub.connect(f); sub.start(t); sub.stop(t + 0.44);
     f.connect(g); g.connect(master); routeWet(g);
 }
-// warm chord pad (musical bed)
+// lush chord pad (follows the bar's chord root)
 function phonkPad(ctx, t, root) {
     const master = ensureMaster(); if (!master) return;
+    const f = ctx.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = 2400;
     const g = ctx.createGain();
     g.gain.setValueAtTime(0.0001, t);
-    g.gain.linearRampToValueAtTime(0.05 * game.settings.musicVol, t + 0.4);
-    g.gain.linearRampToValueAtTime(0.0001, t + 1.9);
-    [0, 3, 7, 10].forEach(iv => {
-        const o = ctx.createOscillator();
-        o.type = "triangle"; o.frequency.value = midiHz(root + iv - 12);
-        o.connect(g); o.start(t); o.stop(t + 2.0);
+    g.gain.linearRampToValueAtTime(0.045 * game.settings.musicVol, t + 0.5);
+    g.gain.linearRampToValueAtTime(0.0001, t + 1.95);
+    [0, 3, 7, 10, 12].forEach(iv => {
+        const o = ctx.createOscillator(); o.type = "sawtooth";
+        o.frequency.value = midiHz(root + iv - 12);
+        o.detune.value = (Math.random()*8-4);
+        o.connect(f); o.start(t); o.stop(t + 2.0);
     });
-    g.connect(master); routeWet(g);
+    f.connect(g); g.connect(master); routeWet(g);
 }
 
 
 // ---------- sequencer + track rotation ----------
+// catchy vi-IV-I-V style chord movement (semitone transpose per bar)
+const PROG = [0, -4, 3, -2];
 function phonkTick() {
     const ctx = getCtx(); if (!ctx) return;
     const tr = TRACKS[PHONK.idx % TRACKS.length];
     const t = ctx.currentTime + 0.02;
     const s = PHONK.step % 16;
-    if (s === 0) { phonkPad(ctx, t, tr.bell.find(x => x !== null && x !== undefined) || 0); }
+    const barRoot = PROG[PHONK.bars % PROG.length];
+    if (s === 0) phonkPad(ctx, t, barRoot);
     if (tr.kick[s]) phonkKick(ctx, t);
     if (tr.hat[s]) phonkHat(ctx, t);
     const bn = tr.bell[s];
-    if (bn !== null && bn !== undefined) phonkLead(ctx, t, bn, tr.wave);
-    if (tr.bass[s]) phonk808(ctx, t, (bn === null || bn === undefined) ? 0 : bn);
+    if (bn !== null && bn !== undefined) phonkLead(ctx, t, bn + barRoot, tr.wave);
+    if (tr.bass[s]) phonk808(ctx, t, barRoot + ((bn === null || bn === undefined) ? 0 : 0));
     PHONK.step++;
     if (PHONK.step % 16 === 0) {
         PHONK.bars++;
-        if (PHONK.bars % 4 === 0) { // new track every 4 bars
+        if (PHONK.bars % 8 === 0) {
             PHONK.idx = (PHONK.idx + Math.floor(1 + Math.random()*(TRACKS.length-1))) % TRACKS.length;
             announceTrack();
         }
@@ -550,6 +572,7 @@ function handleMainClick(e) {
     sfxClick();
     floatText(e.clientX, e.clientY, "+" + fmt(dmg), criticalMultiplier > 1 ? "#FFD54A" : (comboValue > 60 ? "#00E0FF" : "#7FFF00"), criticalMultiplier > 1);
     if (comboValue > 50 && Math.random() < 0.4) ringAt(e.clientX, e.clientY, comboValue > 80 ? "#FF3D9A" : "#00E0FF");
+    clickPuff(e.clientX, e.clientY);
     popButton();
     maybeBrainrotPop();
     refreshCombo();
@@ -595,10 +618,12 @@ function renderUpgradeTabs() {
     UPGRADES.forEach((u, i) => { if (u.type === "click") c += upCard(i); else p += upCard(i); });
     PET_SLOTS.forEach((u, idx) => {
         if (game.maxPets >= u.slot) return;
-        const ok = game.points >= u.cost;
+        const lockedRb = game.rebirths < (u.reqRebirths || 0);
+        const ok = game.points >= u.cost && !lockedRb;
+        const sub = lockedRb ? ('🔒 Needs ' + u.reqRebirths + ' rebirths') : 'Equip one more pet';
         s += '<button class="up-card ' + (ok ? "" : "locked") + '" onclick="buyPetSlot(' + idx + ')">' +
             '<div class="up-ico">🐾</div><div class="up-mid"><div class="up-name">Pet Slot ' + u.slot + '</div>' +
-            '<div class="up-stat">Equip one more pet</div><div class="up-cost">' + fmt(u.cost) + ' 💨</div></div></button>';
+            '<div class="up-stat">' + sub + '</div><div class="up-cost">' + fmt(u.cost) + ' 💨</div></div></button>';
     });
     if (!s) s = '<p class="empty-text">All pet slots unlocked! 🎉</p>';
     const ce = document.getElementById("up-click"), pe = document.getElementById("up-passive"), se = document.getElementById("up-slots");
@@ -620,9 +645,10 @@ function buyUpgrade(i) {
 }
 function buyPetSlot(idx) {
     const u = PET_SLOTS[idx]; if (!u) return;
+    if (game.rebirths < (u.reqRebirths || 0)) { sfxError(); showToast("🔒 Needs " + u.reqRebirths + " rebirths!", 2200); return; }
     if (game.points >= u.cost) {
         game.points -= u.cost; if (u.slot > game.maxPets) game.maxPets = u.slot;
-        sfxBuy(); updateDisplay(); renderUpgradeTabs(); renderPets(); saveGame();
+        sfxBuy(); burstAt(window.innerWidth/2, window.innerHeight*0.4, "#7FFF00", 22); updateDisplay(); renderUpgradeTabs(); renderPets(); saveGame();
         showToast("🐾 Pet slot " + u.slot + " unlocked!", 2000);
     } else sfxError();
 }
@@ -1022,6 +1048,25 @@ function finishHatch() {
 // ============================================================
 function fxLayer() { return document.getElementById("golden-layer"); }
 
+// little fart-cloud puffs + sparks on every click
+const PUFFS = ["💨","💨","💨","✨","⭐","💫"];
+function clickPuff(x, y) {
+    if (!game.settings.particles) return;
+    const layer = fxLayer(); if (!layer) return;
+    const n = 2 + Math.floor(Math.random()*2);
+    for (let i=0;i<n;i++) {
+        const p = document.createElement("div");
+        p.className = "click-puff";
+        p.textContent = PUFFS[Math.floor(Math.random()*PUFFS.length)];
+        p.style.left = x + "px"; p.style.top = y + "px";
+        const ang = -Math.PI/2 + (Math.random()-0.5)*1.6, dist = 30 + Math.random()*55;
+        p.style.setProperty("--dx", Math.cos(ang)*dist + "px");
+        p.style.setProperty("--dy", (Math.sin(ang)*dist) + "px");
+        p.style.fontSize = (0.8 + Math.random()*0.8) + "rem";
+        layer.appendChild(p); setTimeout(()=>p.remove(), 700);
+    }
+}
+
 function floatText(x, y, txt, color, big) {
     const el = document.createElement("div");
     el.className = "float-text" + (big ? " big" : "");
@@ -1179,6 +1224,21 @@ function initGame() {
         mainBtn.addEventListener("click", handleMainClick);
         mainBtn.addEventListener("touchstart", function(ev){ ev.preventDefault(); const tp = ev.touches&&ev.touches[0]; handleMainClick({clientX: tp?tp.clientX:innerWidth/2, clientY: tp?tp.clientY:innerHeight/2}); }, { passive:false });
     }
+    buildButtonDecor();
+}
+
+// inject decorative orbiting emojis inside the main button
+function buildButtonDecor() {
+    const btn = document.getElementById("main-btn");
+    if (!btn || btn.querySelector(".btn-orbit")) return;
+    const orbit = document.createElement("div"); orbit.className = "btn-orbit";
+    const orbEmojis = ["💨","✨","💩","🌟","💚","⭐","🔥","💫"];
+    for (let i=0;i<8;i++) {
+        const d = document.createElement("span"); d.className = "orb"; d.textContent = orbEmojis[i];
+        d.style.transform = "rotate(" + (i*45) + "deg) translateY(-160px)";
+        orbit.appendChild(d);
+    }
+    btn.appendChild(orbit);
 }
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initGame);
 else initGame();
