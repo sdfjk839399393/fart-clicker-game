@@ -1347,10 +1347,12 @@ function spawnGoldenFart() {
     requestAnimationFrame(() => { el.style.left = "112%"; });
     el.onclick = () => {
         const goldMult = 1 + auraLevel("golden") * 0.5;
-        // reward = 2 minutes worth of income OR 500 clicks worth, whichever bigger
-        const incomeBase = getPassive() * getPetMult() * 120;
-        const clickBase  = getClickPower() * getPetMult() * 500;
-        const reward = Math.max(incomeBase, clickBase, game.points * 0.05, 100) * goldMult;
+        // world scaling: each world makes golden farts exponentially more valuable
+        const worldScale = Math.pow(1.6, game.worldIdx || 0);
+        // reward = 5 minutes passive OR 1000 clicks, whichever bigger, times world scale
+        const incomeBase = getPassive() * getPetMult() * 300;
+        const clickBase  = getClickPower() * getPetMult() * 1000;
+        const reward = Math.max(incomeBase, clickBase, game.points * 0.08, 100) * goldMult * worldScale;
         game.points += reward;
         floatText(window.innerWidth/2, window.innerHeight/2, "🤑 +" + fmt(reward), "#FFD54A", true);
         screenFlash("#ffd54a"); sfxRare(4); shake(); burstAt(window.innerWidth/2, window.innerHeight/2, "#FFD54A", 36);
