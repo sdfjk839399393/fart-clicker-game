@@ -242,86 +242,40 @@ function sfxRare(tier) {
 }
 
 
-// ---------- AMBIENT tracks (soft, varied feel per world) ----------
-const TRACKS = [
-    { name: "Drifting Mist",   bpm: 72,  voice: "pad",    // world 0 - dreamy
-      kick: [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0],
-      hat:  [0,0,1,0, 0,0,1,0, 0,0,1,0, 0,0,1,0],
-      bell: [0,null,null,7, null,5,null,null, 3,null,null,5, null,null,7,null],
-      bass: [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0] },
-    { name: "Sewer Vibes",     bpm: 80,  voice: "marimba", // world 1 - bouncy
-      kick: [1,0,0,0, 0,0,1,0, 1,0,0,0, 0,0,1,0],
-      hat:  [0,1,0,1, 0,1,0,1, 0,1,0,1, 0,1,0,1],
-      bell: [5,null,3,null, 0,null,3,null, 5,null,7,null, 5,null,3,null],
-      bass: [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,1] },
-    { name: "Toilet Lounge",   bpm: 90,  voice: "ep",     // world 2 - lo-fi
-      kick: [1,0,0,1, 0,0,1,0, 1,0,0,0, 0,1,0,0],
-      hat:  [1,0,1,0, 1,0,1,0, 1,0,1,0, 1,0,1,1],
-      bell: [0,null,3,null, 5,3,null,null, 7,null,5,null, 3,null,null,0],
-      bass: [1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,0,0] },
-    { name: "Rizz Waltz",      bpm: 78,  voice: "chime",  // world 3 - chill
-      kick: [1,0,0,0, 0,0,0,0, 0,0,1,0, 0,0,0,0],
-      hat:  [0,0,1,0, 0,0,0,0, 0,0,1,0, 0,0,1,0],
-      bell: [7,null,null,10, null,7,null,5, 3,null,null,7, null,5,null,null],
-      bass: [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0] },
-    { name: "Ohio Breeze",     bpm: 68,  voice: "pad",    // world 4 - slow dreamy
-      kick: [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0],
-      hat:  [0,0,0,1, 0,0,0,1, 0,0,0,1, 0,0,1,0],
-      bell: [0,null,null,null, 5,null,null,null, 3,null,null,null, 7,null,null,null],
-      bass: [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0] },
-    { name: "Starfield",       bpm: 75,  voice: "ep",     // world 5 - space ambient
-      kick: [1,0,0,0, 0,0,0,0, 0,0,1,0, 0,0,0,0],
-      hat:  [0,0,0,1, 0,0,1,0, 0,0,0,1, 0,1,0,0],
-      bell: [12,null,null,10, null,null,7,null, 5,null,null,7, null,10,null,null],
-      bass: [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0] },
-    { name: "Canyon Winds",    bpm: 82,  voice: "marimba", // world 6 - warm
-      kick: [1,0,0,0, 0,1,0,0, 1,0,0,0, 0,1,0,0],
-      hat:  [0,1,0,1, 0,1,0,1, 0,1,0,1, 0,1,1,0],
-      bell: [5,null,7,null, 10,null,7,null, 5,null,3,null, 0,null,3,null],
-      bass: [1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,0,0] },
-    { name: "Ember Glow",      bpm: 70,  voice: "chime",  // world 7 - dark ambient
-      kick: [1,0,0,0, 0,0,1,0, 0,0,1,0, 0,0,0,0],
-      hat:  [0,0,1,0, 0,0,1,0, 0,0,1,0, 0,0,0,1],
-      bell: [0,null,null,3, null,null,5,null, 7,null,null,5, null,3,null,null],
-      bass: [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0] }
-];
-
-const PHONK = { idx: 0, step: 0, timer: null, playing: false, bars: 0 };
+// ============================================================
+//  GENERATIVE MUSIC ENGINE — one unique evolving song per world
+//  Each song has: intro → verse → chorus → bridge → chorus → outro
+//  Total ~3 min, loops seamlessly. 20 world songs.
+// ============================================================
 function midiHz(s) { return 220 * Math.pow(2, s / 12); }
 
-function phonkKick(ctx, t) {
-    // Soft low thud instead of punchy kick
-    const m = ensureMaster();
-    const o = ctx.createOscillator(), g = ctx.createGain();
-    o.type = "sine"; o.frequency.setValueAtTime(90, t);
-    o.frequency.exponentialRampToValueAtTime(42, t + 0.18);
-    g.gain.setValueAtTime(0.35 * game.settings.musicVol, t);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.32);
-    o.connect(g); g.connect(m || ctx.destination); o.start(t); o.stop(t + 0.35);
+// ---------- Master audio bus ----------
+let masterGain = null, reverbNode = null, reverbSend = null;
+function ensureMaster() {
+    const ctx = getCtx(); if (!ctx) return null;
+    if (masterGain) return masterGain;
+    masterGain = ctx.createGain(); masterGain.gain.value = 0.72;
+    const warm = ctx.createBiquadFilter(); warm.type = "lowpass"; warm.frequency.value = 5200; warm.Q.value = 0.5;
+    const comp = ctx.createDynamicsCompressor();
+    comp.threshold.value = -20; comp.knee.value = 30; comp.ratio.value = 3;
+    comp.attack.value = 0.006; comp.release.value = 0.25;
+    masterGain.connect(warm); warm.connect(comp); comp.connect(ctx.destination);
+    try {
+        reverbNode = ctx.createConvolver();
+        const len = ctx.sampleRate * 2.8, buf = ctx.createBuffer(2, len, ctx.sampleRate);
+        for (let ch = 0; ch < 2; ch++) {
+            const d = buf.getChannelData(ch);
+            for (let i = 0; i < len; i++) d[i] = (Math.random()*2-1) * Math.pow(1 - i/len, 2.2);
+        }
+        reverbNode.buffer = buf;
+        reverbSend = ctx.createGain(); reverbSend.gain.value = 0.38;
+        reverbSend.connect(reverbNode); reverbNode.connect(masterGain);
+    } catch(e) { reverbNode = null; }
+    return masterGain;
 }
-function phonkHat(ctx, t) {
-    // Very quiet shaker-style brush
-    const m = ensureMaster();
-    const s = ctx.createBufferSource(), g = ctx.createGain(), f = ctx.createBiquadFilter();
-    s.buffer = getNoise(ctx); f.type = "bandpass"; f.frequency.value = 6000; f.Q.value = 3;
-    g.gain.setValueAtTime(0.03 * game.settings.musicVol, t);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
-    s.connect(f); f.connect(g); g.connect(m || ctx.destination); s.start(t); s.stop(t + 0.07);
-}
-function phonkBell(ctx, t, semi, wave) { phonkLead(ctx, t, semi, wave); }
-function phonk808(ctx, t, semi) {
-    // Warm sub bass, very mellow
-    const m = ensureMaster();
-    const o = ctx.createOscillator(), g = ctx.createGain(), f = ctx.createBiquadFilter();
-    f.type = "lowpass"; f.frequency.value = 400;
-    o.type = "sine"; o.frequency.setValueAtTime(midiHz(semi - 12), t);
-    g.gain.setValueAtTime(0.30 * game.settings.musicVol, t);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.7);
-    o.connect(f); f.connect(g); g.connect(m || ctx.destination); o.start(t); o.stop(t + 0.72);
-}
+function routeWet(node) { if (reverbSend) node.connect(reverbSend); }
 
-
-// ---------- Ambient instrument voices ----------
+// ---------- Envelope helper ----------
 function vEnv(ctx, peak, atk, dec, t) {
     const g = ctx.createGain();
     g.gain.setValueAtTime(0.0001, t);
@@ -329,145 +283,378 @@ function vEnv(ctx, peak, atk, dec, t) {
     g.gain.exponentialRampToValueAtTime(0.0001, t + atk + dec);
     return g;
 }
-// Soft pad: sine stack with slow attack, gentle release
+
+// ---------- Instrument voices ----------
 function vPad(ctx, t, freq, vol, master) {
-    const g = vEnv(ctx, vol * 0.7, 0.12, 1.2, t);
-    [1, 2, 3].forEach((h, i) => {
+    const g = vEnv(ctx, vol * 0.65, 0.14, 1.4, t);
+    [1,2,3].forEach((h,i) => {
         const o = ctx.createOscillator(); o.type = "sine";
-        o.frequency.value = freq * h; o.detune.value = (i % 2 === 0 ? 3 : -3);
-        const hg = ctx.createGain(); hg.gain.value = 1 / (i * 2 + 1);
-        o.connect(hg); hg.connect(g); o.start(t); o.stop(t + 1.4);
+        o.frequency.value = freq * h; o.detune.value = (i%2===0?4:-4);
+        const hg = ctx.createGain(); hg.gain.value = 1/(i*2+1);
+        o.connect(hg); hg.connect(g); o.start(t); o.stop(t+1.6);
     });
     g.connect(master); routeWet(g);
 }
-// Marimba/vibes: sine with tight percussive decay
 function vMarimba(ctx, t, freq, vol, master) {
-    const g = vEnv(ctx, vol, 0.002, 0.45, t);
+    const g = vEnv(ctx, vol, 0.002, 0.5, t);
     const o = ctx.createOscillator(); o.type = "sine"; o.frequency.value = freq;
-    // add a faint 4th harmonic for marimba colour
-    const o2 = ctx.createOscillator(); o2.type = "sine"; o2.frequency.value = freq * 4;
-    const g2 = ctx.createGain(); g2.gain.value = 0.08;
-    o2.connect(g2); g2.connect(g);
+    const o2 = ctx.createOscillator(); o2.type = "sine"; o2.frequency.value = freq*4;
+    const g2 = ctx.createGain(); g2.gain.value = 0.07; o2.connect(g2); g2.connect(g);
     o.connect(g); g.connect(master); routeWet(g);
-    o.start(t); o2.start(t); o.stop(t + 0.5); o2.stop(t + 0.5);
+    o.start(t); o2.start(t); o.stop(t+0.55); o2.stop(t+0.55);
 }
-// Electric piano: FM sine pair (soft, warm)
 function vEP(ctx, t, freq, vol, master) {
     const car = ctx.createOscillator(); car.type = "sine"; car.frequency.value = freq;
-    const mod = ctx.createOscillator(); mod.type = "sine"; mod.frequency.value = freq * 1.999;
+    const mod = ctx.createOscillator(); mod.type = "sine"; mod.frequency.value = freq*1.999;
     const mg = ctx.createGain();
-    mg.gain.setValueAtTime(freq * 1.2, t);
-    mg.gain.exponentialRampToValueAtTime(0.5, t + 0.4);
+    mg.gain.setValueAtTime(freq*1.1, t); mg.gain.exponentialRampToValueAtTime(0.4, t+0.45);
     mod.connect(mg); mg.connect(car.frequency);
-    const g = vEnv(ctx, vol, 0.005, 0.7, t);
+    const g = vEnv(ctx, vol, 0.005, 0.75, t);
     car.connect(g); g.connect(master); routeWet(g);
-    mod.start(t); car.start(t); mod.stop(t + 0.8); car.stop(t + 0.8);
+    mod.start(t); car.start(t); mod.stop(t+0.85); car.stop(t+0.85);
 }
-// Chime: triangle with high shimmer overtone, long tail
 function vChime(ctx, t, freq, vol, master) {
-    const g = vEnv(ctx, vol * 0.8, 0.002, 1.0, t);
+    const g = vEnv(ctx, vol*0.8, 0.002, 1.1, t);
     const o = ctx.createOscillator(); o.type = "triangle"; o.frequency.value = freq;
-    const o2 = ctx.createOscillator(); o2.type = "sine"; o2.frequency.value = freq * 5.1;
-    const g2 = ctx.createGain(); g2.gain.value = 0.12;
-    o2.connect(g2); g2.connect(g);
+    const o2 = ctx.createOscillator(); o2.type = "sine"; o2.frequency.value = freq*5.1;
+    const g2 = ctx.createGain(); g2.gain.value = 0.11; o2.connect(g2); g2.connect(g);
     o.connect(g); g.connect(master); routeWet(g);
-    o.start(t); o2.start(t); o.stop(t + 1.1); o2.stop(t + 1.1);
+    o.start(t); o2.start(t); o.stop(t+1.2); o2.stop(t+1.2);
+}
+function vBass(ctx, t, freq, vol, master) {
+    const o = ctx.createOscillator(); o.type = "sine"; o.frequency.value = freq;
+    const f = ctx.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = 380;
+    const g = vEnv(ctx, vol, 0.005, 0.65, t);
+    o.connect(f); f.connect(g); g.connect(master);
+    o.start(t); o.stop(t+0.7);
+}
+function vKick(ctx, t, vol) {
+    const m = ensureMaster();
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = "sine"; o.frequency.setValueAtTime(88, t);
+    o.frequency.exponentialRampToValueAtTime(40, t+0.2);
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.001, t+0.3);
+    o.connect(g); g.connect(m||ctx.destination); o.start(t); o.stop(t+0.32);
+}
+function vHat(ctx, t, vol) {
+    const m = ensureMaster();
+    const s = ctx.createBufferSource(), g = ctx.createGain(), f = ctx.createBiquadFilter();
+    s.buffer = getNoise(ctx); f.type = "bandpass"; f.frequency.value = 7000; f.Q.value = 2.5;
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.001, t+0.06);
+    s.connect(f); f.connect(g); g.connect(m||ctx.destination); s.start(t); s.stop(t+0.07);
 }
 
-function phonkLead(ctx, t, semi) {
-    const master = ensureMaster(); if (!master) return;
-    const tr = TRACKS[PHONK.idx % TRACKS.length];
-    const freq = midiHz(semi + 12);
-    const vol = 0.10 * game.settings.musicVol;
-    switch (tr.voice) {
-        case "marimba": vMarimba(ctx, t, freq, vol, master); break;
-        case "ep":      vEP(ctx, t, freq, vol, master); break;
-        case "chime":   vChime(ctx, t, freq, vol * 1.1, master); break;
-        default:        vPad(ctx, t, freq, vol * 0.9, master);
+// ---------- 20 world song definitions ----------
+// Each song: bpm, key (semitones from A2), voice, and 4 melody sections
+// (intro=sparse, verse=melodic, chorus=full+energetic, bridge=different chord feel)
+// Chord prog rotates through sections. Melodies are 16-step arrays (null=rest).
+const WORLD_SONGS = [
+    { name:"Basement Dreams",    bpm:70,  key:0,  voice:"pad",
+      progs:[[0,-3,5,-2],[0,-3,5,-2],[0,2,-3,5],[5,-2,0,-3]],
+      melodies:[
+        [0,null,null,7,null,5,null,null,3,null,null,5,null,null,7,null],  // intro
+        [0,null,3,null,5,3,null,7,5,null,3,null,0,null,null,null],        // verse
+        [7,7,null,5,3,null,5,7,10,null,7,5,3,null,5,null],               // chorus
+        [null,3,null,null,7,null,5,null,null,3,5,null,7,null,null,3]      // bridge
+      ],
+      kicks:[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
+      hats:[0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0] },
+    { name:"Sewer Groove",       bpm:82,  key:-2, voice:"marimba",
+      progs:[[0,-2,3,-5],[0,-2,3,-5],[3,-5,0,-2],[-2,0,-5,3]],
+      melodies:[
+        [5,null,3,null,0,null,3,null,5,null,7,null,5,null,3,null],
+        [0,3,5,null,7,5,3,null,0,3,5,7,null,5,3,null],
+        [7,null,7,5,3,5,7,null,10,7,5,null,3,5,7,null],
+        [3,null,5,null,7,null,5,3,0,null,3,null,5,null,null,3]
+      ],
+      kicks:[1,0,0,0,0,0,1,0,1,0,0,0,0,0,1,0],
+      hats:[0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0] },
+    { name:"Toilet Lounge",      bpm:88,  key:3,  voice:"ep",
+      progs:[[0,-3,5,-2],[0,-3,5,3],[2,-3,0,5],[-3,5,-2,0]],
+      melodies:[
+        [0,null,3,null,5,3,null,null,7,null,5,null,3,null,null,0],
+        [5,3,null,7,5,3,null,5,7,null,5,3,0,null,3,null],
+        [7,null,10,null,7,5,null,7,10,null,12,10,7,null,5,null],
+        [3,5,null,3,0,null,3,5,7,null,5,null,3,null,null,null]
+      ],
+      kicks:[1,0,0,1,0,0,1,0,1,0,0,1,0,0,1,0],
+      hats:[1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1] },
+    { name:"Rizz Waltz",         bpm:76,  key:-5, voice:"chime",
+      progs:[[0,3,-2,5],[0,3,-2,5],[5,-2,3,0],[-2,5,0,3]],
+      melodies:[
+        [7,null,null,10,null,7,null,5,3,null,null,7,null,5,null,null],
+        [5,7,null,10,7,null,5,3,null,5,7,null,10,null,7,null],
+        [10,null,12,null,10,7,null,10,12,null,10,7,5,null,7,null],
+        [3,null,5,null,7,5,null,3,0,null,3,5,null,7,null,5]
+      ],
+      kicks:[1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
+      hats:[0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0] },
+    { name:"Ohio Breeze",        bpm:66,  key:5,  voice:"pad",
+      progs:[[0,-2,3,5],[0,-2,3,5],[3,5,-2,0],[5,0,-2,3]],
+      melodies:[
+        [0,null,null,null,5,null,null,null,3,null,null,null,7,null,null,null],
+        [0,null,3,null,5,null,7,null,5,null,3,null,0,null,null,null],
+        [7,null,5,null,3,5,7,null,10,null,7,5,3,null,5,null],
+        [null,3,null,null,7,null,null,5,null,3,null,null,0,null,null,null]
+      ],
+      kicks:[1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
+      hats:[0,0,0,1,0,0,0,1,0,0,0,1,0,0,1,0] },
+    { name:"Starfield",          bpm:72,  key:-4, voice:"ep",
+      progs:[[0,5,-2,3],[0,5,-2,3],[-2,3,5,0],[3,-2,0,5]],
+      melodies:[
+        [12,null,null,10,null,null,7,null,5,null,null,7,null,10,null,null],
+        [5,null,7,null,10,7,null,5,3,null,5,null,7,null,10,null],
+        [12,10,null,7,null,10,12,null,14,null,12,10,7,null,10,null],
+        [7,null,null,5,3,null,null,5,7,null,null,10,null,7,null,null]
+      ],
+      kicks:[1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
+      hats:[0,0,0,1,0,0,1,0,0,0,0,1,0,1,0,0] },
+    { name:"Canyon Winds",       bpm:80,  key:2,  voice:"marimba",
+      progs:[[0,-2,5,3],[0,-2,5,3],[5,3,-2,0],[3,0,-2,5]],
+      melodies:[
+        [5,null,7,null,10,null,7,null,5,null,3,null,0,null,3,null],
+        [0,3,5,null,7,5,3,5,7,null,5,3,0,null,3,null],
+        [10,null,10,7,5,null,7,10,12,null,10,7,5,7,null,null],
+        [3,5,null,7,null,5,3,null,0,3,null,5,7,null,null,5]
+      ],
+      kicks:[1,0,0,0,0,1,0,0,1,0,0,0,0,1,0,0],
+      hats:[0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0] },
+    { name:"Ember Glow",         bpm:68,  key:-7, voice:"chime",
+      progs:[[0,-3,5,-2],[0,-3,2,-5],[5,-2,-3,0],[-2,0,-5,3]],
+      melodies:[
+        [0,null,null,3,null,null,5,null,7,null,null,5,null,3,null,null],
+        [3,null,5,null,7,5,null,3,0,null,3,null,5,null,7,null],
+        [7,5,null,7,10,null,7,5,3,null,5,7,null,10,null,7],
+        [null,3,5,null,7,null,5,3,null,0,null,3,5,null,null,null]
+      ],
+      kicks:[1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0],
+      hats:[0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1] },
+    { name:"Sigma Pulse",        bpm:90,  key:7,  voice:"ep",
+      progs:[[0,2,-3,5],[0,2,-3,5],[-3,5,2,0],[2,0,5,-3]],
+      melodies:[
+        [0,null,3,null,5,null,3,null,0,null,3,null,5,null,7,null],
+        [5,null,7,null,5,3,null,5,7,null,5,3,0,3,null,null],
+        [7,7,null,10,null,7,5,null,7,10,null,12,10,null,7,null],
+        [3,5,null,7,5,null,3,null,0,null,3,5,null,null,null,3]
+      ],
+      kicks:[1,0,1,0,0,1,0,0,1,0,1,0,0,1,0,0],
+      hats:[1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1] },
+    { name:"Dimension Drift",    bpm:74,  key:1,  voice:"pad",
+      progs:[[0,3,5,-2],[0,3,5,-2],[5,-2,0,3],[-2,5,3,0]],
+      melodies:[
+        [7,null,null,5,null,null,3,null,null,5,null,null,7,null,null,null],
+        [0,null,3,5,null,7,5,null,3,null,5,7,null,null,5,null],
+        [10,null,7,null,5,7,10,null,12,null,10,7,5,null,7,null],
+        [5,null,null,3,null,0,null,3,5,null,null,7,null,5,null,null]
+      ],
+      kicks:[1,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0],
+      hats:[0,0,1,0,0,1,0,0,0,0,1,0,0,1,0,0] },
+    { name:"Quantum Flow",       bpm:78,  key:-1, voice:"chime",
+      progs:[[0,-2,3,-5],[0,-2,3,-5],[-5,3,-2,0],[3,0,-5,-2]],
+      melodies:[
+        [5,null,3,null,0,null,null,3,5,null,7,null,null,5,null,null],
+        [0,3,null,5,7,null,5,3,null,0,3,null,5,null,7,null],
+        [7,null,10,null,12,10,null,7,5,null,7,10,null,12,null,10],
+        [3,null,5,null,7,null,5,null,3,null,0,null,3,5,null,null]
+      ],
+      kicks:[1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0],
+      hats:[0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0] },
+    { name:"Grimace Wave",       bpm:84,  key:4,  voice:"ep",
+      progs:[[0,3,-3,5],[0,3,-3,5],[3,5,0,-3],[-3,0,5,3]],
+      melodies:[
+        [0,null,3,null,7,null,5,null,3,null,0,null,null,3,null,null],
+        [5,3,null,5,7,null,10,7,null,5,3,null,0,null,3,null],
+        [10,null,12,null,10,7,null,10,12,14,null,12,10,null,7,null],
+        [7,null,5,3,null,5,7,null,5,null,3,null,0,null,null,null]
+      ],
+      kicks:[1,0,0,1,0,0,1,0,1,0,0,1,0,0,1,0],
+      hats:[0,1,0,1,1,0,1,0,0,1,0,1,1,0,1,1] },
+    { name:"Mewing Clouds",      bpm:65,  key:-3, voice:"pad",
+      progs:[[0,-2,5,3],[0,-2,5,3],[5,3,-2,0],[3,-2,0,5]],
+      melodies:[
+        [null,null,7,null,null,null,5,null,null,null,3,null,null,null,5,null],
+        [0,null,null,3,null,5,null,7,null,5,null,3,null,null,null,null],
+        [7,null,5,null,7,null,10,null,7,null,5,null,3,null,5,null],
+        [null,5,null,null,7,null,null,5,null,3,null,null,0,null,null,null]
+      ],
+      kicks:[1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0],
+      hats:[0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1] },
+    { name:"Inferno March",      bpm:92,  key:6,  voice:"marimba",
+      progs:[[0,-3,2,-5],[0,-3,2,-5],[2,-5,-3,0],[-5,2,0,-3]],
+      melodies:[
+        [0,null,3,null,5,null,3,null,0,null,3,null,5,3,null,null],
+        [5,3,5,null,7,5,3,null,5,7,null,10,7,null,5,null],
+        [10,7,null,10,12,null,10,7,5,null,7,10,null,12,null,10],
+        [3,null,5,3,null,0,null,3,5,null,7,null,5,3,null,null]
+      ],
+      kicks:[1,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0],
+      hats:[1,1,0,1,1,1,0,1,1,1,0,1,1,1,1,0] },
+    { name:"Crystal Bells",      bpm:72,  key:-6, voice:"chime",
+      progs:[[0,3,-2,5],[0,3,-2,5],[3,5,-2,0],[-2,0,5,3]],
+      melodies:[
+        [7,null,null,5,null,null,3,null,5,null,null,7,null,null,null,null],
+        [3,null,5,null,7,null,10,null,7,5,null,3,null,5,null,null],
+        [10,null,12,null,14,12,null,10,7,null,10,null,12,null,null,10],
+        [5,null,7,null,5,3,null,5,7,null,null,5,3,null,null,null]
+      ],
+      kicks:[1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
+      hats:[0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0] },
+    { name:"Mirror Echo",        bpm:76,  key:8,  voice:"ep",
+      progs:[[0,5,2,-3],[0,5,2,-3],[2,-3,5,0],[-3,2,0,5]],
+      melodies:[
+        [0,null,null,5,null,null,0,null,null,7,null,null,5,null,null,null],
+        [5,null,7,null,5,3,null,0,null,3,5,null,7,null,null,5],
+        [7,10,null,12,null,10,7,null,5,7,null,10,12,null,10,null],
+        [3,null,0,null,3,5,null,7,null,5,null,3,null,null,null,null]
+      ],
+      kicks:[1,0,0,0,0,1,0,0,1,0,0,0,0,1,0,0],
+      hats:[0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0] },
+    { name:"Galactic Drift",     bpm:68,  key:-8, voice:"pad",
+      progs:[[0,-2,3,5],[0,-2,3,5],[3,5,-2,0],[5,0,3,-2]],
+      melodies:[
+        [12,null,null,null,10,null,null,null,7,null,null,null,5,null,null,null],
+        [5,null,7,null,10,null,7,null,5,null,3,null,5,null,7,null],
+        [10,null,12,null,14,null,12,10,7,null,10,12,null,14,null,12],
+        [7,null,null,5,null,null,3,null,5,null,null,7,null,null,null,null]
+      ],
+      kicks:[1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
+      hats:[0,0,0,1,0,0,0,1,0,0,0,1,0,0,1,0] },
+    { name:"Time Spiral",        bpm:80,  key:2,  voice:"chime",
+      progs:[[0,3,-5,2],[0,3,-5,2],[-5,2,3,0],[2,-5,0,3]],
+      melodies:[
+        [0,null,3,null,null,5,null,null,7,null,5,null,null,3,null,null],
+        [3,5,null,7,null,5,3,null,0,null,3,5,7,null,null,5],
+        [7,null,10,null,12,null,10,7,5,7,null,10,null,12,null,10],
+        [5,null,null,3,null,0,null,null,3,null,5,null,null,7,null,null]
+      ],
+      kicks:[1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0],
+      hats:[0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1] },
+    { name:"Gigachad Anthem",    bpm:94,  key:-4, voice:"ep",
+      progs:[[0,2,-3,5],[0,2,-3,5],[5,-3,2,0],[2,0,5,-3]],
+      melodies:[
+        [0,null,3,null,5,3,null,0,null,3,null,5,7,null,null,null],
+        [5,3,5,7,null,10,7,null,5,null,3,5,7,null,null,5],
+        [10,10,null,12,null,10,7,null,10,12,null,14,12,null,10,null],
+        [7,null,5,null,3,5,null,7,null,5,3,null,0,null,null,null]
+      ],
+      kicks:[1,0,1,0,0,1,0,0,1,0,1,0,0,1,0,0],
+      hats:[1,0,1,1,0,1,1,0,1,0,1,1,0,1,1,1] },
+    { name:"Final Stench",       bpm:88,  key:5,  voice:"marimba",
+      progs:[[0,-2,5,3],[2,-5,0,3],[5,3,-2,0],[0,5,2,-3]],
+      melodies:[
+        [0,3,null,5,null,7,null,5,3,null,5,null,7,null,null,null],
+        [5,null,7,null,10,7,null,5,3,5,null,7,null,10,null,7],
+        [12,null,10,null,12,14,null,12,10,null,12,null,14,12,null,10],
+        [7,null,5,3,null,5,7,null,5,null,3,null,0,null,3,null]
+      ],
+      kicks:[1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
+      hats:[1,1,0,1,1,1,0,1,1,1,0,1,1,0,1,1] }
+];
+
+// ---------- Section structure (bars per section, repeating song form) ----------
+// Form: intro(4) → verse(8) → chorus(8) → verse(8) → bridge(4) → chorus(8) → outro(4) = 44 bars ~3min
+const SONG_FORM = [
+    { section: 0, bars: 4  },  // intro  (sparse melody 0)
+    { section: 1, bars: 8  },  // verse  (melody 1, light drums)
+    { section: 2, bars: 8  },  // chorus (melody 2, full drums)
+    { section: 1, bars: 8  },  // verse2 (melody 1)
+    { section: 3, bars: 4  },  // bridge (melody 3, minimal drums)
+    { section: 2, bars: 8  },  // chorus2(melody 2, full drums)
+    { section: 0, bars: 4  },  // outro  (melody 0, fade)
+]; // total 44 bars, then loops
+
+const PHONK = { idx: 0, step: 0, timer: null, playing: false, bars: 0, formIdx: 0, formBar: 0 };
+
+function getSong() { return WORLD_SONGS[game.worldIdx % WORLD_SONGS.length]; }
+
+function currentSection() {
+    let bar = PHONK.bars % 44;
+    let acc = 0;
+    for (let i = 0; i < SONG_FORM.length; i++) {
+        acc += SONG_FORM[i].bars;
+        if (bar < acc) return SONG_FORM[i];
     }
-}
-// Lush ambient pad chord (slow, soft)
-function phonkPad(ctx, t, root) {
-    const master = ensureMaster(); if (!master) return;
-    const f = ctx.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = 1800; f.Q.value = 0.5;
-    const g = ctx.createGain();
-    g.gain.setValueAtTime(0.0001, t);
-    g.gain.linearRampToValueAtTime(0.030 * game.settings.musicVol, t + 0.8);
-    g.gain.linearRampToValueAtTime(0.0001, t + 2.4);
-    [0, 4, 7, 11, 12].forEach(iv => {
-        const o = ctx.createOscillator(); o.type = "sine";
-        o.frequency.value = midiHz(root + iv - 12);
-        o.detune.value = (Math.random() * 6 - 3);
-        o.connect(f); o.start(t); o.stop(t + 2.5);
-    });
-    f.connect(g); g.connect(master); routeWet(g);
+    return SONG_FORM[0];
 }
 
-
-// ---------- Master audio bus: warm filter + compressor + reverb ----------
-let masterGain = null, reverbNode = null, reverbSend = null;
-function ensureMaster() {
-    const ctx = getCtx(); if (!ctx) return null;
-    if (masterGain) return masterGain;
-    masterGain = ctx.createGain(); masterGain.gain.value = 0.75;
-    const warm = ctx.createBiquadFilter(); warm.type = "lowpass"; warm.frequency.value = 5000; warm.Q.value = 0.5;
-    const comp = ctx.createDynamicsCompressor();
-    comp.threshold.value = -20; comp.knee.value = 30; comp.ratio.value = 3;
-    comp.attack.value = 0.006; comp.release.value = 0.25;
-    masterGain.connect(warm); warm.connect(comp); comp.connect(ctx.destination);
-    try {
-        reverbNode = ctx.createConvolver();
-        const len = ctx.sampleRate * 2.5, buf = ctx.createBuffer(2, len, ctx.sampleRate);
-        for (let ch = 0; ch < 2; ch++) {
-            const d = buf.getChannelData(ch);
-            for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.5);
-        }
-        reverbNode.buffer = buf;
-        reverbSend = ctx.createGain(); reverbSend.gain.value = 0.35;
-        reverbSend.connect(reverbNode); reverbNode.connect(masterGain);
-    } catch (e) { reverbNode = null; }
-    return masterGain;
-}
-function routeWet(node) { if (reverbSend) node.connect(reverbSend); }
-
-// ---------- sequencer + track rotation ----------
-// ambient chord movement (major/minor feels)
-const PROG = [0, -3, 5, -2];
 function phonkTick() {
     const ctx = getCtx(); if (!ctx) return;
-    const tr = TRACKS[PHONK.idx % TRACKS.length];
+    const song = getSong();
     const t = ctx.currentTime + 0.02;
     const s = PHONK.step % 16;
-    const key = worldKey();
-    const barRoot = PROG[PHONK.bars % PROG.length] + key;
-    if (s === 0) phonkPad(ctx, t, barRoot);
-    if (tr.kick[s]) phonkKick(ctx, t);
-    if (tr.hat[s]) phonkHat(ctx, t);
-    const bn = tr.bell[s];
-    if (bn !== null && bn !== undefined) phonkLead(ctx, t, bn + barRoot);
-    if (tr.bass[s]) phonk808(ctx, t, barRoot);
+    const sec = currentSection();
+    const secIdx = sec.section;
+
+    // chord root: pick from song's progression for current section
+    const prog = song.progs[secIdx] || song.progs[0];
+    const barInSec = PHONK.bars % prog.length;
+    const root = prog[barInSec] + song.key;
+
+    // pad chord every bar start
+    if (s === 0) {
+        const master = ensureMaster(); if (master) {
+            const f = ctx.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = 1900; f.Q.value = 0.5;
+            const g = ctx.createGain();
+            g.gain.setValueAtTime(0.0001, t);
+            g.gain.linearRampToValueAtTime(0.028 * game.settings.musicVol, t + 0.9);
+            g.gain.linearRampToValueAtTime(0.0001, t + 2.3);
+            [0, 4, 7, 11, 12].forEach(iv => {
+                const o = ctx.createOscillator(); o.type = "sine";
+                o.frequency.value = midiHz(root + iv - 12); o.detune.value = Math.random()*6-3;
+                o.connect(f); o.start(t); o.stop(t+2.4);
+            });
+            f.connect(g); g.connect(master); routeWet(g);
+        }
+    }
+
+    // drums — chorus sections (2) get full kit, bridge/intro get sparse
+    const drumVol = game.settings.musicVol;
+    const fullDrums = secIdx === 2;
+    const noDrums   = secIdx === 0;
+    if (!noDrums && song.kicks[s]) vKick(ctx, t, 0.32 * drumVol);
+    if (!noDrums && song.hats[s] && (fullDrums || Math.random() < 0.55)) vHat(ctx, t, 0.028 * drumVol);
+
+    // melody
+    const mel = song.melodies[secIdx] || song.melodies[0];
+    const note = mel[s];
+    if (note !== null && note !== undefined) {
+        const freq = midiHz(note + root + 12);
+        const vol = 0.10 * game.settings.musicVol;
+        const master = ensureMaster(); if (master) {
+            switch (song.voice) {
+                case "marimba": vMarimba(ctx, t, freq, vol, master); break;
+                case "ep":      vEP(ctx, t, freq, vol, master); break;
+                case "chime":   vChime(ctx, t, freq, vol*1.1, master); break;
+                default:        vPad(ctx, t, freq, vol*0.85, master);
+            }
+        }
+    }
+
+    // bass on beat 1 and 3 of bar
+    if (s === 0 || s === 8) {
+        const master = ensureMaster(); if (master)
+            vBass(ctx, t, midiHz(root - 12), 0.28 * drumVol, master);
+    }
+
     PHONK.step++;
     if (PHONK.step % 16 === 0) PHONK.bars++;
 }
-// each world has its own track + musical key so it sounds different
-function worldTrackIdx() { return (game.worldIdx || 0) % TRACKS.length; }
-function worldKey() {
-    const keys = [0,-2,3,-5,5,-4,2,-7,7,1,-1,4,-3,6,-6,8,-8,2,-4,5];
-    return keys[(game.worldIdx || 0) % keys.length] || 0;
-}
+
+function worldTrackIdx() { return game.worldIdx % WORLD_SONGS.length; }
+function worldKey() { return getSong().key; }
 function announceTrack() {
-    const tr = TRACKS[PHONK.idx % TRACKS.length];
+    const song = getSong();
     const el = document.getElementById("now-playing");
-    if (el) el.textContent = "♪ " + tr.name;
+    if (el) el.textContent = "♪ " + song.name;
 }
-function curStepMs() { return (60000 / TRACKS[PHONK.idx % TRACKS.length].bpm) / 2; }
+function curStepMs() { return (60000 / getSong().bpm) / 4; }
 
 function startMusic() {
     if (PHONK.playing || !game.settings.musicOn) return;
     const ctx = getCtx(); if (!ctx) return;
     ensureMaster();
     PHONK.playing = true;
-    PHONK.idx = worldTrackIdx();
+    PHONK.step = 0; PHONK.bars = 0;
     announceTrack();
     const loop = () => {
         if (!PHONK.playing) return;
@@ -478,8 +665,8 @@ function startMusic() {
 }
 function stopMusic() { PHONK.playing = false; if (PHONK.timer) { clearTimeout(PHONK.timer); PHONK.timer = null; } }
 function skipTrack() {
-    PHONK.idx = (PHONK.idx + 1) % TRACKS.length; PHONK.step = 0; announceTrack();
-    if (!PHONK.playing && game.settings.musicOn) startMusic();
+    stopMusic();
+    setTimeout(() => { if (game.settings.musicOn) startMusic(); }, 80);
 }
 
 
