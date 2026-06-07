@@ -7,6 +7,16 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Animated Background -->
+    <div id="animated-bg"></div>
+    <div id="particle-overlay"></div>
+
+    <!-- Audio Elements -->
+    <audio id="click-sound" preload="auto"></audio>
+    <audio id="purchase-sound" preload="auto"></audio>
+    <audio id="rebirth-sound" preload="auto"></audio>
+    <audio id="bg-music" loop preload="auto"></audio>
+
     <div id="game-container">
         <div class="header">
             <h1>☢️ FART CLICKER</h1>
@@ -54,9 +64,8 @@
     <div id="egg-modal" class="modal hidden">
         <div class="modal-content egg-modal">
             <button class="close-btn" onclick="closeEggModal()">&times;</button>
-            <h2>🥚 Hatch Egg</h2>
-            <div id="egg-odds"></div>
-            <button class="modal-btn" onclick="hatchEgg()">Hatch Egg (Cost: <span id="egg-cost">500</span>)</button>
+            <h2>🥚 Select Egg</h2>
+            <div id="egg-selection"></div>
         </div>
     </div>
 
