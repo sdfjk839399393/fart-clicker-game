@@ -1,23 +1,46 @@
+let game = { points: 0, mult: 1, rebirths: 0, upgrades: [0, 0], pets: [] };
 
-let points = 0;
-let multiplier = 1.0;
+// Load save
+if(localStorage.getItem('fartSave')) game = JSON.parse(localStorage.getItem('fartSave'));
 
-document.getElementById('main-fart-btn').addEventListener('click', () => {
-    points += 1 * multiplier;
-    document.getElementById('points').innerText = Math.floor(points);
-});
-
-function showTab(tabName) {
-    document.querySelectorAll('.tab').forEach(t => t.style.display = 'none');
-    document.getElementById(tabName + '-tab').style.display = 'block';
+function update() {
+    document.getElementById('points').innerText = Math.floor(game.points);
+    document.getElementById('mult').innerText = game.mult;
+    document.getElementById('rebirths').innerText = game.rebirths;
+    localStorage.setItem('fartSave', JSON.stringify(game));
 }
 
-// Simple Mock Leaderboard logic (would require a backend in production)
-const mockLeaderboard = [
-    {name: "SigmaGamer", score: "999B"},
-    {name: "FartMaster", score: "500B"},
-    {name: "User123", score: "100B"}
-];
+document.getElementById('main-btn').addEventListener('click', () => {
+    game.points += 1 * game.mult;
+    update();
+});
 
-const list = document.getElementById('leaderboard-list');
-list.innerHTML = mockLeaderboard.map(u => `<li>${u.name}: ${u.score}</li>`).join('');
+function buyUpgrade(idx, cost) {
+    if (game.points >= cost) {
+        game.points -= cost;
+        game.upgrades[idx]++;
+        update();
+    }
+}
+
+function rebirth() {
+    if (game.points >= 10000) { // Requirement
+        game.rebirths++;
+        game.mult += 1;
+        game.points = 0;
+        game.upgrades = [0, 0]; // Reset upgrades
+        update();
+    }
+}
+
+function showTab(id) {
+    document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+    document.getElementById(id).style.display = 'block';
+}
+
+setInterval(() => {
+    game.points += (game.upgrades[0] * 1) + (game.upgrades[1] * 5); // Auto income
+    update();
+}, 1000);
+
+update();
