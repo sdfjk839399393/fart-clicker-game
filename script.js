@@ -1407,6 +1407,11 @@ function playHatch(pet, egg) {
     }
 }
 let hatchTimeout = null;
+function overlayTap() {
+    const skip = document.getElementById("hatch-skip");
+    // only dismiss if the skip button is visible (result has been revealed)
+    if (skip && skip.style.pointerEvents !== "none") finishHatch();
+}
 function finishHatch() {
     if (!hatchActive) return; hatchActive = false;
     if (hatchTimeout) { clearTimeout(hatchTimeout); hatchTimeout = null; }
