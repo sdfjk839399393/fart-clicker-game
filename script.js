@@ -1443,17 +1443,36 @@ function applyWorldTheme() {
     const w = WORLDS[game.worldIdx || 0]; if (!w || !w.theme) return;
     const t = w.theme;
     const root = document.documentElement;
-    root.style.setProperty("--green", t.p);
+    // core palette
+    root.style.setProperty("--green",  t.p);
     root.style.setProperty("--purple", t.s);
-    root.style.setProperty("--cyan", t.a);
-    root.style.setProperty("--bg0", t.bg2);
-    root.style.setProperty("--bg1", t.bg1);
-    root.style.setProperty("--stroke", t.s + "59"); // ~35% alpha
+    root.style.setProperty("--cyan",   t.a);
+    root.style.setProperty("--pink",   t.p);
+    root.style.setProperty("--bg0",    t.bg2);
+    root.style.setProperty("--bg1",    t.bg1);
+    root.style.setProperty("--stroke", t.s + "66");
+    // panel bg uses world bg tinted by secondary color
+    root.style.setProperty("--panel",  hexToRgba(t.bg1, 0.75));
+    // muted text slightly tinted by primary
+    root.style.setProperty("--muted",  hexToRgba(t.p, 0.55));
+    // update bottom nav border glow
+    const nav = document.querySelector(".bottom-nav");
+    if (nav) nav.style.borderTopColor = t.s + "99";
+    // update body gradient
+    document.body.style.background =
+        "linear-gradient(160deg," + t.bg1 + "," + t.bg2 + ")";
     // recolor particles to primary
     const overlay = document.getElementById("particle-overlay");
     if (overlay) overlay.querySelectorAll(".particle").forEach(p => {
         p.style.background = "radial-gradient(circle, " + t.p + "e6, " + t.p + "00)";
     });
+}
+function hexToRgba(hex, alpha) {
+    // handles 6-char hex like #1a2b3c
+    try {
+        const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+        return "rgba(" + r + "," + g + "," + b + "," + alpha + ")";
+    } catch(e) { return "rgba(30,18,55," + alpha + ")"; }
 }
 
 // ============================================================
