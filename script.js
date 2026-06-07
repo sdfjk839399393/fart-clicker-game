@@ -1114,10 +1114,27 @@ function petChip(p, equipped) {
         '<span class="pet-chip-pow">' + p.power.toFixed(2) + 'x</span>' +
         (equipped?'<span class="pet-chip-badge">✓</span>':'') + '</div>';
 }
+let petSortMode = "power"; // "power" | "rarity" | "newest"
 function renderPets() {
-    const pets = game.pets||[], eq = game.equippedPets||[];
-    let html = '<button class="action-btn" onclick="openEggModal()">🥚 Open Eggs</button>';
-    html += '<div class="pet-block-title">Equipped (' + eq.length + '/' + (game.maxPets||3) + ') · Total Boost x' + getPetMult().toFixed(2) + '</div><div class="pet-grid">';
+    const eq = game.equippedPets||[];
+    // sort collection
+    let pets = [...(game.pets||[])];
+    if (petSortMode === "power")   pets.sort((a,b) => b.power - a.power);
+    if (petSortMode === "rarity")  pets.sort((a,b) => (RARITY[b.rarity]||RARITY.common).tier - (RARITY[a.rarity]||RARITY.common).tier);
+    if (petSortMode === "newest")  pets.sort((a,b) => b.id - a.id);
+
+    const sortBtns = ['power','rarity','newest'].map(m =>
+        '<button class="sort-btn' + (petSortMode===m?' active':'') + '" onclick="setPetSort(\'' + m + '\')">' +
+        (m==='power'?'⚡ Best':m==='rarity'?'🌟 Rarity':'🆕 Newest') + '</button>'
+    ).join('');
+
+    let html = '<div class="pet-toolbar">' +
+        '<button class="action-btn slim" onclick="openEggModal()">🥚 Open Eggs</button>' +
+        '<button class="action-btn slim equip-best-btn" onclick="equipBestPets()">⚡ Equip Best</button>' +
+        '</div>' +
+        '<div class="sort-row">' + sortBtns + '</div>';
+
+    html += '<div class="pet-block-title">Equipped (' + eq.length + '/' + (game.maxPets||3) + ') · Boost x' + getPetMult().toFixed(2) + '</div><div class="pet-grid">';
     if (eq.length===0) html += '<p class="empty-text">Equip pets to multiply click power!</p>';
     else eq.forEach(p => { html += petChip(p, true); });
     html += '</div><div class="pet-block-title">Collection (' + pets.length + ')</div><div class="pet-grid">';
@@ -1125,6 +1142,15 @@ function renderPets() {
     else pets.forEach(p => { html += petChip(p, eq.some(q=>q.id===p.id)); });
     html += '</div>';
     const el = document.getElementById("pets-body"); if (el) el.innerHTML = html;
+}
+function setPetSort(mode) { petSortMode = mode; renderPets(); }
+function equipBestPets() {
+    // pick top N pets by power, equip them
+    const slots = game.maxPets || 3;
+    const sorted = [...(game.pets||[])].sort((a,b) => b.power - a.power);
+    game.equippedPets = sorted.slice(0, slots);
+    sfxBuy(); showToast("⚡ Best " + game.equippedPets.length + " pets equipped!", 1800);
+    updateDisplay(); renderPets(); saveGame();
 }
 
 // ---------- FUSION: combine 3 identical pets into a stronger one ----------
