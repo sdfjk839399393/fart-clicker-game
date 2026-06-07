@@ -1332,7 +1332,7 @@ function rollEgg(idx) {
 
 
 // ============================================================
-//  HATCH ANIMATION — heavy FX, rarity-scaled
+//  HATCH ANIMATION — cinematic, rarity-scaled suspense
 // ============================================================
 function playHatch(pet, egg) {
     hatchActive = true; pendingHatch = pet;
@@ -1345,65 +1345,171 @@ function playHatch(pet, egg) {
     if (!overlay || !eggEl || !resEl) return;
     closeEggModal();
 
+    // reset
     resEl.innerHTML = ""; resEl.className = "hatch-result";
-    eggEl.textContent = egg.emoji; eggEl.className = "hatch-egg shaking"; eggEl.style.filter = "";
+    eggEl.textContent = egg.emoji; eggEl.className = "hatch-egg"; eggEl.style.filter = "";
+    eggEl.style.transform = ""; eggEl.style.transition = "";
     rays.style.opacity = "0"; rays.classList.remove("spin");
-    rays.style.background = "conic-gradient(from 0deg," + r.color + "00," + r.color + "66," + r.color + "00," + r.color + "66," + r.color + "00)";
+    rays.style.background = "conic-gradient(from 0deg," + r.color + "00," + r.color + "88," + r.color + "00," + r.color + "88," + r.color + "00)";
     overlay.style.setProperty("--rc", r.color);
     overlay.className = "hatch-overlay tier" + r.tier;
+    overlay.style.background = "rgba(5,2,12,0.97)";
     skip.style.opacity = "0"; skip.style.pointerEvents = "none";
     overlay.classList.remove("hidden");
-    sfxWhoosh();
 
-    // charge glow + crack ticks during shake (intensity by tier)
+    const tier = r.tier;
+
+    // ---- PHASE 1: suspense build-up (scales by tier) ----
+    // tier 0 = 0.6s, tier 1 = 1.0s, tier 2 = 1.6s, tier 3 = 2.4s, tier 4 = 3.4s, tier 5 = 4.8s
+    const buildTimes = [600, 1000, 1600, 2400, 3400, 4800];
+    const buildTime = buildTimes[tier] || 600;
+
+    // Slow dramatic zoom-in on egg during build
+    eggEl.style.transition = "transform " + (buildTime/1000).toFixed(1) + "s cubic-bezier(0.2,0,0.8,1), filter " + (buildTime/1000).toFixed(1) + "s ease";
+    setTimeout(() => {
+        eggEl.style.transform = "scale(" + (1.1 + tier * 0.12) + ")";
+        eggEl.style.filter = "drop-shadow(0 0 " + (10 + tier * 20) + "px " + r.color + ") brightness(1.2)";
+    }, 50);
+
+    // Background color bleeds in slowly for rarer tiers
+    if (tier >= 2) {
+        overlay.style.transition = "background " + (buildTime * 0.8 / 1000).toFixed(1) + "s ease";
+        setTimeout(() => {
+            overlay.style.background = "radial-gradient(ellipse at center, " + r.color + "22 0%, rgba(5,2,12,0.97) 70%)";
+        }, 100);
+    }
+
+    // Charge ticking — gets faster and louder as build progresses
     let ticks = 0;
-    const tickInterval = Math.max(60, 140 - r.tier * 20);
+    const totalTicks = Math.floor(buildTime / Math.max(40, 130 - tier * 18));
+    const tickInterval = buildTime / totalTicks;
     const chargeInt = setInterval(() => {
-        tone(200 + ticks * 40, 0.08, "sine", 0.06 + r.tier * 0.015);
+        const progress = ticks / totalTicks;
+        const freq = 150 + progress * (200 + tier * 120);
+        tone(freq, 0.07, "sine", 0.04 + tier * 0.012 + progress * 0.06);
         sparkleRise(r.color);
-        if (r.tier >= 3 && ticks % 2 === 0) sparkleRise(r.color);
-        if (r.tier >= 5) sparkleRise("#ffffff");
+        if (tier >= 2 && ticks % 2 === 0) sparkleRise(r.color);
+        if (tier >= 4 && ticks % 2 === 0) sparkleRise("#ffffff");
+        if (tier >= 3 && progress > 0.6) burstAt(window.innerWidth/2, window.innerHeight*0.42, r.color, 3);
         ticks++;
     }, tickInterval);
 
-    const shakeTime = 700 + r.tier * 250; // longer build-up for rarer pets
+    // Rays appear near end of build for legendary+
+    if (tier >= 3) {
+        setTimeout(() => {
+            rays.style.opacity = "0.4";
+            rays.style.transition = "opacity 0.8s ease";
+            rays.classList.add("spin");
+        }, buildTime * 0.55);
+    }
+
+    // Screen starts shaking near the end for epic+
+    if (tier >= 2) {
+        setTimeout(() => shake(), buildTime * 0.7);
+    }
+    if (tier >= 3) {
+        setTimeout(() => shake(), buildTime * 0.85);
+    }
+
+    // ---- PHASE 2: CRACK moment (just before burst) ----
+    // dramatic pause + camera shake + crack sound
+    const crackDelay = buildTime * 0.88;
+    if (tier >= 1) {
+        setTimeout(() => {
+            eggEl.style.transform = "scale(" + (1.25 + tier * 0.1) + ") rotate(-4deg)";
+            tone(80 + tier * 20, 0.15, "sine", 0.12);
+            if (tier >= 3) shake();
+        }, crackDelay);
+    }
+
+    // ---- PHASE 3: BURST ----
     setTimeout(() => {
         clearInterval(chargeInt);
-        // BURST — scales hard with tier
-        eggEl.className = "hatch-egg burst";
-        shockwave(r.color);
-        spawnConfetti(r.color, 20 + r.tier * 40);
-        if (r.tier >= 1) { screenFlash(r.color); }
-        if (r.tier >= 2) { lightBurst(r.color); shockwave(r.color); spawnConfetti(r.color, 30); }
-        if (r.tier >= 3) { shake(); rays.style.opacity = "1"; rays.classList.add("spin"); screenFlash(r.color); burstAt(window.innerWidth/2, window.innerHeight*0.4, r.color, 40); }
-        if (r.tier >= 4) { emojiRain([pet.emoji,"🌟","✨","💫","⭐"], 50); document.body.classList.add("slowmo"); shake(); shockwave(r.color); }
-        if (r.tier >= 5) { emojiRain(["✦","💎",pet.emoji,"🌈","💥"], 80); rainbowFlash(); shake(); shockwave("#ffffff"); spawnConfetti("#ffffff", 60); }
-        sfxRare(r.tier);
-        // extra dramatic sounds for high tiers
-        if (r.tier >= 3) setTimeout(() => sfxRare(r.tier), 180);
-        if (r.tier >= 5) setTimeout(() => sfxRare(5), 360);
 
+        eggEl.style.transition = "transform 0.12s ease, filter 0.12s ease";
+        eggEl.style.transform = "scale(0.05)";
+        eggEl.style.opacity = "0";
+
+        // overlay flash to rarity color
+        overlay.style.transition = "background 0.12s ease";
+        overlay.style.background = r.color + "cc";
+        setTimeout(() => {
+            overlay.style.background = "rgba(5,2,12,0.97)";
+        }, 120);
+
+        shockwave(r.color);
+        spawnConfetti(r.color, 25 + tier * 45);
+        sfxRare(tier);
+
+        if (tier >= 1) { screenFlash(r.color); }
+        if (tier >= 2) {
+            lightBurst(r.color);
+            setTimeout(() => shockwave(r.color), 150);
+            spawnConfetti(r.color, 40);
+        }
+        if (tier >= 3) {
+            shake();
+            rays.style.opacity = "1";
+            burstAt(window.innerWidth/2, window.innerHeight*0.4, r.color, 50);
+            setTimeout(() => { sfxRare(tier); shake(); }, 200);
+        }
+        if (tier >= 4) {
+            emojiRain([pet.emoji,"🌟","✨","💫","⭐","💥"], 60);
+            document.body.classList.add("slowmo");
+            setTimeout(() => shockwave(r.color), 100);
+            setTimeout(() => shockwave(r.color), 300);
+            setTimeout(() => { sfxRare(tier); }, 350);
+        }
+        if (tier >= 5) {
+            emojiRain(["✦","💎",pet.emoji,"💥","🌈"], 100);
+            rainbowFlash();
+            shockwave("#ffffff");
+            spawnConfetti("#ffffff", 80);
+            setTimeout(() => { shake(); rainbowFlash(); sfxRare(5); }, 300);
+            setTimeout(() => { shake(); shockwave(r.color); }, 600);
+        }
+
+        // ---- PHASE 4: REVEAL ----
+        const revealDelay = 280 + tier * 120;
         setTimeout(() => {
             eggEl.textContent = pet.emoji;
-            eggEl.className = "hatch-egg reveal tier" + r.tier;
-            eggEl.style.filter = "drop-shadow(0 0 " + (18 + r.tier * 18) + "px " + r.color + ")";
-            const stars = pet.star ? "⭐".repeat(Math.min(pet.star,5)) : "";
-            resEl.innerHTML = '<div class="hatch-rarity" style="color:' + r.color + '">' + r.label + ' ' + stars + '</div>' +
-                '<div class="hatch-name">' + pet.name + '</div>' +
-                '<div class="hatch-power" style="color:' + r.color + '">' + pet.power.toFixed(2) + 'x click power</div>';
-            resEl.classList.add("show");
-            if (r.tier >= 3) bigBanner(r.label + "!!!", r.color);
-            skip.style.opacity = "1"; skip.style.pointerEvents = "auto";
-            document.body.classList.remove("slowmo");
-        }, 300 + r.tier * 60);
-    }, shakeTime);
+            eggEl.style.opacity = "1";
+            eggEl.style.transition = "transform 0.5s cubic-bezier(0.34,1.56,0.64,1), filter 0.5s ease";
+            eggEl.style.transform = "scale(1)";
+            eggEl.style.filter = "drop-shadow(0 0 " + (24 + tier * 24) + "px " + r.color + ") brightness(1.3)";
+            eggEl.className = "hatch-egg reveal tier" + tier;
+
+            // overlay background settles to rarity tint
+            overlay.style.transition = "background 0.6s ease";
+            overlay.style.background = "radial-gradient(ellipse at center, " + r.color + "33 0%, rgba(5,2,12,0.97) 65%)";
+
+            if (tier >= 3) {
+                rays.style.opacity = "0.85";
+                rays.style.transition = "opacity 0.4s ease";
+            }
+
+            // staggered result text
+            setTimeout(() => {
+                const stars = pet.star ? "⭐".repeat(Math.min(pet.star,5)) : "";
+                resEl.innerHTML =
+                    '<div class="hatch-rarity" style="color:' + r.color + ';text-shadow:0 0 20px ' + r.color + '">' + r.label + ' ' + stars + '</div>' +
+                    '<div class="hatch-name" style="font-size:' + (1.4 + tier * 0.15) + 'rem">' + pet.name + '</div>' +
+                    '<div class="hatch-power" style="color:' + r.color + '">' + pet.power.toFixed(2) + 'x click power</div>';
+                resEl.classList.add("show");
+                if (tier >= 2) bigBanner(r.label + "!!!", r.color);
+                if (tier >= 4) setTimeout(() => bigBanner("✨ " + pet.name + " ✨", "#ffffff"), 400);
+                document.body.classList.remove("slowmo");
+                skip.style.opacity = "1"; skip.style.pointerEvents = "auto";
+            }, 350 + tier * 80);
+        }, revealDelay);
+
+    }, buildTime);
 
     if (hatchTimeout) clearTimeout(hatchTimeout);
-    // common/rare: auto-dismiss. epic+: must tap to continue
-    if (r.tier <= 1) {
-        hatchTimeout = setTimeout(finishHatch, shakeTime + 1600);
+    if (tier === 0) {
+        hatchTimeout = setTimeout(finishHatch, buildTime + 2200);
     } else {
-        hatchTimeout = null; // player must tap skip button
+        hatchTimeout = null; // must tap
     }
 }
 let hatchTimeout = null;
