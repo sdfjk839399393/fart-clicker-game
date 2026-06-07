@@ -1051,7 +1051,7 @@ function selectWorld(i) {
     const w = WORLDS[i]; if (!w || game.rebirths < w.reqRebirths) { sfxError(); return; }
     game.worldIdx = i; indexWorld = i; sfxBuy(); updateDisplay(); renderWorlds(); saveGame();
     PHONK.idx = worldTrackIdx(); PHONK.step = 0; announceTrack();
-    applyWorldTheme();
+    applyWorldTheme(); updateCornerGlows();
     screenFlash(w.theme && w.theme.p ? w.theme.p : "#ffd54a");
     showToast("🌍 Travelled to " + w.name + " · 🎵 " + TRACKS[PHONK.idx].name, 2400);
 }
@@ -1771,6 +1771,123 @@ function initGame() {
     }
     buildButtonDecor();
     startAmbientParticles();
+    startAmbientEffects();
+    addCornerGlows();
+}
+
+// ============================================================
+//  AMBIENT SCREEN EFFECTS
+// ============================================================
+function getWorldColors() {
+    const w = WORLDS[game.worldIdx || 0];
+    return w && w.theme ? [w.theme.p, w.theme.s, w.theme.a] : ["#7FFF00","#B14EFF","#00E0FF"];
+}
+
+// Corner glows — 4 permanent blobs in screen corners
+function addCornerGlows() {
+    if (!game.settings.particles) return;
+    ["tl","tr","bl","br"].forEach((pos, i) => {
+        const el = document.createElement("div");
+        el.className = "corner-glow " + pos;
+        el.id = "corner-glow-" + pos;
+        el.style.animationDelay = (i * 1.2) + "s";
+        document.body.appendChild(el);
+    });
+    updateCornerGlows();
+}
+function updateCornerGlows() {
+    const colors = getWorldColors();
+    ["tl","tr","bl","br"].forEach((pos, i) => {
+        const el = document.getElementById("corner-glow-" + pos);
+        if (el) el.style.background = colors[i % colors.length];
+    });
+}
+
+// Floating orbs that drift slowly across the screen
+function spawnAmbOrb() {
+    if (!game.settings.particles) return;
+    const colors = getWorldColors();
+    const el = document.createElement("div");
+    el.className = "amb-orb";
+    const size = 80 + Math.random() * 180;
+    el.style.width = size + "px"; el.style.height = size + "px";
+    el.style.background = colors[Math.floor(Math.random() * colors.length)];
+    el.style.left = (Math.random() * 90) + "vw";
+    el.style.top  = (Math.random() * 80) + "vh";
+    const dur = 8 + Math.random() * 14;
+    el.style.animationDuration = dur + "s";
+    el.style.setProperty("--dx", (Math.random() * 120 - 60) + "px");
+    el.style.setProperty("--dy", (Math.random() * 120 - 60) + "px");
+    el.style.setProperty("--dx2", (Math.random() * 200 - 100) + "px");
+    el.style.setProperty("--dy2", (Math.random() * 200 - 100) + "px");
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), dur * 1000);
+}
+
+// Shooting streaks flying across the screen
+function spawnAmbStreak() {
+    if (!game.settings.particles) return;
+    const colors = getWorldColors();
+    const el = document.createElement("div");
+    el.className = "amb-streak";
+    const w = 60 + Math.random() * 140;
+    el.style.width = w + "px";
+    el.style.top = (10 + Math.random() * 80) + "vh";
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    el.style.background = "linear-gradient(90deg, transparent, " + color + ", transparent)";
+    const ang = (Math.random() * 20 - 10);
+    el.style.setProperty("--ang", ang + "deg");
+    const dur = 1.2 + Math.random() * 1.8;
+    el.style.animationDuration = dur + "s";
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), dur * 1000 + 100);
+}
+
+// Pulsing rings that expand from random spots
+function spawnAmbRing() {
+    if (!game.settings.particles) return;
+    const colors = getWorldColors();
+    const el = document.createElement("div");
+    el.className = "amb-ring";
+    const size = 30 + Math.random() * 60;
+    el.style.width = size + "px"; el.style.height = size + "px";
+    el.style.left = (10 + Math.random() * 80) + "vw";
+    el.style.top  = (10 + Math.random() * 70) + "vh";
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    el.style.borderColor = color;
+    el.style.boxShadow = "0 0 12px " + color;
+    el.style.animationDuration = (1.5 + Math.random()) + "s";
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 2600);
+}
+
+// Floating sparkle dots
+function spawnAmbSpark() {
+    if (!game.settings.particles) return;
+    const colors = getWorldColors();
+    const el = document.createElement("div");
+    el.className = "amb-spark";
+    el.style.left = (5 + Math.random() * 90) + "vw";
+    el.style.top  = (20 + Math.random() * 70) + "vh";
+    el.style.background = colors[Math.floor(Math.random() * colors.length)];
+    el.style.setProperty("--rise", -(40 + Math.random() * 80) + "px");
+    el.style.animationDuration = (1 + Math.random() * 1.5) + "s";
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 2600);
+}
+
+function startAmbientEffects() {
+    // orbs every 2s
+    setInterval(spawnAmbOrb, 2000);
+    // streaks every 3-5s
+    setInterval(spawnAmbStreak, 3500);
+    // rings every 1.5s
+    setInterval(spawnAmbRing, 1500);
+    // sparks every 400ms
+    setInterval(spawnAmbSpark, 400);
+    // spawn a few immediately
+    for (let i = 0; i < 3; i++) setTimeout(spawnAmbOrb, i * 600);
+    for (let i = 0; i < 4; i++) setTimeout(spawnAmbSpark, i * 200);
 }
 
 // inject decorative orbiting emojis inside the main button
