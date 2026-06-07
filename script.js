@@ -189,9 +189,18 @@ function dexKey(world, name) { return world + ":" + name; }
 
 
 // ============================================================
-//  AUDIO: multi-track procedural PHONK + SFX (WebAudio)
+//  AUDIO: multi-track procedural AMBIENT + SFX (WebAudio)
 // ============================================================
 function getCtx() {
+    try {
+        // Never create AudioContext before a user gesture — required on iOS
+        if (!audioCtx) return null;
+        if (audioCtx.state === "suspended") audioCtx.resume();
+    } catch (e) { audioCtx = null; }
+    return audioCtx;
+}
+function createCtx() {
+    // Call this only from within a user gesture handler
     try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         if (audioCtx.state === "suspended") audioCtx.resume();
@@ -211,7 +220,7 @@ function tone(freq, dur, type, vol, slideTo) {
     try {
         const ctx = getCtx(); if (!ctx) return;
         const o = ctx.createOscillator(), g = ctx.createGain();
-        o.type = type || "square";
+        o.type = type || "sine";
         o.frequency.setValueAtTime(freq, ctx.currentTime);
         if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, ctx.currentTime + dur);
         const v = (vol || 0.1) * game.settings.sfxVol;
@@ -221,209 +230,208 @@ function tone(freq, dur, type, vol, slideTo) {
         o.start(); o.stop(ctx.currentTime + dur);
     } catch (e) {}
 }
-function sfxClick()  { tone(420 + Math.random()*120, 0.09, "square", 0.10, 180); }
-function sfxBuy()    { tone(660, 0.08, "triangle", 0.12); setTimeout(()=>tone(990,0.10,"triangle",0.10),55); }
-function sfxCrit()   { tone(1200, 0.16, "sawtooth", 0.13, 400); }
-function sfxError()  { tone(160, 0.18, "square", 0.10, 90); }
-function sfxWhoosh() { tone(200, 0.3, "sawtooth", 0.08, 1400); }
+function sfxClick()  { tone(520 + Math.random()*80, 0.07, "sine", 0.07, 360); }
+function sfxBuy()    { tone(660, 0.10, "sine", 0.09); setTimeout(()=>tone(880,0.12,"sine",0.08),60); setTimeout(()=>tone(1100,0.12,"sine",0.06),130); }
+function sfxCrit()   { tone(880, 0.18, "sine", 0.10, 1320); }
+function sfxError()  { tone(200, 0.16, "triangle", 0.07, 140); }
+function sfxWhoosh() { tone(300, 0.25, "sine", 0.06, 1200); }
 function sfxRare(tier) {
     const notes = [523,659,784,1047,1319,1568];
-    for (let i = 0; i <= Math.min(tier+1,5); i++) setTimeout(()=>tone(notes[i],0.22,"triangle",0.14),i*90);
+    for (let i = 0; i <= Math.min(tier+1,5); i++) setTimeout(()=>tone(notes[i],0.25,"sine",0.10),i*100);
 }
 
 
-// ---------- PHONK tracks (each = distinct beat + melody) ----------
+// ---------- AMBIENT tracks (soft, varied feel per world) ----------
 const TRACKS = [
-    { name: "Sigma Drift", bpm: 145, voice: "bell",
-      kick: [1,0,0,0, 0,0,1,0, 0,0,1,0, 0,0,0,0],
-      hat:  [1,0,1,0, 1,0,1,0, 1,0,1,0, 1,0,1,1],
-      bell: [0,null,3,0, null,7,5,3, 0,null,3,5, 7,null,5,3],
-      bass: [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,1,0] },
-    { name: "Ohio Nights", bpm: 132, voice: "pluck",
-      kick: [1,0,0,1, 0,0,1,0, 1,0,0,1, 0,0,1,0],
-      hat:  [0,1,0,1, 0,1,0,1, 0,1,0,1, 0,1,1,1],
-      bell: [5,null,5,3, 0,null,3,null, 5,7,null,8, 7,5,3,null],
-      bass: [1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,0,0] },
-    { name: "Rizz Tek", bpm: 160, voice: "brass",
-      kick: [1,0,1,0, 0,1,0,0, 1,0,1,0, 0,1,0,0],
-      hat:  [1,1,0,1, 1,1,0,1, 1,1,0,1, 1,1,0,1],
-      bell: [7,7,null,5, 3,null,5,7, 10,null,8,7, 5,null,3,0],
-      bass: [1,0,0,1, 0,0,1,0, 1,0,0,1, 0,0,1,0] },
-    { name: "Gigachad Theme", bpm: 120, voice: "piano",
-      kick: [1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,1,0],
+    { name: "Drifting Mist",   bpm: 72,  voice: "pad",    // world 0 - dreamy
+      kick: [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0],
       hat:  [0,0,1,0, 0,0,1,0, 0,0,1,0, 0,0,1,0],
-      bell: [0,null,null,3, null,null,5,null, 7,null,null,5, null,3,null,0],
+      bell: [0,null,null,7, null,5,null,null, 3,null,null,5, null,null,7,null],
       bass: [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0] },
-    { name: "Skibidi Core", bpm: 150, voice: "flute",
-      kick: [1,0,0,1, 1,0,0,0, 0,1,0,0, 1,0,0,1],
-      hat:  [1,0,1,1, 1,0,1,1, 1,0,1,1, 1,0,1,1],
-      bell: [3,3,5,null, 7,5,3,null, 10,8,7,null, 5,3,2,null],
-      bass: [1,0,0,0, 1,0,0,0, 0,0,1,0, 1,0,0,0] },
-    { name: "Quantum Funk", bpm: 138, voice: "pluck",
-      kick: [1,0,0,0, 0,1,0,0, 1,0,0,0, 0,1,0,1],
-      hat:  [1,1,1,0, 1,1,1,0, 1,1,1,0, 1,1,1,1],
-      bell: [0,3,7,3, 5,3,0,null, 7,5,3,0, 2,3,5,7],
-      bass: [1,0,0,1, 0,0,1,0, 1,0,0,1, 0,1,0,0] },
-    { name: "Voidwave", bpm: 110, voice: "bell",
-      kick: [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,1,0],
-      hat:  [0,0,1,0, 0,0,1,0, 0,0,1,0, 0,1,0,1],
-      bell: [0,null,null,7, null,5,null,3, 0,null,null,5, 7,null,10,null],
+    { name: "Sewer Vibes",     bpm: 80,  voice: "marimba", // world 1 - bouncy
+      kick: [1,0,0,0, 0,0,1,0, 1,0,0,0, 0,0,1,0],
+      hat:  [0,1,0,1, 0,1,0,1, 0,1,0,1, 0,1,0,1],
+      bell: [5,null,3,null, 0,null,3,null, 5,null,7,null, 5,null,3,null],
+      bass: [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,1] },
+    { name: "Toilet Lounge",   bpm: 90,  voice: "ep",     // world 2 - lo-fi
+      kick: [1,0,0,1, 0,0,1,0, 1,0,0,0, 0,1,0,0],
+      hat:  [1,0,1,0, 1,0,1,0, 1,0,1,0, 1,0,1,1],
+      bell: [0,null,3,null, 5,3,null,null, 7,null,5,null, 3,null,null,0],
+      bass: [1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,0,0] },
+    { name: "Rizz Waltz",      bpm: 78,  voice: "chime",  // world 3 - chill
+      kick: [1,0,0,0, 0,0,0,0, 0,0,1,0, 0,0,0,0],
+      hat:  [0,0,1,0, 0,0,0,0, 0,0,1,0, 0,0,1,0],
+      bell: [7,null,null,10, null,7,null,5, 3,null,null,7, null,5,null,null],
       bass: [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0] },
-    { name: "Hyper Rizz", bpm: 170, voice: "brass",
-      kick: [1,0,1,0, 1,0,1,0, 1,0,1,0, 1,0,1,0],
-      hat:  [1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1],
-      bell: [12,10,7,10, 12,null,10,7, 5,7,10,12, 10,7,5,3],
-      bass: [1,0,1,0, 1,0,1,0, 1,0,1,0, 1,0,1,0] }
+    { name: "Ohio Breeze",     bpm: 68,  voice: "pad",    // world 4 - slow dreamy
+      kick: [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0],
+      hat:  [0,0,0,1, 0,0,0,1, 0,0,0,1, 0,0,1,0],
+      bell: [0,null,null,null, 5,null,null,null, 3,null,null,null, 7,null,null,null],
+      bass: [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0] },
+    { name: "Starfield",       bpm: 75,  voice: "ep",     // world 5 - space ambient
+      kick: [1,0,0,0, 0,0,0,0, 0,0,1,0, 0,0,0,0],
+      hat:  [0,0,0,1, 0,0,1,0, 0,0,0,1, 0,1,0,0],
+      bell: [12,null,null,10, null,null,7,null, 5,null,null,7, null,10,null,null],
+      bass: [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0] },
+    { name: "Canyon Winds",    bpm: 82,  voice: "marimba", // world 6 - warm
+      kick: [1,0,0,0, 0,1,0,0, 1,0,0,0, 0,1,0,0],
+      hat:  [0,1,0,1, 0,1,0,1, 0,1,0,1, 0,1,1,0],
+      bell: [5,null,7,null, 10,null,7,null, 5,null,3,null, 0,null,3,null],
+      bass: [1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,0,0] },
+    { name: "Ember Glow",      bpm: 70,  voice: "chime",  // world 7 - dark ambient
+      kick: [1,0,0,0, 0,0,1,0, 0,0,1,0, 0,0,0,0],
+      hat:  [0,0,1,0, 0,0,1,0, 0,0,1,0, 0,0,0,1],
+      bell: [0,null,null,3, null,null,5,null, 7,null,null,5, null,3,null,null],
+      bass: [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0] }
 ];
 
 const PHONK = { idx: 0, step: 0, timer: null, playing: false, bars: 0 };
 function midiHz(s) { return 220 * Math.pow(2, s / 12); }
 
 function phonkKick(ctx, t) {
+    // Soft low thud instead of punchy kick
     const m = ensureMaster();
     const o = ctx.createOscillator(), g = ctx.createGain();
-    o.type = "sine"; o.frequency.setValueAtTime(165, t);
-    o.frequency.exponentialRampToValueAtTime(48, t + 0.12);
-    g.gain.setValueAtTime(1.0 * game.settings.musicVol, t);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.26);
-    o.connect(g); g.connect(m || ctx.destination); o.start(t); o.stop(t + 0.28);
+    o.type = "sine"; o.frequency.setValueAtTime(90, t);
+    o.frequency.exponentialRampToValueAtTime(42, t + 0.18);
+    g.gain.setValueAtTime(0.35 * game.settings.musicVol, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.32);
+    o.connect(g); g.connect(m || ctx.destination); o.start(t); o.stop(t + 0.35);
 }
 function phonkHat(ctx, t) {
+    // Very quiet shaker-style brush
     const m = ensureMaster();
     const s = ctx.createBufferSource(), g = ctx.createGain(), f = ctx.createBiquadFilter();
-    s.buffer = getNoise(ctx); f.type = "bandpass"; f.frequency.value = 9000; f.Q.value = 1.2;
-    g.gain.setValueAtTime(0.10 * game.settings.musicVol, t);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
-    s.connect(f); f.connect(g); g.connect(m || ctx.destination); s.start(t); s.stop(t + 0.05);
+    s.buffer = getNoise(ctx); f.type = "bandpass"; f.frequency.value = 6000; f.Q.value = 3;
+    g.gain.setValueAtTime(0.03 * game.settings.musicVol, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
+    s.connect(f); f.connect(g); g.connect(m || ctx.destination); s.start(t); s.stop(t + 0.07);
 }
 function phonkBell(ctx, t, semi, wave) { phonkLead(ctx, t, semi, wave); }
 function phonk808(ctx, t, semi) {
+    // Warm sub bass, very mellow
     const m = ensureMaster();
     const o = ctx.createOscillator(), g = ctx.createGain(), f = ctx.createBiquadFilter();
-    f.type = "lowpass"; f.frequency.value = 1800;
-    o.type = "sine"; o.frequency.setValueAtTime(midiHz(semi - 11), t);
-    o.frequency.exponentialRampToValueAtTime(midiHz(semi - 12), t + 0.08);
-    g.gain.setValueAtTime(0.55 * game.settings.musicVol, t);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
-    o.connect(f); f.connect(g); g.connect(m || ctx.destination); o.start(t); o.stop(t + 0.52);
+    f.type = "lowpass"; f.frequency.value = 400;
+    o.type = "sine"; o.frequency.setValueAtTime(midiHz(semi - 12), t);
+    g.gain.setValueAtTime(0.30 * game.settings.musicVol, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.7);
+    o.connect(f); f.connect(g); g.connect(m || ctx.destination); o.start(t); o.stop(t + 0.72);
 }
 
 
-// ---------- Rich audio bus: master + warm filter + compressor + reverb ----------
+// ---------- Ambient instrument voices ----------
+function vEnv(ctx, peak, atk, dec, t) {
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(Math.max(peak, 0.0002), t + atk);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + atk + dec);
+    return g;
+}
+// Soft pad: sine stack with slow attack, gentle release
+function vPad(ctx, t, freq, vol, master) {
+    const g = vEnv(ctx, vol * 0.7, 0.12, 1.2, t);
+    [1, 2, 3].forEach((h, i) => {
+        const o = ctx.createOscillator(); o.type = "sine";
+        o.frequency.value = freq * h; o.detune.value = (i % 2 === 0 ? 3 : -3);
+        const hg = ctx.createGain(); hg.gain.value = 1 / (i * 2 + 1);
+        o.connect(hg); hg.connect(g); o.start(t); o.stop(t + 1.4);
+    });
+    g.connect(master); routeWet(g);
+}
+// Marimba/vibes: sine with tight percussive decay
+function vMarimba(ctx, t, freq, vol, master) {
+    const g = vEnv(ctx, vol, 0.002, 0.45, t);
+    const o = ctx.createOscillator(); o.type = "sine"; o.frequency.value = freq;
+    // add a faint 4th harmonic for marimba colour
+    const o2 = ctx.createOscillator(); o2.type = "sine"; o2.frequency.value = freq * 4;
+    const g2 = ctx.createGain(); g2.gain.value = 0.08;
+    o2.connect(g2); g2.connect(g);
+    o.connect(g); g.connect(master); routeWet(g);
+    o.start(t); o2.start(t); o.stop(t + 0.5); o2.stop(t + 0.5);
+}
+// Electric piano: FM sine pair (soft, warm)
+function vEP(ctx, t, freq, vol, master) {
+    const car = ctx.createOscillator(); car.type = "sine"; car.frequency.value = freq;
+    const mod = ctx.createOscillator(); mod.type = "sine"; mod.frequency.value = freq * 1.999;
+    const mg = ctx.createGain();
+    mg.gain.setValueAtTime(freq * 1.2, t);
+    mg.gain.exponentialRampToValueAtTime(0.5, t + 0.4);
+    mod.connect(mg); mg.connect(car.frequency);
+    const g = vEnv(ctx, vol, 0.005, 0.7, t);
+    car.connect(g); g.connect(master); routeWet(g);
+    mod.start(t); car.start(t); mod.stop(t + 0.8); car.stop(t + 0.8);
+}
+// Chime: triangle with high shimmer overtone, long tail
+function vChime(ctx, t, freq, vol, master) {
+    const g = vEnv(ctx, vol * 0.8, 0.002, 1.0, t);
+    const o = ctx.createOscillator(); o.type = "triangle"; o.frequency.value = freq;
+    const o2 = ctx.createOscillator(); o2.type = "sine"; o2.frequency.value = freq * 5.1;
+    const g2 = ctx.createGain(); g2.gain.value = 0.12;
+    o2.connect(g2); g2.connect(g);
+    o.connect(g); g.connect(master); routeWet(g);
+    o.start(t); o2.start(t); o.stop(t + 1.1); o2.stop(t + 1.1);
+}
+
+function phonkLead(ctx, t, semi) {
+    const master = ensureMaster(); if (!master) return;
+    const tr = TRACKS[PHONK.idx % TRACKS.length];
+    const freq = midiHz(semi + 12);
+    const vol = 0.10 * game.settings.musicVol;
+    switch (tr.voice) {
+        case "marimba": vMarimba(ctx, t, freq, vol, master); break;
+        case "ep":      vEP(ctx, t, freq, vol, master); break;
+        case "chime":   vChime(ctx, t, freq, vol * 1.1, master); break;
+        default:        vPad(ctx, t, freq, vol * 0.9, master);
+    }
+}
+// Lush ambient pad chord (slow, soft)
+function phonkPad(ctx, t, root) {
+    const master = ensureMaster(); if (!master) return;
+    const f = ctx.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = 1800; f.Q.value = 0.5;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(0.030 * game.settings.musicVol, t + 0.8);
+    g.gain.linearRampToValueAtTime(0.0001, t + 2.4);
+    [0, 4, 7, 11, 12].forEach(iv => {
+        const o = ctx.createOscillator(); o.type = "sine";
+        o.frequency.value = midiHz(root + iv - 12);
+        o.detune.value = (Math.random() * 6 - 3);
+        o.connect(f); o.start(t); o.stop(t + 2.5);
+    });
+    f.connect(g); g.connect(master); routeWet(g);
+}
+
+
+// ---------- Master audio bus: warm filter + compressor + reverb ----------
 let masterGain = null, reverbNode = null, reverbSend = null;
 function ensureMaster() {
     const ctx = getCtx(); if (!ctx) return null;
     if (masterGain) return masterGain;
-    masterGain = ctx.createGain(); masterGain.gain.value = 0.85;
-    // warm low-pass so highs aren't harsh/8-bit
-    const warm = ctx.createBiquadFilter(); warm.type = "lowpass"; warm.frequency.value = 6500; warm.Q.value = 0.6;
-    // glue compressor
+    masterGain = ctx.createGain(); masterGain.gain.value = 0.75;
+    const warm = ctx.createBiquadFilter(); warm.type = "lowpass"; warm.frequency.value = 5000; warm.Q.value = 0.5;
     const comp = ctx.createDynamicsCompressor();
-    comp.threshold.value = -18; comp.knee.value = 24; comp.ratio.value = 3.5;
-    comp.attack.value = 0.004; comp.release.value = 0.22;
+    comp.threshold.value = -20; comp.knee.value = 30; comp.ratio.value = 3;
+    comp.attack.value = 0.006; comp.release.value = 0.25;
     masterGain.connect(warm); warm.connect(comp); comp.connect(ctx.destination);
     try {
         reverbNode = ctx.createConvolver();
-        const len = ctx.sampleRate * 2.0, buf = ctx.createBuffer(2, len, ctx.sampleRate);
+        const len = ctx.sampleRate * 2.5, buf = ctx.createBuffer(2, len, ctx.sampleRate);
         for (let ch = 0; ch < 2; ch++) {
             const d = buf.getChannelData(ch);
-            for (let i = 0; i < len; i++) d[i] = (Math.random()*2-1) * Math.pow(1 - i/len, 3.0);
+            for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.5);
         }
         reverbNode.buffer = buf;
-        reverbSend = ctx.createGain(); reverbSend.gain.value = 0.3;
+        reverbSend = ctx.createGain(); reverbSend.gain.value = 0.35;
         reverbSend.connect(reverbNode); reverbNode.connect(masterGain);
     } catch (e) { reverbNode = null; }
     return masterGain;
 }
 function routeWet(node) { if (reverbSend) node.connect(reverbSend); }
 
-// ---------- distinct instrument voices (real timbral variety) ----------
-function vEnv(ctx, peak, atk, dec, t) {
-    const g = ctx.createGain();
-    g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(Math.max(peak,0.0002), t + atk);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + atk + dec);
-    return g;
-}
-// FM bell / electric-piano (metallic, glassy)
-function vBell(ctx, t, freq, vol, master) {
-    const car = ctx.createOscillator(); car.type = "sine"; car.frequency.value = freq;
-    const mod = ctx.createOscillator(); mod.type = "sine"; mod.frequency.value = freq * 2.01;
-    const mg = ctx.createGain(); mg.gain.setValueAtTime(freq * 3, t); mg.gain.exponentialRampToValueAtTime(1, t + 0.5);
-    mod.connect(mg); mg.connect(car.frequency);
-    const g = vEnv(ctx, vol, 0.005, 0.55, t);
-    car.connect(g); g.connect(master); routeWet(g);
-    mod.start(t); car.start(t); mod.stop(t + 0.6); car.stop(t + 0.6);
-}
-// pluck (guitar/koto-ish): saw through fast-closing filter
-function vPluck(ctx, t, freq, vol, master) {
-    const o = ctx.createOscillator(); o.type = "sawtooth"; o.frequency.value = freq;
-    const f = ctx.createBiquadFilter(); f.type = "lowpass"; f.Q.value = 2;
-    f.frequency.setValueAtTime(5000, t); f.frequency.exponentialRampToValueAtTime(600, t + 0.18);
-    const g = vEnv(ctx, vol, 0.003, 0.28, t);
-    o.connect(f); f.connect(g); g.connect(master); routeWet(g);
-    o.start(t); o.stop(t + 0.32);
-}
-// brass / supersaw (fat, slow attack)
-function vBrass(ctx, t, freq, vol, master) {
-    const f = ctx.createBiquadFilter(); f.type = "lowpass"; f.Q.value = 4;
-    f.frequency.setValueAtTime(500, t); f.frequency.linearRampToValueAtTime(2600, t + 0.12); f.frequency.linearRampToValueAtTime(900, t + 0.5);
-    const g = vEnv(ctx, vol, 0.05, 0.45, t);
-    [-7,-0.1,0.1,7].forEach(det => { const o = ctx.createOscillator(); o.type = "sawtooth"; o.frequency.value = freq; o.detune.value = det; o.connect(f); o.start(t); o.stop(t + 0.55); });
-    f.connect(g); g.connect(master); routeWet(g);
-}
-// piano-ish (triangle+sine stack, percussive)
-function vPiano(ctx, t, freq, vol, master) {
-    const g = vEnv(ctx, vol, 0.004, 0.5, t);
-    const o1 = ctx.createOscillator(); o1.type = "triangle"; o1.frequency.value = freq;
-    const o2 = ctx.createOscillator(); o2.type = "sine"; o2.frequency.value = freq * 2;
-    const g2 = ctx.createGain(); g2.gain.value = 0.4; o2.connect(g2); g2.connect(g);
-    o1.connect(g); g.connect(master); routeWet(g);
-    o1.start(t); o2.start(t); o1.stop(t + 0.55); o2.stop(t + 0.55);
-}
-// flute (breathy sine + vibrato)
-function vFlute(ctx, t, freq, vol, master) {
-    const o = ctx.createOscillator(); o.type = "sine"; o.frequency.value = freq;
-    const lfo = ctx.createOscillator(); lfo.frequency.value = 6; const lg = ctx.createGain(); lg.gain.value = freq*0.01;
-    lfo.connect(lg); lg.connect(o.frequency); lfo.start(t); lfo.stop(t + 0.5);
-    const g = vEnv(ctx, vol, 0.04, 0.4, t);
-    o.connect(g); g.connect(master); routeWet(g);
-    o.start(t); o.stop(t + 0.5);
-}
-function phonkLead(ctx, t, semi) {
-    const master = ensureMaster(); if (!master) return;
-    const tr = TRACKS[PHONK.idx % TRACKS.length];
-    const freq = midiHz(semi + 12);
-    const vol = 0.13 * game.settings.musicVol;
-    switch (tr.voice) {
-        case "pluck": vPluck(ctx, t, freq, vol, master); break;
-        case "brass": vBrass(ctx, t, freq, vol*0.85, master); break;
-        case "piano": vPiano(ctx, t, freq, vol, master); break;
-        case "flute": vFlute(ctx, t, freq, vol*1.1, master); break;
-        default:      vBell(ctx, t, freq, vol, master);
-    }
-}
-// lush chord pad (follows the bar's chord root)
-function phonkPad(ctx, t, root) {
-    const master = ensureMaster(); if (!master) return;
-    const f = ctx.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = 2400;
-    const g = ctx.createGain();
-    g.gain.setValueAtTime(0.0001, t);
-    g.gain.linearRampToValueAtTime(0.045 * game.settings.musicVol, t + 0.5);
-    g.gain.linearRampToValueAtTime(0.0001, t + 1.95);
-    [0, 3, 7, 10, 12].forEach(iv => {
-        const o = ctx.createOscillator(); o.type = "sawtooth";
-        o.frequency.value = midiHz(root + iv - 12);
-        o.detune.value = (Math.random()*8-4);
-        o.connect(f); o.start(t); o.stop(t + 2.0);
-    });
-    f.connect(g); g.connect(master); routeWet(g);
-}
-
-
 // ---------- sequencer + track rotation ----------
-// catchy vi-IV-I-V style chord movement (semitone transpose per bar)
-const PROG = [0, -4, 3, -2];
+// ambient chord movement (major/minor feels)
+const PROG = [0, -3, 5, -2];
 function phonkTick() {
     const ctx = getCtx(); if (!ctx) return;
     const tr = TRACKS[PHONK.idx % TRACKS.length];
@@ -475,19 +483,24 @@ function skipTrack() {
 
 
 // ---------- ROBUST audio unlock (fixes mobile/iOS no-sound) ----------
+// On iOS, AudioContext MUST be created AND resumed inside a user-gesture handler.
 function unlockAudio() {
-    const ctx = getCtx(); if (!ctx) return;
     try {
+        const ctx = createCtx(); // creates context if not yet made — must be inside gesture
+        if (!ctx) return;
         if (ctx.state === "suspended") ctx.resume();
-        // play a silent buffer to satisfy iOS gesture requirement
-        const b = ctx.createBuffer(1, 1, 22050);
+        // Silent 1-sample buffer tricks iOS into fully unlocking audio output
+        const b = ctx.createBuffer(1, 1, ctx.sampleRate);
         const src = ctx.createBufferSource();
         src.buffer = b; src.connect(ctx.destination); src.start(0);
     } catch (e) {}
 }
 function startAudio() {
-    unlockAudio();
-    if (audioStarted) { if (game.settings.musicOn) startMusic(); return; }
+    unlockAudio(); // always call inside gesture so iOS context gets created
+    if (audioStarted) {
+        if (game.settings.musicOn && !PHONK.playing) startMusic();
+        return;
+    }
     audioStarted = true;
     ensureMaster();
     if (game.settings.musicOn) startMusic();
@@ -498,15 +511,16 @@ function startAudio() {
         startAudio();
     }, { once: true, passive: true });
 });
-// keep context alive on every interaction (mobile suspends it)
-["pointerdown","touchend"].forEach(ev => {
+// keep context alive on every interaction (iOS suspends AudioContext on app switch)
+["pointerdown","touchstart","touchend"].forEach(ev => {
     document.addEventListener(ev, () => {
-        const c = getCtx(); if (c && c.state === "suspended") c.resume();
+        if (!audioCtx) return;
+        if (audioCtx.state === "suspended") audioCtx.resume();
         if (audioStarted && game.settings.musicOn && !PHONK.playing) startMusic();
     }, { passive: true });
 });
 document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) { const c = getCtx(); if (c && c.state === "suspended") c.resume(); }
+    if (!document.hidden && audioCtx && audioCtx.state === "suspended") audioCtx.resume();
 });
 
 
