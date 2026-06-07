@@ -178,7 +178,8 @@ const EGG_TEMPLATES = [
 ];
 
 function eggCost(t, world) { return Math.floor(t.baseCost * Math.pow(t.growth, world)); }
-function petPower(base, world) { return +(base * (1 + world * 0.15)).toFixed(2); }
+// pet power scales exponentially per world so later-world pets are always worth getting
+function petPower(base, world) { return +(base * Math.pow(1.4, world)).toFixed(2); }
 function allPetsForWorld() {
     // flatten all egg pets (the 15 base pets)
     let arr = [];
