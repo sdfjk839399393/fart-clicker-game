@@ -1245,22 +1245,66 @@ function finishHatch() {
 function fxLayer() { return document.getElementById("golden-layer"); }
 
 // little fart-cloud puffs + sparks on every click
-const PUFFS = ["💨","💨","💨","✨","⭐","💫"];
+const PUFFS = ["💨","💨","💨","✨","⭐","💫","🌟","💥","🔥","⚡"];
 function clickPuff(x, y) {
     if (!game.settings.particles) return;
     const layer = fxLayer(); if (!layer) return;
-    const n = 2 + Math.floor(Math.random()*2);
-    for (let i=0;i<n;i++) {
+    const w = WORLDS[game.worldIdx || 0];
+    const wColor = (w && w.theme) ? w.theme.p : "#7FFF00";
+    // more puffs at higher combo
+    const n = 3 + Math.floor(comboValue / 20) + Math.floor(Math.random()*3);
+    for (let i = 0; i < n; i++) {
         const p = document.createElement("div");
         p.className = "click-puff";
         p.textContent = PUFFS[Math.floor(Math.random()*PUFFS.length)];
         p.style.left = x + "px"; p.style.top = y + "px";
-        const ang = -Math.PI/2 + (Math.random()-0.5)*1.6, dist = 30 + Math.random()*55;
+        const ang = -Math.PI/2 + (Math.random()-0.5)*2.2, dist = 35 + Math.random()*80;
         p.style.setProperty("--dx", Math.cos(ang)*dist + "px");
         p.style.setProperty("--dy", (Math.sin(ang)*dist) + "px");
-        p.style.fontSize = (0.8 + Math.random()*0.8) + "rem";
+        p.style.fontSize = (0.7 + Math.random()*1.1) + "rem";
         layer.appendChild(p); setTimeout(()=>p.remove(), 700);
     }
+    // spark dots in world color
+    const sparks = 4 + Math.floor(comboValue / 15);
+    for (let i = 0; i < sparks; i++) {
+        const s = document.createElement("div"); s.className = "confetti";
+        s.style.left = x + "px"; s.style.top = y + "px";
+        s.style.width = s.style.height = (3 + Math.random()*4) + "px";
+        s.style.borderRadius = "50%";
+        s.style.background = Math.random() < 0.6 ? wColor : "#ffffff";
+        const ang = Math.random()*Math.PI*2, dist = 20 + Math.random()*70;
+        s.style.setProperty("--dx", Math.cos(ang)*dist + "px");
+        s.style.setProperty("--dy", Math.sin(ang)*dist + "px");
+        layer.appendChild(s); setTimeout(()=>s.remove(), 600);
+    }
+}
+
+// ambient floating particles around the button
+let ambientTimer = null;
+function startAmbientParticles() {
+    if (ambientTimer) return;
+    ambientTimer = setInterval(() => {
+        if (!game.settings.particles) return;
+        const layer = fxLayer(); if (!layer) return;
+        const w = WORLDS[game.worldIdx || 0];
+        const wColor = (w && w.theme) ? w.theme.p : "#7FFF00";
+        const btn = document.getElementById("main-btn"); if (!btn) return;
+        const rect = btn.getBoundingClientRect();
+        const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
+        const angle = Math.random() * Math.PI * 2;
+        const r = rect.width/2 + 10 + Math.random()*20;
+        const sx = cx + Math.cos(angle)*r, sy = cy + Math.sin(angle)*r;
+        const p = document.createElement("div"); p.className = "click-puff";
+        const emojis = ["✨","💫","⭐","🌟","💨"];
+        p.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+        p.style.left = sx + "px"; p.style.top = sy + "px";
+        p.style.fontSize = (0.5 + Math.random()*0.7) + "rem";
+        p.style.opacity = "0.7";
+        const drift = -30 - Math.random()*40;
+        p.style.setProperty("--dx", (Math.random()*20-10) + "px");
+        p.style.setProperty("--dy", drift + "px");
+        layer.appendChild(p); setTimeout(()=>p.remove(), 900);
+    }, 300);
 }
 
 function floatText(x, y, txt, color, big) {
@@ -1428,6 +1472,7 @@ function initGame() {
         mainBtn.addEventListener("touchstart", function(ev){ ev.preventDefault(); const tp = ev.touches&&ev.touches[0]; handleMainClick({clientX: tp?tp.clientX:innerWidth/2, clientY: tp?tp.clientY:innerHeight/2}); }, { passive:false });
     }
     buildButtonDecor();
+    startAmbientParticles();
 }
 
 // inject decorative orbiting emojis inside the main button
