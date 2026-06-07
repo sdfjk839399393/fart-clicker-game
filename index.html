@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Fart Clicker: Ultimate</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -14,15 +14,13 @@
     <!-- Audio Elements -->
     <audio id="click-sound" preload="auto"></audio>
     <audio id="purchase-sound" preload="auto"></audio>
-    <audio id="rebirth-sound" preload="auto"></audio>
-    <audio id="bg-music" loop preload="auto"></audio>
 
     <div id="game-container">
         <div class="header">
-            <h1>☢️ FART CLICKER</h1>
+            <h1>💨 FART CLICKER 💨</h1>
             <div class="stats-panel">
                 <div class="stat-row">
-                    <span class="stat-label">Stink:</span>
+                    <span class="stat-label">Stink Level:</span>
                     <span id="points" class="stat-value">0</span>
                 </div>
                 <div class="stat-row">
@@ -30,7 +28,7 @@
                     <span id="per-click" class="stat-value">1</span>
                 </div>
                 <div class="stat-row">
-                    <span class="stat-label">Spam Bonus:</span>
+                    <span class="stat-label">Spam Multiplier:</span>
                     <span id="spam-mult" class="stat-value">1.0x</span>
                 </div>
                 <div class="stat-row">
@@ -43,7 +41,7 @@
             </div>
         </div>
 
-        <button id="main-btn" class="main-click-btn">💨 CLICK ME!</button>
+        <button id="main-btn" class="main-click-btn">💨 CLICK ME! 💨</button>
 
         <div class="tabs">
             <button class="tab-btn active" onclick="showTab('upgrades', this)">🛒 Upgrades</button>
@@ -55,14 +53,12 @@
         <div id="pets" class="tab-content"></div>
         <div id="worlds" class="tab-content"></div>
 
-        <div class="bottom-section">
-            <button onclick="rebirth()" id="rebirth-btn" class="rebirth-btn">REBIRTH (Req: 10,000)</button>
-        </div>
+        <button onclick="rebirth()" id="rebirth-btn" class="rebirth-btn">REBIRTH (Req: 10,000)</button>
     </div>
 
     <!-- Egg Modal -->
     <div id="egg-modal" class="modal hidden">
-        <div class="modal-content egg-modal">
+        <div class="modal-content">
             <button class="close-btn" onclick="closeEggModal()">&times;</button>
             <h2>🥚 Select Egg</h2>
             <div id="egg-selection"></div>
@@ -71,11 +67,11 @@
 
     <!-- Pet Modal -->
     <div id="pet-modal" class="modal hidden">
-        <div class="modal-content pet-modal">
+        <div class="modal-content">
             <button class="close-btn" onclick="closePetModal()">&times;</button>
             <h2>🐾 Pet Details</h2>
             <div id="pet-details"></div>
-            <div class="modal-buttons">
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
                 <button class="modal-btn" onclick="equipPet()">Equip</button>
                 <button class="modal-btn secondary" onclick="closePetModal()">Close</button>
             </div>
