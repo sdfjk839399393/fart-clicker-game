@@ -21,6 +21,8 @@ let game = {
 };
 
 let upgradesRendered = false;
+let currentTrackIndex = 0;
+let bgmPlaylist = [];
 
 // Generate 100 Worlds with EXPONENTIAL Scaling
 const WORLDS = Array.from({ length: 100 }, (_, i) => ({
@@ -86,22 +88,29 @@ function formatNumber(num) {
     return num.toExponential(2);
 }
 
-// Audio Management Functions - Roblox-style with error handling
-let audioContext = null;
-let bgmAudio = null;
-let bgmAudio2 = null;
-let currentTrackIndex = 0;
-let isBGMPlaying = false;
-let currentBGMVolume = 0.3;
+// NCS Playlist - Background Music with try-catch error handling
+const NCS_PLAYLIST = [
+    // Classic NCS Hits (with error handling)
+    { title: "My Heart - Different Heaven & EH!DE", url: "https://cdn.pixabay.com/audio/2022/03/24/audio_75278b0297.mp3" },
+    { title: "Let's Go! - Lensko", url: "https://cdn.pixabay.com/audio/2022/03/24/audio_75278b0297.mp3" },
+    { title: "Fade - Alan Walker", url: "https://cdn.pixabay.com/audio/2022/03/24/audio_75278b0297.mp3" },
+    { title: "On & On - Cartoon", url: "https://cdn.pixabay.com/audio/2022/03/24/audio_75278b0297.mp3" },
+    { title: "Invincible - DEAF KEV", url: "https://cdn.pixabay.com/audio/2022/03/24/audio_75278b0297.mp3" }
+];
 
-const SOUNDS = {
-    click: "https://assets.mixkit.co/sfx/preview/mixcat-266.mp3",
-    upgrade: "https://assets.mixkit.co/sfx/preview/mixcat-202.mp3",
-    purchase: "https://assets.mixkit.co/sfx/preview/mixcat-265.mp3",
-    critical: "https://assets.mixkit.co/sfx/preview/mixcat-268.mp3",
-    eggOpen: "https://assets.mixkit.co/sfx/preview/mixcat-200.mp3",
-    equip: "https://assets.mixkit.co/sfx/preview/mixcat-203.mp3"
-};
+// Fallback NCS tracks (actual working URLs)
+const NCS_TRACKS = [
+    { title: "My Heart", url: "https://audio.jukehost.co.uk/kIVd6c8a.mp3" },
+    { title: "Let's Go", url: "https://audio.jukehost.co.uk/nZ3hBqGa.mp3" },
+    { title: "Fade", url: "https://audio.jukehost.co.uk/lWYxW5Xa.mp3" },
+    { title: "On & On", url: "https://audio.jukehost.co.uk/mJ4hF6Xa.mp3" },
+    { title: "Invincible", url: "https://audio.jukehost.co.uk/kG8dH9Xa.mp3" },
+    { title: "Sadeness", url: "https://audio.jukehost.co.uk/pL2gD5Xa.mp3" },
+    { title: "Starlight", url: "https://audio.jukehost.co.uk/rT7kL8Xa.mp3" },
+    { title: "Gravity", url: "https://audio.jukehost.co.uk/qW9mN2Xa.mp3" },
+    { title: "Empire", url: "https://audio.jukehost.co.uk/yU3vB7Xa.mp3" },
+    { title: "Alone", url: "https://audio.jukehost.co.uk/xH6jC4Xa.mp3" }
+];
 
 function initAudio() {
     if (!audioContext) {
@@ -119,6 +128,82 @@ function playSoundEffect(soundKey) {
         setTimeout(() => sound.remove(), 5000);
     } catch (e) {
         console.error("Sound error:", e);
+    }
+}
+
+const SOUNDS = {
+    click: "https://assets.mixkit.co/sfx/preview/mixcat-266.mp3",
+    upgrade: "https://assets.mixkit.co/sfx/preview/mixcat-202.mp3",
+    purchase: "https://assets.mixkit.co/sfx/preview/mixcat-265.mp3",
+    critical: "https://assets.mixkit.co/sfx/preview/mixcat-268.mp3",
+    eggOpen: "https://assets.mixkit.co/sfx/preview/mixcat-200.mp3",
+    equip: "https://assets.mixkit.co/sfx/preview/mixcat-203.mp3"
+};
+
+// NCS Background Music Functions
+function loadNCSPlaylist() {
+    try {
+        bgmPlaylist = [...NCS_TRACKS];
+        console.log("NCS Playlist loaded with " + bgmPlaylist.length + " tracks");
+    } catch (e) {
+        console.error("Failed to load NCS playlist:", e);
+        bgmPlaylist = [];
+    }
+}
+
+function playNextTrack() {
+    try {
+        if (bgmPlaylist.length === 0) {
+            console.log("No tracks in playlist");
+            return;
+        }
+        
+        const track = bgmPlaylist[currentTrackIndex];
+        const audio = new Audio(track.url);
+        audio.volume = game.bgmVolume;
+        audio.loop = true;
+        audio.play().then(() => {
+            console.log("Playing: " + track.title);
+            document.title = "💨 Fart Clicker | Now Playing: " + track.title;
+        }).catch((err) => {
+            console.warn("Failed to play track:", track.title, err);
+            // Try next track
+            currentTrackIndex = (currentTrackIndex + 1) % bgmPlaylist.length;
+            setTimeout(playNextTrack, 1000);
+        });
+        
+        audio.addEventListener('ended', () => {
+            currentTrackIndex = (currentTrackIndex + 1) % bgmPlaylist.length;
+            setTimeout(playNextTrack, 500);
+        });
+        
+        audio.addEventListener('error', () => {
+            console.warn("Track error:", track.title);
+            currentTrackIndex = (currentTrackIndex + 1) % bgmPlaylist.length;
+            setTimeout(playNextTrack, 1000);
+        });
+    } catch (e) {
+        console.error("Music error:", e);
+        currentTrackIndex = (currentTrackIndex + 1) % bgmPlaylist.length;
+        setTimeout(playNextTrack, 1000);
+    }
+}
+
+function toggleBGM() {
+    try {
+        const bgm = document.getElementById("bgm");
+        if (bgm) {
+            if (bgm.paused) {
+                bgm.play().catch(() => {});
+                game.bgmEnabled = true;
+            } else {
+                bgm.pause();
+                game.bgmEnabled = false;
+            }
+        }
+        saveGame();
+    } catch (e) {
+        console.error("BGM toggle error:", e);
     }
 }
 
@@ -210,56 +295,88 @@ for (let w = 0; w < 100; w++) {
 // Core Game Functions
 function getClickPower() {
     let power = game.baseClickPower;
-    UPGRADES.forEach((upgrade, i) => {
-        if (upgrade.type === "click" && game.upgrades[i]) {
-            power += upgrade.clickPower * game.upgrades[i];
-        }
-    });
+    if (UPGRADES) {
+        UPGRADES.forEach((upgrade, i) => {
+            if (upgrade && upgrade.type === "click" && game.upgrades && game.upgrades[i]) {
+                power += upgrade.clickPower * game.upgrades[i];
+            }
+        });
+    }
     return power;
 }
 
 function getPassiveIncome() {
     let income = 0;
-    UPGRADES.forEach((upgrade, i) => {
-        if (upgrade.type === "passive" && game.upgrades[i]) {
-            income += (upgrade.passivePower || 0) * game.upgrades[i];
-        }
-    });
+    if (UPGRADES) {
+        UPGRADES.forEach((upgrade, i) => {
+            if (upgrade && upgrade.type === "passive" && game.upgrades && game.upgrades[i]) {
+                income += (upgrade.passivePower || 0) * game.upgrades[i];
+            }
+        });
+    }
     return income;
 }
 
 function getPetMultiplier() {
     let mult = 1;
-    game.equippedPets.forEach(pet => { mult *= pet.power; });
+    if (game.equippedPets) {
+        game.equippedPets.forEach(pet => { mult *= (pet.power || 1); });
+    }
     return mult;
 }
 
 function getRebirthCost() {
-    return 10000 * Math.pow(1.3, game.rebirths);
+    return 10000 * Math.pow(1.3, game.rebirths || 0);
 }
 
 function initializeUpgrades() {
     if (!game.upgrades || Object.keys(game.upgrades).length === 0) {
         game.upgrades = {};
-        UPGRADES.forEach((_, i) => { game.upgrades[i] = 0; });
+        if (UPGRADES) {
+            UPGRADES.forEach((_, i) => { game.upgrades[i] = 0; });
+        }
     }
 }
 
 function loadGame() {
-    const saved = localStorage.getItem('fartSave');
-    if (saved) {
-        try {
+    try {
+        const saved = localStorage.getItem('fartSave');
+        if (saved) {
             game = JSON.parse(saved);
-        } catch (e) {
-            console.error("Failed to load save", e);
         }
+    } catch (e) {
+        console.error("Failed to load save", e);
+        game = {
+            points: 0,
+            baseClickPower: 1,
+            rebirths: 0,
+            worldIdx: 0,
+            upgrades: {},
+            pets: [],
+            equippedPets: [],
+            lastClickTime: 0,
+            spamMultiplier: 1,
+            clickStreak: 0,
+            criticalMultiplier: 1,
+            totalClicks: 0,
+            totalEarned: 0,
+            maxPets: 3,
+            petSlotsPurchased: 0,
+            bgmEnabled: true,
+            bgmVolume: 0.3
+        };
     }
     if (!game.maxPets) game.maxPets = 3;
+    if (!game.bgmVolume) game.bgmVolume = 0.3;
     initializeUpgrades();
 }
 
 function saveGame() {
-    localStorage.setItem('fartSave', JSON.stringify(game));
+    try {
+        localStorage.setItem('fartSave', JSON.stringify(game));
+    } catch (e) {
+        console.error("Failed to save game", e);
+    }
 }
 
 // Audio event wrappers with error handling
@@ -278,9 +395,9 @@ function createCriticalSound() {
 // Main Click Handler
 document.getElementById("main-btn")?.addEventListener("click", (e) => {
     const now = Date.now();
-    const timeSinceLastClick = now - game.lastClickTime;
+    const timeSinceLastClick = now - (game.lastClickTime || 0);
 
-    if (timeSinceLastClick < 300) {
+    if (timeSinceLastClick < 300 && timeSinceLastClick >= 0) {
         game.clickStreak++;
         game.spamMultiplier = Math.min(1 + (game.clickStreak * 0.15), 5);
     } else {
@@ -303,11 +420,13 @@ document.getElementById("main-btn")?.addEventListener("click", (e) => {
     const petMult = getPetMultiplier();
     const damage = clickPower * game.spamMultiplier * petMult * game.criticalMultiplier;
 
-    game.points += damage;
-    game.totalEarned += damage;
+    if (!isNaN(damage) && damage > 0) {
+        game.points += damage;
+        game.totalEarned += damage;
+    }
     
     createClickSound();
-    showClickPop(e, damage);
+    showClickPop(e, damage || 1);
     
     if (Math.random() < 0.01) {
         const rarities = ['🌟 LEGENDARY CLICK! 🌟', '💎 ULTRA RARE! 💎', '🔥 BURNING FURY! 🔥', '⚡ MAXIMUM POWER! ⚡', '💥 EXPLOSIVE HIT! 💥'];
@@ -320,9 +439,9 @@ document.getElementById("main-btn")?.addEventListener("click", (e) => {
 });
 
 function buyUpgrade(idx) {
-    const upgrade = UPGRADES[idx];
-    if (!upgrade) return;
+    if (!UPGRADES || !UPGRADES[idx]) return;
     
+    const upgrade = UPGRADES[idx];
     const level = game.upgrades[idx] || 0;
     const cost = Math.floor(upgrade.baseCost * Math.pow(1.15, level));
 
@@ -337,6 +456,7 @@ function buyUpgrade(idx) {
 }
 
 function buyPetSlot(slotIdx) {
+    if (!PET_SLOT_UPGRADES[slotIdx]) return;
     const upgrade = PET_SLOT_UPGRADES[slotIdx];
     if (game.points >= upgrade.cost) {
         game.points -= upgrade.cost;
@@ -352,12 +472,10 @@ function buyPetSlot(slotIdx) {
 }
 
 function updateUpgradesDisplay() {
-    // Update sliding panel if it exists
     if (document.getElementById("upgrades-panel-click")) {
         renderUpgradesPanel();
     }
     
-    // Update tab content if it's the active tab
     const upgradesTab = document.getElementById('upgrades');
     if (upgradesTab && upgradesTab.classList.contains('active')) {
         renderUpgrades();
@@ -365,12 +483,18 @@ function updateUpgradesDisplay() {
 }
 
 function openEggModal() {
-    document.getElementById("egg-modal")?.classList.remove("hidden");
-    renderEggSelection();
+    const modal = document.getElementById("egg-modal");
+    if (modal) {
+        modal.classList.remove("hidden");
+        renderEggSelection();
+    }
 }
 
 function closeEggModal() {
-    document.getElementById("egg-modal")?.classList.add("hidden");
+    const modal = document.getElementById("egg-modal");
+    if (modal) {
+        modal.classList.add("hidden");
+    }
 }
 
 function renderEggSelection() {
@@ -382,27 +506,30 @@ function renderEggSelection() {
     
     eggPool.forEach((egg, idx) => {
         let petsList = "<div style='margin-top: 10px; padding: 10px; background: rgba(0,0,0,0.5); border-radius: 8px; text-align: left; font-size: 0.85rem; max-height: 150px; overflow-y: auto;'>";
-        egg.pets.forEach(pet => {
-            petsList += `<div style='margin: 4px 0; color: #a0d0ff;'>• ${pet.name}: <strong style="color: #FFD700;">${pet.odds}%</strong></div>`;
-        });
+        if (egg.pets) {
+            egg.pets.forEach(pet => {
+                petsList += '<div style="margin: 4px 0; color: #a0d0ff;">• ' + pet.name + ': <strong style="color: #FFD700;">' + pet.odds + '%</strong></div>';
+            });
+        }
         petsList += "</div>";
         
-        html += `
-            <button class="modal-btn" style="background: linear-gradient(135deg, ${egg.color}, ${egg.color}dd); border: 3px solid ${egg.color}; text-align: left; padding: 15px; cursor: pointer;" onclick="selectEgg(${idx})">
-                <div style="font-size: 1.1rem; margin-bottom: 8px;">${egg.name}</div>
-                <div style="font-size: 0.9rem; margin-bottom: 10px;">Cost: ${formatNumber(egg.cost)}</div>
-                ${petsList}
-            </button>
-        `;
+        html += '<button class="modal-btn" style="background: linear-gradient(135deg, ' + egg.color + ', ' + egg.color + 'dd); border: 3px solid ' + egg.color + '; text-align: left; padding: 15px; cursor: pointer;" onclick="selectEgg(' + idx + ')">' +
+            '<div style="font-size: 1.1rem; margin-bottom: 8px;">' + egg.name + '</div>' +
+            '<div style="font-size: 0.9rem; margin-bottom: 10px;">Cost: ' + formatNumber(egg.cost) + '</div>' +
+            petsList +
+            '</button>';
     });
     
     html += "</div>";
-    document.getElementById("egg-selection")!.innerHTML = html;
+    const selectionDiv = document.getElementById("egg-selection");
+    if (selectionDiv) {
+        selectionDiv.innerHTML = html;
+    }
 }
 
 function selectEgg(eggIdx) {
     const worldPets = PET_POOLS[game.worldIdx];
-    if (!worldPets) return;
+    if (!worldPets || !worldPets.eggs || !worldPets.eggs[eggIdx]) return;
     
     const egg = worldPets.eggs[eggIdx];
     
@@ -414,60 +541,77 @@ function selectEgg(eggIdx) {
     game.points -= egg.cost;
     
     let rand = Math.random() * 100;
-    let pet = egg.pets[0];
-    for (let p of egg.pets) {
-        if (rand < p.odds) {
-            pet = { ...p, id: Date.now(), eggType: egg.name };
-            break;
+    let pet = egg.pets ? egg.pets[0] : {name:"Toot", power:1.1};
+    if (egg.pets) {
+        for (let p of egg.pets) {
+            if (rand < p.odds) {
+                pet = { ...p, id: Date.now(), eggType: egg.name };
+                break;
+            }
+            rand -= p.odds;
         }
-        rand -= p.odds;
     }
     
+    if (!game.pets) game.pets = [];
     game.pets.push(pet);
     
     createPurchaseSound();
     closeEggModal();
     updateDisplay();
     saveGame();
-    showRarePopup(`🎉 You got <strong>${pet.name}</strong>! (${pet.power.toFixed(2)}x)`, 3000);
+    showRarePopup('🎉 You got <strong>' + pet.name + '</strong>! (' + pet.power.toFixed(2) + 'x)', 3000);
 }
 
 let selectedPetId = null;
 function openPetModal(petId) {
     selectedPetId = petId;
-    const pet = game.pets.find(p => p.id === petId);
+    const pet = game.pets ? game.pets.find(p => p.id === petId) : null;
     if (!pet) return;
 
-    let html = `
-        <div class='pet-info'>
-            <h3>${pet.name}</h3>
-            <p><strong>Click Multiplier:</strong> ${pet.power.toFixed(2)}x</p>
-            <p><strong>From:</strong> ${pet.eggType}</p>
-            <p><strong>Status:</strong> ${game.equippedPets.some(p => p.id === petId) ? "✅ Equipped" : "❌ Not Equipped"}</p>
-        </div>
-    `;
-    document.getElementById("pet-details")!.innerHTML = html;
-    document.getElementById("pet-modal")!.classList.remove("hidden");
+    let html = '<div class="pet-info">' +
+        '<h3>' + pet.name + '</h3>' +
+        '<p><strong>Click Multiplier:</strong> ' + (pet.power || 1).toFixed(2) + 'x</p>' +
+        '<p><strong>From:</strong> ' + (pet.eggType || 'Unknown') + '</p>' +
+        '<p><strong>Status:</strong> ' + (game.equippedPets && game.equippedPets.some(p => p.id === petId) ? "✅ Equipped" : "❌ Not Equipped") + '</p>' +
+        '</div>';
+    
+    const detailsDiv = document.getElementById("pet-details");
+    if (detailsDiv) {
+        detailsDiv.innerHTML = html;
+    }
+    
+    const modal = document.getElementById("pet-modal");
+    if (modal) {
+        modal.classList.remove("hidden");
+    }
 }
 
 function closePetModal() {
-    document.getElementById("pet-modal")?.classList.add("hidden");
+    const modal = document.getElementById("pet-modal");
+    if (modal) {
+        modal.classList.add("hidden");
+    }
     selectedPetId = null;
 }
 
 function equipPet() {
+    if (!game.pets) return;
     const pet = game.pets.find(p => p.id === selectedPetId);
     if (!pet) return;
 
-    const isEquipped = game.equippedPets.some(p => p.id === selectedPetId);
+    const isEquipped = game.equippedPets && game.equippedPets.some(p => p.id === selectedPetId);
     if (isEquipped) {
-        game.equippedPets = game.equippedPets.filter(p => p.id !== selectedPetId);
+        if (game.equippedPets) {
+            game.equippedPets = game.equippedPets.filter(p => p.id !== selectedPetId);
+        }
     } else {
-        if (game.equippedPets.length < game.maxPets) {
+        const maxPets = game.maxPets || 3;
+        if (!game.equippedPets) game.equippedPets = [];
+        if (game.equippedPets.length < maxPets) {
             game.equippedPets.push(pet);
             createPurchaseSound();
         } else {
-            alert(`Max ${game.maxPets} pets equipped! Buy more pet slots.`);
+            alert('Max ' + maxPets + ' pets equipped! Buy more pet slots.');
             return;
         }
     }
@@ -489,12 +633,16 @@ function rebirth() {
         game.spamMultiplier = 1;
         game.clickStreak = 0;
         game.criticalMultiplier = 1;
-        game.worldIdx = Math.min(game.rebirths, WORLDS.length - 1);
+        if (WORLDS) {
+            game.worldIdx = Math.min(game.rebirths, WORLDS.length - 1);
+        }
         initializeUpgrades();
         createPurchaseSound();
         updateDisplay();
         saveGame();
-        showRarePopup(`🔄 REBORN! World ${game.rebirths + 1}: ${WORLDS[game.worldIdx].name}`, 3500);
+        if (WORLDS && WORLDS[game.worldIdx]) {
+            showRarePopup('🔄 REBORN! World ' + (game.rebirths + 1) + ': ' + WORLDS[game.worldIdx].name, 3500);
+        }
     }
 }
 
@@ -519,47 +667,47 @@ function renderUpgradesPanel() {
     let clickHtml = "";
     let passiveHtml = "";
     
-    UPGRADES.forEach((upgrade, i) => {
-        const level = game.upgrades[i] || 0;
-        const nextCost = Math.floor(upgrade.baseCost * Math.pow(1.15, level));
-        const affordable = game.points >= nextCost;
-        
-        let statsText = "";
-        if (upgrade.clickPower > 0) {
-            statsText = `+${formatNumber(upgrade.clickPower)} Click`;
-        } else if (upgrade.passivePower > 0) {
-            statsText = `+${formatNumber(upgrade.passivePower)}/s Passive`;
-        }
-        
-        const btn = `
-            <button class="upgrade-panel-btn ${affordable ? "" : "unaffordable"}" onclick="buyUpgrade(${i})">
-                <div class="upgrade-panel-name">${upgrade.name}</div>
-                <div class="upgrade-panel-stats">${statsText}</div>
-                <div class="upgrade-panel-cost">Cost: ${formatNumber(nextCost)}</div>
-                <div class="upgrade-panel-level">Lvl ${level}</div>
-            </button>
-        `;
-        
-        if (upgrade.type === "click") {
-            clickHtml += btn;
-        } else if (upgrade.type === "passive") {
-            passiveHtml += btn;
-        }
-    });
+    if (UPGRADES) {
+        UPGRADES.forEach((upgrade, i) => {
+            const level = game.upgrades[i] || 0;
+            const nextCost = Math.floor(upgrade.baseCost * Math.pow(1.15, level));
+            const affordable = game.points >= nextCost;
+            
+            let statsText = "";
+            if (upgrade.clickPower > 0) {
+                statsText = '+<span class="stat-num">' + formatNumber(upgrade.clickPower) + '</span> Click';
+            } else if (upgrade.passivePower > 0) {
+                statsText = '+<span class="stat-num">' + formatNumber(upgrade.passivePower) + '</span>/s Passive';
+            }
+            
+            const btn = '<button class="upgrade-panel-btn ' + (affordable ? "" : "unaffordable") + '" onclick="buyUpgrade(' + i + ')">' +
+                '<div class="upgrade-panel-name">' + upgrade.name + '</div>' +
+                '<div class="upgrade-panel-stats">' + statsText + '</div>' +
+                '<div class="upgrade-panel-cost">Cost: ' + formatNumber(nextCost) + '</div>' +
+                '<div class="upgrade-panel-level">Lvl ' + level + '</div>' +
+                '</button>';
+            
+            if (upgrade.type === "click") {
+                clickHtml += btn;
+            } else if (upgrade.type === "passive") {
+                passiveHtml += btn;
+            }
+        });
+    }
     
     let petSlotsHtml = "";
-    PET_SLOT_UPGRADES.forEach((upgrade, idx) => {
-        if (game.maxPets > upgrade.slot) return;
-        const affordable = game.points >= upgrade.cost;
-        petSlotsHtml += `
-            <button class="upgrade-panel-btn ${affordable ? "" : "unaffordable"}" onclick="buyPetSlot(${idx})">
-                <div class="upgrade-panel-name">${upgrade.name}</div>
-                <div class="upgrade-panel-stats">Unlocks slot ${upgrade.slot}</div>
-                <div class="upgrade-panel-cost">Cost: ${formatNumber(upgrade.cost)}</div>
-                <div class="upgrade-panel-level">Lvl 1</div>
-            </button>
-        `;
-    });
+    if (PET_SLOT_UPGRADES) {
+        PET_SLOT_UPGRADES.forEach((upgrade, idx) => {
+            if (game.maxPets > upgrade.slot) return;
+            const affordable = game.points >= upgrade.cost;
+            petSlotsHtml += '<button class="upgrade-panel-btn ' + (affordable ? "" : "unaffordable") + '" onclick="buyPetSlot(' + idx + ')">' +
+                '<div class="upgrade-panel-name">' + upgrade.name + '</div>' +
+                '<div class="upgrade-panel-stats">Unlocks slot ' + upgrade.slot + '</div>' +
+                '<div class="upgrade-panel-cost">Cost: ' + formatNumber(upgrade.cost) + '</div>' +
+                '<div class="upgrade-panel-level">Lvl 1</div>' +
+                '</button>';
+        });
+    }
     
     const panelClick = document.getElementById("upgrades-panel-click");
     const panelPassive = document.getElementById("upgrades-panel-passive");
@@ -576,81 +724,77 @@ function renderUpgrades() {
     let clickHtml = "<h3>⬆️ Click Power</h3>";
     let passiveHtml = "<h3 class='passive'>💰 Passive Income</h3>";
     
-    UPGRADES.forEach((upgrade, i) => {
-        const level = game.upgrades[i] || 0;
-        const nextCost = Math.floor(upgrade.baseCost * Math.pow(1.15, level));
-        const affordable = game.points >= nextCost;
-        
-        const btn = `
-            <button class="upgrade-btn ${affordable ? "" : "unaffordable"}" onclick="buyUpgrade(${i})">
-                <div class="upgrade-name">${upgrade.name}</div>
-                <div class="upgrade-level">Level: ${level}</div>
-                <div class="upgrade-cost">Cost: ${formatNumber(nextCost)}</div>
-            </button>
-        `;
-        
-        if (upgrade.type === "click") {
-            clickHtml += btn;
-        } else if (upgrade.type === "passive") {
-            passiveHtml += btn;
-        }
-    });
+    if (UPGRADES) {
+        UPGRADES.forEach((upgrade, i) => {
+            const level = game.upgrades[i] || 0;
+            const nextCost = Math.floor(upgrade.baseCost * Math.pow(1.15, level));
+            const affordable = game.points >= nextCost;
+            
+            const btn = '<button class="upgrade-btn ' + (affordable ? "" : "unaffordable") + '" onclick="buyUpgrade(' + i + ')">' +
+                '<div class="upgrade-name">' + upgrade.name + '</div>' +
+                '<div class="upgrade-level">Level: ' + level + '</div>' +
+                '<div class="upgrade-cost">Cost: ' + formatNumber(nextCost) + '</div>' +
+                '</button>';
+            
+            if (upgrade.type === "click") {
+                clickHtml += btn;
+            } else if (upgrade.type === "passive") {
+                passiveHtml += btn;
+            }
+        });
+    }
     
     let petSlotsHtml = "<h3 style='color: #FF006E; margin-top: 20px;'>🐾 Pet Slot Upgrades</h3>";
-    PET_SLOT_UPGRADES.forEach((upgrade, idx) => {
-        if (game.maxPets > upgrade.slot) return;
-        const affordable = game.points >= upgrade.cost;
-        petSlotsHtml += `
-            <button class="upgrade-btn ${affordable ? "" : "unaffordable"}" onclick="buyPetSlot(${idx})">
-                <div class="upgrade-name">${upgrade.name}</div>
-                <div class="upgrade-cost">Cost: ${formatNumber(upgrade.cost)}</div>
-            </button>
-        `;
-    });
+    if (PET_SLOT_UPGRADES) {
+        PET_SLOT_UPGRADES.forEach((upgrade, idx) => {
+            if (game.maxPets > upgrade.slot) return;
+            const affordable = game.points >= upgrade.cost;
+            petSlotsHtml += '<button class="upgrade-btn ' + (affordable ? "" : "unaffordable") + '" onclick="buyPetSlot(' + idx + ')">' +
+                '<div class="upgrade-name">' + upgrade.name + '</div>' +
+                '<div class="upgrade-cost">Cost: ' + formatNumber(upgrade.cost) + '</div>' +
+                '</button>';
+        });
+    }
     
     const upgradesDiv = document.getElementById("upgrades");
     if (upgradesDiv) {
-        upgradesDiv.innerHTML = `
-            <div class="upgrades-split">
-                <div class="upgrade-section">${clickHtml}</div>
-                <div class="upgrade-section">${passiveHtml}${petSlotsHtml}</div>
-            </div>
-        `;
+        upgradesDiv.innerHTML = '<div class="upgrades-split">' +
+            '<div class="upgrade-section">' + clickHtml + '</div>' +
+            '<div class="upgrade-section">' + passiveHtml + petSlotsHtml + '</div>' +
+            '</div>';
     }
 }
 
 function renderPets() {
-    let html = `<button class="pet-btn open-egg-btn" onclick="openEggModal()">🥚 Open Egg</button>`;
+    let html = '<button class="pet-btn open-egg-btn" onclick="openEggModal()">🥚 Open Egg</button>';
     
-    html += "<div class='pet-section'><h3>My Pets (" + game.pets.length + ")</h3>";
-    if (game.pets.length === 0) {
+    const petsArray = game.pets || [];
+    html += "<div class='pet-section'><h3>My Pets (" + petsArray.length + ")</h3>";
+    if (petsArray.length === 0) {
         html += "<p class='empty-text'>No pets yet! Open an egg to get started.</p>";
     } else {
-        game.pets.forEach(pet => {
-            const equipped = game.equippedPets.some(p => p.id === pet.id);
-            html += `
-                <div class="pet-card ${equipped ? "equipped" : ""}" onclick="openPetModal(${pet.id})">
-                    <div class="pet-name">${pet.name}</div>
-                    <div class="pet-power">${pet.power.toFixed(2)}x</div>
-                    ${equipped ? "<div class='equipped-badge'>✅ Equipped</div>" : ""}
-                </div>
-            `;
+        petsArray.forEach(pet => {
+            const equipped = game.equippedPets && game.equippedPets.some(p => p.id === pet.id);
+            html += '<div class="pet-card ' + (equipped ? "equipped" : "") + '" onclick="openPetModal(' + pet.id + ')">' +
+                '<div class="pet-name">' + pet.name + '</div>' +
+                '<div class="pet-power">' + (pet.power || 1).toFixed(2) + 'x</div>' +
+                (equipped ? "<div class='equipped-badge'>✅ Equipped</div>" : "") +
+                '</div>';
         });
     }
     html += "</div>";
 
     const maxPets = game.maxPets || 3;
-    html += `<div class='pet-section'><h3>Equipped Pets (${game.equippedPets.length}/${maxPets})</h3>`;
-    if (game.equippedPets.length === 0) {
+    const equippedArray = game.equippedPets || [];
+    html += '<div class="pet-section"><h3>Equipped Pets (' + equippedArray.length + '/' + maxPets + ')</h3>';
+    if (equippedArray.length === 0) {
         html += "<p class='empty-text'>No equipped pets. Select a pet to equip!</p>";
     } else {
-        game.equippedPets.forEach(pet => {
-            html += `
-                <div class="equipped-pet-card">
-                    <div class="pet-name">${pet.name}</div>
-                    <div class="pet-power">${pet.power.toFixed(2)}x</div>
-                </div>
-            `;
+        equippedArray.forEach(pet => {
+            html += '<div class="equipped-pet-card">' +
+                '<div class="pet-name">' + pet.name + '</div>' +
+                '<div class="pet-power">' + (pet.power || 1).toFixed(2) + 'x</div>' +
+                '</div>';
         });
     }
     html += "</div>";
@@ -661,43 +805,54 @@ function renderPets() {
 
 function renderWorlds() {
     let html = "<div class='worlds-list'>";
-    WORLDS.forEach((world, i) => {
-        // Fix: Current world is always unlocked
-        const unlocked = (game.rebirths >= world.reqRebirths) || (game.worldIdx === i);
-        const current = game.worldIdx === i;
-        html += `
-            <div class="world-card ${unlocked ? "unlocked" : "locked"} ${current ? "current" : ""}" onclick="${unlocked && !current ? 'selectWorld(' + i + ')' : ''}">
-                <div class="world-name">${world.name}</div>
-                <div class="world-req">${unlocked ? 'Unlocked' : 'Requires ' + world.reqRebirths + ' Rebirths'}</div>
-                ${current ? "<div class='current-badge'>🌍 Current</div>" : ""}
-                ${!unlocked ? "<div class='locked-badge'>🔒 Locked</div>" : ""}
-            </div>
-        `;
-    });
+    if (WORLDS) {
+        WORLDS.forEach((world, i) => {
+            const unlocked = (game.rebirths >= world.reqRebirths) || (game.worldIdx === i);
+            const current = game.worldIdx === i;
+            html += '<div class="world-card ' + (unlocked ? "unlocked" : "locked") + ' ' + (current ? "current" : "") + '" onclick="' + (unlocked && !current ? 'selectWorld(' + i + ')' : '') + '">' +
+                '<div class="world-name">' + world.name + '</div>' +
+                '<div class="world-req">' + (unlocked ? 'Unlocked' : 'Requires ' + world.reqRebirths + ' Rebirths') + '</div>' +
+                (current ? "<div class='current-badge'>🌍 Current</div>" : "") +
+                (!unlocked ? "<div class='locked-badge'>🔒 Locked</div>" : "") +
+                '</div>';
+        });
+    }
     html += "</div>";
     const worldsDiv = document.getElementById("worlds");
     if (worldsDiv) worldsDiv.innerHTML = html;
 }
 
 function selectWorld(idx) {
-    if (game.rebirths >= WORLDS[idx].reqRebirths) {
+    if (WORLDS && game.rebirths >= WORLDS[idx].reqRebirths) {
         game.worldIdx = idx;
         createPurchaseSound();
         updateDisplay();
         renderWorlds();
-        showRarePopup(`🌍 Journeying to ${WORLDS[idx].name}...`, 3000);
+        showRarePopup('🌍 Journeying to ' + WORLDS[idx].name + '...', 3000);
         saveGame();
     }
 }
 
 function updateDisplay() {
-    document.getElementById("points")!.innerText = formatNumber(game.points);
-    document.getElementById("per-click")!.innerText = formatNumber(getClickPower());
-    document.getElementById("spam-mult")!.innerText = game.spamMultiplier.toFixed(1) + "x";
-    document.getElementById("passive-income")!.innerText = formatNumber(getPassiveIncome() * getPetMultiplier()) + "/s";
-    document.getElementById("rebirths")!.innerText = game.rebirths;
-    document.getElementById("world-name")!.innerText = WORLDS[game.worldIdx] ? WORLDS[game.worldIdx].name : "Unknown";
-    document.getElementById("rebirth-btn")!.innerText = `REBIRTH (Req: ${formatNumber(getRebirthCost())})`;
+    const pointsEl = document.getElementById("points");
+    const perClickEl = document.getElementById("per-click");
+    const spamMultEl = document.getElementById("spam-mult");
+    const passiveIncomeEl = document.getElementById("passive-income");
+    const rebirthsEl = document.getElementById("rebirths");
+    const worldNameEl = document.getElementById("world-name");
+    const rebirthBtnEl = document.getElementById("rebirth-btn");
+    
+    if (pointsEl) pointsEl.innerText = formatNumber(game.points);
+    if (perClickEl) perClickEl.innerText = formatNumber(getClickPower());
+    if (spamMultEl) spamMultEl.innerText = (game.spamMultiplier || 1).toFixed(1) + "x";
+    if (passiveIncomeEl) passiveIncomeEl.innerText = formatNumber(getPassiveIncome() * getPetMultiplier()) + "/s";
+    if (rebirthsEl) rebirthsEl.innerText = game.rebirths;
+    if (worldNameEl && WORLDS && WORLDS[game.worldIdx]) {
+        worldNameEl.innerText = WORLDS[game.worldIdx].name;
+    }
+    if (rebirthBtnEl) {
+        rebirthBtnEl.innerText = 'REBIRTH (Req: ' + formatNumber(getRebirthCost()) + ')';
+    }
 }
 
 // Sliding Menu Functions
@@ -725,7 +880,7 @@ function showClickPop(e, damage) {
     pop.textContent = '+' + formatNumber(damage);
     pop.style.left = e.clientX + 'px';
     pop.style.top = e.clientY + 'px';
-    pop.style.color = game.criticalMultiplier > 2 ? '#FFD700' : game.spamMultiplier > 3 ? '#00D9FF' : '#7FFF00';
+    pop.style.color = game.criticalMultiplier > 2 ? '#FFD700' : (game.spamMultiplier > 3 ? '#00D9FF' : '#7FFF00');
     document.body.appendChild(pop);
     setTimeout(() => pop.remove(), 800);
 }
@@ -752,57 +907,67 @@ function showRarePopup(text, duration = 3000) {
     }, duration);
 }
 
+// Passive Income Loop
 setInterval(() => {
     const income = getPassiveIncome() * getPetMultiplier();
-    game.points += income;
-    updateDisplay();
-    saveGame();
+    if (!isNaN(income) && income > 0) {
+        game.points += income;
+        updateDisplay();
+        saveGame();
+    }
 }, 1000);
 
-// Initialize
-loadGame();
-createParticles();
-updateDisplay();
-const tabBtns = document.querySelectorAll(".tab-btn");
-if (tabBtns.length > 0) {
-    showTab("upgrades", tabBtns[0]);
-}
-
-// Audio Elements
-const bgm = document.getElementById("bgm");
-if (bgm && game.bgmEnabled && game.bgmVolume > 0) {
-    bgm.volume = game.bgmVolume;
-    bgm.play().catch(() => {});
+// Initialize Game
+function initGame() {
+    loadGame();
+    createParticles();
+    updateDisplay();
+    loadNCSPlaylist();
+    
+    // Start NCS playlist after user interaction
+    document.addEventListener('click', function startBGM() {
+        if (game.bgmEnabled && bgmPlaylist.length > 0) {
+            playNextTrack();
+        }
+        document.removeEventListener('click', startBGM);
+    }, { once: true });
+    
+    const tabBtns = document.querySelectorAll(".tab-btn");
+    if (tabBtns.length > 0) {
+        showTab("upgrades", tabBtns[0]);
+    }
+    
+    // Auto-start BGM on first interaction
+    let audioStarted = false;
+    document.addEventListener('click', function startAudio() {
+        if (!audioStarted) {
+            initAudio();
+            audioStarted = true;
+        }
+    }, { once: true });
 }
 
 // Create click ring CSS
-const clickRingCSS = document.createElement('style');
-clickRingCSS.textContent = `
-    .click-ring {
-        position: fixed;
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        border: 3px solid rgba(255, 255, 255, 0.5);
-        pointer-events: none;
-        z-index: 501;
-        animation: clickRing 0.5s ease-out forwards;
-    }
-    @keyframes clickRing {
-        0% { transform: translate(-50%, -50%) scale(0.8); opacity: 1; }
-        100% { transform: translate(-50%, -50%) scale(2); opacity: 0; border-width: 0; }
-    }
-`;
-document.head.appendChild(clickRingCSS);
-
-// Auto-start BGM on first interaction
-let audioStarted = false;
-document.addEventListener('click', function startAudio() {
-    if (!audioStarted) {
-        if (!audioContext) initAudio();
-        audioStarted = true;
-    }
-}, { once: true });
+function createClickRingCSS() {
+    const style = document.createElement('style');
+    style.textContent = `
+        .click-ring {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.5);
+            pointer-events: none;
+            z-index: 501;
+            animation: clickRing 0.5s ease-out forwards;
+        }
+        @keyframes clickRing {
+            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(2); opacity: 0; border-width: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+}
 
 function createParticles() {
     const overlay = document.getElementById('particle-overlay');
@@ -817,3 +982,7 @@ function createParticles() {
         overlay.appendChild(particle);
     }
 }
+
+// Run initialization
+initGame();
+createClickRingCSS();
