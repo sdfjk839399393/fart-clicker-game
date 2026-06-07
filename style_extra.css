@@ -83,14 +83,14 @@
 
 /* ---- rainbow aura on main button (always on, not just on click) ---- */
 .main-click-btn::before {
+    opacity: 1 !important;
     animation: auraSpin 5s linear infinite !important;
-    opacity: 0.85 !important;
 }
 
 /* ---- "on-fire" button state at high combo ---- */
 .main-click-btn.on-fire::before {
     opacity: 1 !important;
-    filter: blur(18px) !important;
+    filter: blur(22px) !important;
     animation: auraSpin 1.5s linear infinite !important;
 }
 

@@ -38,25 +38,25 @@ let buyMode = 1; // 1, 10, 100, or "max"
 // ---------- 20 Worlds ----------
 const WORLDS = [
     { name: "Basement",         reqRebirths: 0,    icon: "🏚️", theme: { p:"#7FFF00", s:"#B14EFF", a:"#00E0FF", bg1:"#160a2e", bg2:"#08040f" } },
-    { name: "Sewer Tunnels",    reqRebirths: 1,    icon: "🕳️", theme: { p:"#8db300", s:"#5a7d2c", a:"#a0ffaa", bg1:"#1a2a14", bg2:"#0a1408" } },
-    { name: "Skibidi Toilet",   reqRebirths: 4,    icon: "🚽", theme: { p:"#5dd2ff", s:"#ffffff", a:"#ffd54a", bg1:"#0e2236", bg2:"#06121f" } },
-    { name: "Rizz Dojo",        reqRebirths: 9,    icon: "😎", theme: { p:"#ff3d9a", s:"#ff6b35", a:"#ffd54a", bg1:"#2e0a1c", bg2:"#170510" } },
-    { name: "Ohio",             reqRebirths: 16,   icon: "🌽", theme: { p:"#ffd54a", s:"#ff8a3d", a:"#7fff00", bg1:"#2e1f08", bg2:"#170f04" } },
-    { name: "Outer Space",      reqRebirths: 26,   icon: "🚀", theme: { p:"#5d8eff", s:"#b14eff", a:"#00e0ff", bg1:"#0a0a3a", bg2:"#04041a" } },
-    { name: "Gyatt Canyon",     reqRebirths: 40,   icon: "🏜️", theme: { p:"#ff8a3d", s:"#ffd54a", a:"#ff3d9a", bg1:"#3a1808", bg2:"#1a0a04" } },
-    { name: "Nether Realm",     reqRebirths: 58,   icon: "🔥", theme: { p:"#ff3030", s:"#ff8030", a:"#ffd54a", bg1:"#2a0606", bg2:"#140303" } },
-    { name: "Sigma City",       reqRebirths: 80,   icon: "🏙️", theme: { p:"#c0c0d0", s:"#00e0ff", a:"#ffffff", bg1:"#1a1a2a", bg2:"#0a0a14" } },
-    { name: "Dimension X",      reqRebirths: 108,  icon: "🛸", theme: { p:"#7fff80", s:"#00ff80", a:"#b14eff", bg1:"#0e2410", bg2:"#061206" } },
-    { name: "Quantum Realm",    reqRebirths: 142,  icon: "⚛️", theme: { p:"#00e0ff", s:"#5d8eff", a:"#ffd54a", bg1:"#0a1a3a", bg2:"#04081a" } },
-    { name: "Grimace Shake",    reqRebirths: 184,  icon: "🟣", theme: { p:"#a040ff", s:"#ff3d9a", a:"#ffd54a", bg1:"#2a0a3a", bg2:"#14041a" } },
-    { name: "Mewing Heights",   reqRebirths: 235,  icon: "☁️", theme: { p:"#bfdfff", s:"#7fa8ff", a:"#ffffff", bg1:"#1a2840", bg2:"#0a141f" } },
-    { name: "Inferno Depths",   reqRebirths: 295,  icon: "👹", theme: { p:"#ff2020", s:"#ff5010", a:"#ffd54a", bg1:"#1a0202", bg2:"#0a0101" } },
-    { name: "Crystal Cavern",   reqRebirths: 365,  icon: "💎", theme: { p:"#40ffd0", s:"#80ffff", a:"#b14eff", bg1:"#0a2828", bg2:"#041414" } },
-    { name: "Mirror Dimension", reqRebirths: 450,  icon: "🪞", theme: { p:"#e0e0ff", s:"#a0a0ff", a:"#ff3d9a", bg1:"#1a1a30", bg2:"#0a0a18" } },
-    { name: "Galactic Core",    reqRebirths: 555,  icon: "🌌", theme: { p:"#ffd54a", s:"#b14eff", a:"#00e0ff", bg1:"#0a0428", bg2:"#040214" } },
-    { name: "Time Rift",        reqRebirths: 680,  icon: "⏳", theme: { p:"#ffe080", s:"#40ffd0", a:"#ff3d9a", bg1:"#2a200a", bg2:"#141004" } },
-    { name: "Gigachad Nexus",   reqRebirths: 830,  icon: "💪", theme: { p:"#ff1050", s:"#ffd54a", a:"#00e0ff", bg1:"#2a0820", bg2:"#140410" } },
-    { name: "The Final Stench", reqRebirths: 1000, icon: "👑", theme: { p:"#ffd700", s:"#ff00ff", a:"#00ffd0", bg1:"#1a001a", bg2:"#0a000a" } }
+    { name: "Sewer Tunnels",    reqRebirths: 3,    icon: "🕳️", theme: { p:"#8db300", s:"#5a7d2c", a:"#a0ffaa", bg1:"#1a2a14", bg2:"#0a1408" } },
+    { name: "Skibidi Toilet",   reqRebirths: 8,    icon: "🚽", theme: { p:"#5dd2ff", s:"#ffffff", a:"#ffd54a", bg1:"#0e2236", bg2:"#06121f" } },
+    { name: "Rizz Dojo",        reqRebirths: 16,   icon: "😎", theme: { p:"#ff3d9a", s:"#ff6b35", a:"#ffd54a", bg1:"#2e0a1c", bg2:"#170510" } },
+    { name: "Ohio",             reqRebirths: 28,   icon: "🌽", theme: { p:"#ffd54a", s:"#ff8a3d", a:"#7fff00", bg1:"#2e1f08", bg2:"#170f04" } },
+    { name: "Outer Space",      reqRebirths: 45,   icon: "🚀", theme: { p:"#5d8eff", s:"#b14eff", a:"#00e0ff", bg1:"#0a0a3a", bg2:"#04041a" } },
+    { name: "Gyatt Canyon",     reqRebirths: 68,   icon: "🏜️", theme: { p:"#ff8a3d", s:"#ffd54a", a:"#ff3d9a", bg1:"#3a1808", bg2:"#1a0a04" } },
+    { name: "Nether Realm",     reqRebirths: 98,   icon: "🔥", theme: { p:"#ff3030", s:"#ff8030", a:"#ffd54a", bg1:"#2a0606", bg2:"#140303" } },
+    { name: "Sigma City",       reqRebirths: 136,  icon: "🏙️", theme: { p:"#c0c0d0", s:"#00e0ff", a:"#ffffff", bg1:"#1a1a2a", bg2:"#0a0a14" } },
+    { name: "Dimension X",      reqRebirths: 182,  icon: "🛸", theme: { p:"#7fff80", s:"#00ff80", a:"#b14eff", bg1:"#0e2410", bg2:"#061206" } },
+    { name: "Quantum Realm",    reqRebirths: 238,  icon: "⚛️", theme: { p:"#00e0ff", s:"#5d8eff", a:"#ffd54a", bg1:"#0a1a3a", bg2:"#04081a" } },
+    { name: "Grimace Shake",    reqRebirths: 305,  icon: "🟣", theme: { p:"#a040ff", s:"#ff3d9a", a:"#ffd54a", bg1:"#2a0a3a", bg2:"#14041a" } },
+    { name: "Mewing Heights",   reqRebirths: 385,  icon: "☁️", theme: { p:"#bfdfff", s:"#7fa8ff", a:"#ffffff", bg1:"#1a2840", bg2:"#0a141f" } },
+    { name: "Inferno Depths",   reqRebirths: 480,  icon: "👹", theme: { p:"#ff2020", s:"#ff5010", a:"#ffd54a", bg1:"#1a0202", bg2:"#0a0101" } },
+    { name: "Crystal Cavern",   reqRebirths: 590,  icon: "💎", theme: { p:"#40ffd0", s:"#80ffff", a:"#b14eff", bg1:"#0a2828", bg2:"#041414" } },
+    { name: "Mirror Dimension", reqRebirths: 720,  icon: "🪞", theme: { p:"#e0e0ff", s:"#a0a0ff", a:"#ff3d9a", bg1:"#1a1a30", bg2:"#0a0a18" } },
+    { name: "Galactic Core",    reqRebirths: 870,  icon: "🌌", theme: { p:"#ffd54a", s:"#b14eff", a:"#00e0ff", bg1:"#0a0428", bg2:"#040214" } },
+    { name: "Time Rift",        reqRebirths: 1050, icon: "⏳", theme: { p:"#ffe080", s:"#40ffd0", a:"#ff3d9a", bg1:"#2a200a", bg2:"#141004" } },
+    { name: "Gigachad Nexus",   reqRebirths: 1260, icon: "💪", theme: { p:"#ff1050", s:"#ffd54a", a:"#00e0ff", bg1:"#2a0820", bg2:"#140410" } },
+    { name: "The Final Stench", reqRebirths: 1500, icon: "👑", theme: { p:"#ffd700", s:"#ff00ff", a:"#00ffd0", bg1:"#1a001a", bg2:"#0a000a" } }
 ];
 
 // ---------- Number format (NaN-safe) ----------
@@ -178,7 +178,8 @@ const EGG_TEMPLATES = [
 ];
 
 function eggCost(t, world) { return Math.floor(t.baseCost * Math.pow(t.growth, world)); }
-function petPower(base, world) { return +(base * (1 + world * 0.15)).toFixed(2); }
+// pet power scales exponentially per world so later-world pets are always worth getting
+function petPower(base, world) { return +(base * Math.pow(1.4, world)).toFixed(2); }
 function allPetsForWorld() {
     // flatten all egg pets (the 15 base pets)
     let arr = [];
@@ -189,9 +190,18 @@ function dexKey(world, name) { return world + ":" + name; }
 
 
 // ============================================================
-//  AUDIO: multi-track procedural PHONK + SFX (WebAudio)
+//  AUDIO: multi-track procedural AMBIENT + SFX (WebAudio)
 // ============================================================
 function getCtx() {
+    try {
+        // Never create AudioContext before a user gesture — required on iOS
+        if (!audioCtx) return null;
+        if (audioCtx.state === "suspended") audioCtx.resume();
+    } catch (e) { audioCtx = null; }
+    return audioCtx;
+}
+function createCtx() {
+    // Call this only from within a user gesture handler
     try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         if (audioCtx.state === "suspended") audioCtx.resume();
@@ -211,7 +221,7 @@ function tone(freq, dur, type, vol, slideTo) {
     try {
         const ctx = getCtx(); if (!ctx) return;
         const o = ctx.createOscillator(), g = ctx.createGain();
-        o.type = type || "square";
+        o.type = type || "sine";
         o.frequency.setValueAtTime(freq, ctx.currentTime);
         if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, ctx.currentTime + dur);
         const v = (vol || 0.1) * game.settings.sfxVol;
@@ -221,244 +231,430 @@ function tone(freq, dur, type, vol, slideTo) {
         o.start(); o.stop(ctx.currentTime + dur);
     } catch (e) {}
 }
-function sfxClick()  { tone(420 + Math.random()*120, 0.09, "square", 0.10, 180); }
-function sfxBuy()    { tone(660, 0.08, "triangle", 0.12); setTimeout(()=>tone(990,0.10,"triangle",0.10),55); }
-function sfxCrit()   { tone(1200, 0.16, "sawtooth", 0.13, 400); }
-function sfxError()  { tone(160, 0.18, "square", 0.10, 90); }
-function sfxWhoosh() { tone(200, 0.3, "sawtooth", 0.08, 1400); }
+function sfxClick()  { tone(520 + Math.random()*80, 0.07, "sine", 0.07, 360); }
+function sfxBuy()    { tone(660, 0.10, "sine", 0.09); setTimeout(()=>tone(880,0.12,"sine",0.08),60); setTimeout(()=>tone(1100,0.12,"sine",0.06),130); }
+function sfxCrit()   { tone(880, 0.18, "sine", 0.10, 1320); }
+function sfxError()  { tone(200, 0.16, "triangle", 0.07, 140); }
+function sfxWhoosh() { tone(300, 0.25, "sine", 0.06, 1200); }
 function sfxRare(tier) {
     const notes = [523,659,784,1047,1319,1568];
-    for (let i = 0; i <= Math.min(tier+1,5); i++) setTimeout(()=>tone(notes[i],0.22,"triangle",0.14),i*90);
+    for (let i = 0; i <= Math.min(tier+1,5); i++) setTimeout(()=>tone(notes[i],0.25,"sine",0.10),i*100);
 }
 
 
-// ---------- PHONK tracks (each = distinct beat + melody) ----------
-const TRACKS = [
-    { name: "Sigma Drift", bpm: 145, voice: "bell",
-      kick: [1,0,0,0, 0,0,1,0, 0,0,1,0, 0,0,0,0],
-      hat:  [1,0,1,0, 1,0,1,0, 1,0,1,0, 1,0,1,1],
-      bell: [0,null,3,0, null,7,5,3, 0,null,3,5, 7,null,5,3],
-      bass: [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,1,0] },
-    { name: "Ohio Nights", bpm: 132, voice: "pluck",
-      kick: [1,0,0,1, 0,0,1,0, 1,0,0,1, 0,0,1,0],
-      hat:  [0,1,0,1, 0,1,0,1, 0,1,0,1, 0,1,1,1],
-      bell: [5,null,5,3, 0,null,3,null, 5,7,null,8, 7,5,3,null],
-      bass: [1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,0,0] },
-    { name: "Rizz Tek", bpm: 160, voice: "brass",
-      kick: [1,0,1,0, 0,1,0,0, 1,0,1,0, 0,1,0,0],
-      hat:  [1,1,0,1, 1,1,0,1, 1,1,0,1, 1,1,0,1],
-      bell: [7,7,null,5, 3,null,5,7, 10,null,8,7, 5,null,3,0],
-      bass: [1,0,0,1, 0,0,1,0, 1,0,0,1, 0,0,1,0] },
-    { name: "Gigachad Theme", bpm: 120, voice: "piano",
-      kick: [1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,1,0],
-      hat:  [0,0,1,0, 0,0,1,0, 0,0,1,0, 0,0,1,0],
-      bell: [0,null,null,3, null,null,5,null, 7,null,null,5, null,3,null,0],
-      bass: [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0] },
-    { name: "Skibidi Core", bpm: 150, voice: "flute",
-      kick: [1,0,0,1, 1,0,0,0, 0,1,0,0, 1,0,0,1],
-      hat:  [1,0,1,1, 1,0,1,1, 1,0,1,1, 1,0,1,1],
-      bell: [3,3,5,null, 7,5,3,null, 10,8,7,null, 5,3,2,null],
-      bass: [1,0,0,0, 1,0,0,0, 0,0,1,0, 1,0,0,0] },
-    { name: "Quantum Funk", bpm: 138, voice: "pluck",
-      kick: [1,0,0,0, 0,1,0,0, 1,0,0,0, 0,1,0,1],
-      hat:  [1,1,1,0, 1,1,1,0, 1,1,1,0, 1,1,1,1],
-      bell: [0,3,7,3, 5,3,0,null, 7,5,3,0, 2,3,5,7],
-      bass: [1,0,0,1, 0,0,1,0, 1,0,0,1, 0,1,0,0] },
-    { name: "Voidwave", bpm: 110, voice: "bell",
-      kick: [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,1,0],
-      hat:  [0,0,1,0, 0,0,1,0, 0,0,1,0, 0,1,0,1],
-      bell: [0,null,null,7, null,5,null,3, 0,null,null,5, 7,null,10,null],
-      bass: [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0] },
-    { name: "Hyper Rizz", bpm: 170, voice: "brass",
-      kick: [1,0,1,0, 1,0,1,0, 1,0,1,0, 1,0,1,0],
-      hat:  [1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1],
-      bell: [12,10,7,10, 12,null,10,7, 5,7,10,12, 10,7,5,3],
-      bass: [1,0,1,0, 1,0,1,0, 1,0,1,0, 1,0,1,0] }
-];
-
-const PHONK = { idx: 0, step: 0, timer: null, playing: false, bars: 0 };
+// ============================================================
+//  GENERATIVE MUSIC ENGINE — one unique evolving song per world
+//  Each song has: intro → verse → chorus → bridge → chorus → outro
+//  Total ~3 min, loops seamlessly. 20 world songs.
+// ============================================================
 function midiHz(s) { return 220 * Math.pow(2, s / 12); }
 
-function phonkKick(ctx, t) {
-    const m = ensureMaster();
-    const o = ctx.createOscillator(), g = ctx.createGain();
-    o.type = "sine"; o.frequency.setValueAtTime(165, t);
-    o.frequency.exponentialRampToValueAtTime(48, t + 0.12);
-    g.gain.setValueAtTime(1.0 * game.settings.musicVol, t);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.26);
-    o.connect(g); g.connect(m || ctx.destination); o.start(t); o.stop(t + 0.28);
-}
-function phonkHat(ctx, t) {
-    const m = ensureMaster();
-    const s = ctx.createBufferSource(), g = ctx.createGain(), f = ctx.createBiquadFilter();
-    s.buffer = getNoise(ctx); f.type = "bandpass"; f.frequency.value = 9000; f.Q.value = 1.2;
-    g.gain.setValueAtTime(0.10 * game.settings.musicVol, t);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
-    s.connect(f); f.connect(g); g.connect(m || ctx.destination); s.start(t); s.stop(t + 0.05);
-}
-function phonkBell(ctx, t, semi, wave) { phonkLead(ctx, t, semi, wave); }
-function phonk808(ctx, t, semi) {
-    const m = ensureMaster();
-    const o = ctx.createOscillator(), g = ctx.createGain(), f = ctx.createBiquadFilter();
-    f.type = "lowpass"; f.frequency.value = 1800;
-    o.type = "sine"; o.frequency.setValueAtTime(midiHz(semi - 11), t);
-    o.frequency.exponentialRampToValueAtTime(midiHz(semi - 12), t + 0.08);
-    g.gain.setValueAtTime(0.55 * game.settings.musicVol, t);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
-    o.connect(f); f.connect(g); g.connect(m || ctx.destination); o.start(t); o.stop(t + 0.52);
-}
-
-
-// ---------- Rich audio bus: master + warm filter + compressor + reverb ----------
+// ---------- Master audio bus ----------
 let masterGain = null, reverbNode = null, reverbSend = null;
 function ensureMaster() {
     const ctx = getCtx(); if (!ctx) return null;
     if (masterGain) return masterGain;
-    masterGain = ctx.createGain(); masterGain.gain.value = 0.85;
-    // warm low-pass so highs aren't harsh/8-bit
-    const warm = ctx.createBiquadFilter(); warm.type = "lowpass"; warm.frequency.value = 6500; warm.Q.value = 0.6;
-    // glue compressor
+    masterGain = ctx.createGain(); masterGain.gain.value = 0.72;
+    const warm = ctx.createBiquadFilter(); warm.type = "lowpass"; warm.frequency.value = 5200; warm.Q.value = 0.5;
     const comp = ctx.createDynamicsCompressor();
-    comp.threshold.value = -18; comp.knee.value = 24; comp.ratio.value = 3.5;
-    comp.attack.value = 0.004; comp.release.value = 0.22;
+    comp.threshold.value = -20; comp.knee.value = 30; comp.ratio.value = 3;
+    comp.attack.value = 0.006; comp.release.value = 0.25;
     masterGain.connect(warm); warm.connect(comp); comp.connect(ctx.destination);
     try {
         reverbNode = ctx.createConvolver();
-        const len = ctx.sampleRate * 2.0, buf = ctx.createBuffer(2, len, ctx.sampleRate);
+        const len = ctx.sampleRate * 2.8, buf = ctx.createBuffer(2, len, ctx.sampleRate);
         for (let ch = 0; ch < 2; ch++) {
             const d = buf.getChannelData(ch);
-            for (let i = 0; i < len; i++) d[i] = (Math.random()*2-1) * Math.pow(1 - i/len, 3.0);
+            for (let i = 0; i < len; i++) d[i] = (Math.random()*2-1) * Math.pow(1 - i/len, 2.2);
         }
         reverbNode.buffer = buf;
-        reverbSend = ctx.createGain(); reverbSend.gain.value = 0.3;
+        reverbSend = ctx.createGain(); reverbSend.gain.value = 0.38;
         reverbSend.connect(reverbNode); reverbNode.connect(masterGain);
-    } catch (e) { reverbNode = null; }
+    } catch(e) { reverbNode = null; }
     return masterGain;
 }
 function routeWet(node) { if (reverbSend) node.connect(reverbSend); }
 
-// ---------- distinct instrument voices (real timbral variety) ----------
+// ---------- Envelope helper ----------
 function vEnv(ctx, peak, atk, dec, t) {
     const g = ctx.createGain();
     g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(Math.max(peak,0.0002), t + atk);
+    g.gain.exponentialRampToValueAtTime(Math.max(peak, 0.0002), t + atk);
     g.gain.exponentialRampToValueAtTime(0.0001, t + atk + dec);
     return g;
 }
-// FM bell / electric-piano (metallic, glassy)
-function vBell(ctx, t, freq, vol, master) {
-    const car = ctx.createOscillator(); car.type = "sine"; car.frequency.value = freq;
-    const mod = ctx.createOscillator(); mod.type = "sine"; mod.frequency.value = freq * 2.01;
-    const mg = ctx.createGain(); mg.gain.setValueAtTime(freq * 3, t); mg.gain.exponentialRampToValueAtTime(1, t + 0.5);
-    mod.connect(mg); mg.connect(car.frequency);
-    const g = vEnv(ctx, vol, 0.005, 0.55, t);
-    car.connect(g); g.connect(master); routeWet(g);
-    mod.start(t); car.start(t); mod.stop(t + 0.6); car.stop(t + 0.6);
-}
-// pluck (guitar/koto-ish): saw through fast-closing filter
-function vPluck(ctx, t, freq, vol, master) {
-    const o = ctx.createOscillator(); o.type = "sawtooth"; o.frequency.value = freq;
-    const f = ctx.createBiquadFilter(); f.type = "lowpass"; f.Q.value = 2;
-    f.frequency.setValueAtTime(5000, t); f.frequency.exponentialRampToValueAtTime(600, t + 0.18);
-    const g = vEnv(ctx, vol, 0.003, 0.28, t);
-    o.connect(f); f.connect(g); g.connect(master); routeWet(g);
-    o.start(t); o.stop(t + 0.32);
-}
-// brass / supersaw (fat, slow attack)
-function vBrass(ctx, t, freq, vol, master) {
-    const f = ctx.createBiquadFilter(); f.type = "lowpass"; f.Q.value = 4;
-    f.frequency.setValueAtTime(500, t); f.frequency.linearRampToValueAtTime(2600, t + 0.12); f.frequency.linearRampToValueAtTime(900, t + 0.5);
-    const g = vEnv(ctx, vol, 0.05, 0.45, t);
-    [-7,-0.1,0.1,7].forEach(det => { const o = ctx.createOscillator(); o.type = "sawtooth"; o.frequency.value = freq; o.detune.value = det; o.connect(f); o.start(t); o.stop(t + 0.55); });
-    f.connect(g); g.connect(master); routeWet(g);
-}
-// piano-ish (triangle+sine stack, percussive)
-function vPiano(ctx, t, freq, vol, master) {
-    const g = vEnv(ctx, vol, 0.004, 0.5, t);
-    const o1 = ctx.createOscillator(); o1.type = "triangle"; o1.frequency.value = freq;
-    const o2 = ctx.createOscillator(); o2.type = "sine"; o2.frequency.value = freq * 2;
-    const g2 = ctx.createGain(); g2.gain.value = 0.4; o2.connect(g2); g2.connect(g);
-    o1.connect(g); g.connect(master); routeWet(g);
-    o1.start(t); o2.start(t); o1.stop(t + 0.55); o2.stop(t + 0.55);
-}
-// flute (breathy sine + vibrato)
-function vFlute(ctx, t, freq, vol, master) {
-    const o = ctx.createOscillator(); o.type = "sine"; o.frequency.value = freq;
-    const lfo = ctx.createOscillator(); lfo.frequency.value = 6; const lg = ctx.createGain(); lg.gain.value = freq*0.01;
-    lfo.connect(lg); lg.connect(o.frequency); lfo.start(t); lfo.stop(t + 0.5);
-    const g = vEnv(ctx, vol, 0.04, 0.4, t);
-    o.connect(g); g.connect(master); routeWet(g);
-    o.start(t); o.stop(t + 0.5);
-}
-function phonkLead(ctx, t, semi) {
-    const master = ensureMaster(); if (!master) return;
-    const tr = TRACKS[PHONK.idx % TRACKS.length];
-    const freq = midiHz(semi + 12);
-    const vol = 0.13 * game.settings.musicVol;
-    switch (tr.voice) {
-        case "pluck": vPluck(ctx, t, freq, vol, master); break;
-        case "brass": vBrass(ctx, t, freq, vol*0.85, master); break;
-        case "piano": vPiano(ctx, t, freq, vol, master); break;
-        case "flute": vFlute(ctx, t, freq, vol*1.1, master); break;
-        default:      vBell(ctx, t, freq, vol, master);
-    }
-}
-// lush chord pad (follows the bar's chord root)
-function phonkPad(ctx, t, root) {
-    const master = ensureMaster(); if (!master) return;
-    const f = ctx.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = 2400;
-    const g = ctx.createGain();
-    g.gain.setValueAtTime(0.0001, t);
-    g.gain.linearRampToValueAtTime(0.045 * game.settings.musicVol, t + 0.5);
-    g.gain.linearRampToValueAtTime(0.0001, t + 1.95);
-    [0, 3, 7, 10, 12].forEach(iv => {
-        const o = ctx.createOscillator(); o.type = "sawtooth";
-        o.frequency.value = midiHz(root + iv - 12);
-        o.detune.value = (Math.random()*8-4);
-        o.connect(f); o.start(t); o.stop(t + 2.0);
+
+// ---------- Instrument voices ----------
+function vPad(ctx, t, freq, vol, master) {
+    const g = vEnv(ctx, vol * 0.65, 0.14, 1.4, t);
+    [1,2,3].forEach((h,i) => {
+        const o = ctx.createOscillator(); o.type = "sine";
+        o.frequency.value = freq * h; o.detune.value = (i%2===0?4:-4);
+        const hg = ctx.createGain(); hg.gain.value = 1/(i*2+1);
+        o.connect(hg); hg.connect(g); o.start(t); o.stop(t+1.6);
     });
-    f.connect(g); g.connect(master); routeWet(g);
+    g.connect(master); routeWet(g);
+}
+function vMarimba(ctx, t, freq, vol, master) {
+    const g = vEnv(ctx, vol, 0.002, 0.5, t);
+    const o = ctx.createOscillator(); o.type = "sine"; o.frequency.value = freq;
+    const o2 = ctx.createOscillator(); o2.type = "sine"; o2.frequency.value = freq*4;
+    const g2 = ctx.createGain(); g2.gain.value = 0.07; o2.connect(g2); g2.connect(g);
+    o.connect(g); g.connect(master); routeWet(g);
+    o.start(t); o2.start(t); o.stop(t+0.55); o2.stop(t+0.55);
+}
+function vEP(ctx, t, freq, vol, master) {
+    const car = ctx.createOscillator(); car.type = "sine"; car.frequency.value = freq;
+    const mod = ctx.createOscillator(); mod.type = "sine"; mod.frequency.value = freq*1.999;
+    const mg = ctx.createGain();
+    mg.gain.setValueAtTime(freq*1.1, t); mg.gain.exponentialRampToValueAtTime(0.4, t+0.45);
+    mod.connect(mg); mg.connect(car.frequency);
+    const g = vEnv(ctx, vol, 0.005, 0.75, t);
+    car.connect(g); g.connect(master); routeWet(g);
+    mod.start(t); car.start(t); mod.stop(t+0.85); car.stop(t+0.85);
+}
+function vChime(ctx, t, freq, vol, master) {
+    const g = vEnv(ctx, vol*0.8, 0.002, 1.1, t);
+    const o = ctx.createOscillator(); o.type = "triangle"; o.frequency.value = freq;
+    const o2 = ctx.createOscillator(); o2.type = "sine"; o2.frequency.value = freq*5.1;
+    const g2 = ctx.createGain(); g2.gain.value = 0.11; o2.connect(g2); g2.connect(g);
+    o.connect(g); g.connect(master); routeWet(g);
+    o.start(t); o2.start(t); o.stop(t+1.2); o2.stop(t+1.2);
+}
+function vBass(ctx, t, freq, vol, master) {
+    const o = ctx.createOscillator(); o.type = "sine"; o.frequency.value = freq;
+    const f = ctx.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = 380;
+    const g = vEnv(ctx, vol, 0.005, 0.65, t);
+    o.connect(f); f.connect(g); g.connect(master);
+    o.start(t); o.stop(t+0.7);
+}
+function vKick(ctx, t, vol) {
+    const m = ensureMaster();
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = "sine"; o.frequency.setValueAtTime(88, t);
+    o.frequency.exponentialRampToValueAtTime(40, t+0.2);
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.001, t+0.3);
+    o.connect(g); g.connect(m||ctx.destination); o.start(t); o.stop(t+0.32);
+}
+function vHat(ctx, t, vol) {
+    const m = ensureMaster();
+    const s = ctx.createBufferSource(), g = ctx.createGain(), f = ctx.createBiquadFilter();
+    s.buffer = getNoise(ctx); f.type = "bandpass"; f.frequency.value = 7000; f.Q.value = 2.5;
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.001, t+0.06);
+    s.connect(f); f.connect(g); g.connect(m||ctx.destination); s.start(t); s.stop(t+0.07);
 }
 
+// ---------- 20 world song definitions ----------
+// Each song: bpm, key (semitones from A2), voice, and 4 melody sections
+// (intro=sparse, verse=melodic, chorus=full+energetic, bridge=different chord feel)
+// Chord prog rotates through sections. Melodies are 16-step arrays (null=rest).
+const WORLD_SONGS = [
+    { name:"Basement Dreams",    bpm:70,  key:0,  voice:"pad",
+      progs:[[0,-3,5,-2],[0,-3,5,-2],[0,2,-3,5],[5,-2,0,-3]],
+      melodies:[
+        [0,null,null,7,null,5,null,null,3,null,null,5,null,null,7,null],  // intro
+        [0,null,3,null,5,3,null,7,5,null,3,null,0,null,null,null],        // verse
+        [7,7,null,5,3,null,5,7,10,null,7,5,3,null,5,null],               // chorus
+        [null,3,null,null,7,null,5,null,null,3,5,null,7,null,null,3]      // bridge
+      ],
+      kicks:[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
+      hats:[0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0] },
+    { name:"Sewer Groove",       bpm:82,  key:-2, voice:"marimba",
+      progs:[[0,-2,3,-5],[0,-2,3,-5],[3,-5,0,-2],[-2,0,-5,3]],
+      melodies:[
+        [5,null,3,null,0,null,3,null,5,null,7,null,5,null,3,null],
+        [0,3,5,null,7,5,3,null,0,3,5,7,null,5,3,null],
+        [7,null,7,5,3,5,7,null,10,7,5,null,3,5,7,null],
+        [3,null,5,null,7,null,5,3,0,null,3,null,5,null,null,3]
+      ],
+      kicks:[1,0,0,0,0,0,1,0,1,0,0,0,0,0,1,0],
+      hats:[0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0] },
+    { name:"Toilet Lounge",      bpm:88,  key:3,  voice:"ep",
+      progs:[[0,-3,5,-2],[0,-3,5,3],[2,-3,0,5],[-3,5,-2,0]],
+      melodies:[
+        [0,null,3,null,5,3,null,null,7,null,5,null,3,null,null,0],
+        [5,3,null,7,5,3,null,5,7,null,5,3,0,null,3,null],
+        [7,null,10,null,7,5,null,7,10,null,12,10,7,null,5,null],
+        [3,5,null,3,0,null,3,5,7,null,5,null,3,null,null,null]
+      ],
+      kicks:[1,0,0,1,0,0,1,0,1,0,0,1,0,0,1,0],
+      hats:[1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1] },
+    { name:"Rizz Waltz",         bpm:76,  key:-5, voice:"chime",
+      progs:[[0,3,-2,5],[0,3,-2,5],[5,-2,3,0],[-2,5,0,3]],
+      melodies:[
+        [7,null,null,10,null,7,null,5,3,null,null,7,null,5,null,null],
+        [5,7,null,10,7,null,5,3,null,5,7,null,10,null,7,null],
+        [10,null,12,null,10,7,null,10,12,null,10,7,5,null,7,null],
+        [3,null,5,null,7,5,null,3,0,null,3,5,null,7,null,5]
+      ],
+      kicks:[1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
+      hats:[0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0] },
+    { name:"Ohio Breeze",        bpm:66,  key:5,  voice:"pad",
+      progs:[[0,-2,3,5],[0,-2,3,5],[3,5,-2,0],[5,0,-2,3]],
+      melodies:[
+        [0,null,null,null,5,null,null,null,3,null,null,null,7,null,null,null],
+        [0,null,3,null,5,null,7,null,5,null,3,null,0,null,null,null],
+        [7,null,5,null,3,5,7,null,10,null,7,5,3,null,5,null],
+        [null,3,null,null,7,null,null,5,null,3,null,null,0,null,null,null]
+      ],
+      kicks:[1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
+      hats:[0,0,0,1,0,0,0,1,0,0,0,1,0,0,1,0] },
+    { name:"Starfield",          bpm:72,  key:-4, voice:"ep",
+      progs:[[0,5,-2,3],[0,5,-2,3],[-2,3,5,0],[3,-2,0,5]],
+      melodies:[
+        [12,null,null,10,null,null,7,null,5,null,null,7,null,10,null,null],
+        [5,null,7,null,10,7,null,5,3,null,5,null,7,null,10,null],
+        [12,10,null,7,null,10,12,null,14,null,12,10,7,null,10,null],
+        [7,null,null,5,3,null,null,5,7,null,null,10,null,7,null,null]
+      ],
+      kicks:[1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
+      hats:[0,0,0,1,0,0,1,0,0,0,0,1,0,1,0,0] },
+    { name:"Canyon Winds",       bpm:80,  key:2,  voice:"marimba",
+      progs:[[0,-2,5,3],[0,-2,5,3],[5,3,-2,0],[3,0,-2,5]],
+      melodies:[
+        [5,null,7,null,10,null,7,null,5,null,3,null,0,null,3,null],
+        [0,3,5,null,7,5,3,5,7,null,5,3,0,null,3,null],
+        [10,null,10,7,5,null,7,10,12,null,10,7,5,7,null,null],
+        [3,5,null,7,null,5,3,null,0,3,null,5,7,null,null,5]
+      ],
+      kicks:[1,0,0,0,0,1,0,0,1,0,0,0,0,1,0,0],
+      hats:[0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0] },
+    { name:"Ember Glow",         bpm:68,  key:-7, voice:"chime",
+      progs:[[0,-3,5,-2],[0,-3,2,-5],[5,-2,-3,0],[-2,0,-5,3]],
+      melodies:[
+        [0,null,null,3,null,null,5,null,7,null,null,5,null,3,null,null],
+        [3,null,5,null,7,5,null,3,0,null,3,null,5,null,7,null],
+        [7,5,null,7,10,null,7,5,3,null,5,7,null,10,null,7],
+        [null,3,5,null,7,null,5,3,null,0,null,3,5,null,null,null]
+      ],
+      kicks:[1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0],
+      hats:[0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1] },
+    { name:"Sigma Pulse",        bpm:90,  key:7,  voice:"ep",
+      progs:[[0,2,-3,5],[0,2,-3,5],[-3,5,2,0],[2,0,5,-3]],
+      melodies:[
+        [0,null,3,null,5,null,3,null,0,null,3,null,5,null,7,null],
+        [5,null,7,null,5,3,null,5,7,null,5,3,0,3,null,null],
+        [7,7,null,10,null,7,5,null,7,10,null,12,10,null,7,null],
+        [3,5,null,7,5,null,3,null,0,null,3,5,null,null,null,3]
+      ],
+      kicks:[1,0,1,0,0,1,0,0,1,0,1,0,0,1,0,0],
+      hats:[1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1] },
+    { name:"Dimension Drift",    bpm:74,  key:1,  voice:"pad",
+      progs:[[0,3,5,-2],[0,3,5,-2],[5,-2,0,3],[-2,5,3,0]],
+      melodies:[
+        [7,null,null,5,null,null,3,null,null,5,null,null,7,null,null,null],
+        [0,null,3,5,null,7,5,null,3,null,5,7,null,null,5,null],
+        [10,null,7,null,5,7,10,null,12,null,10,7,5,null,7,null],
+        [5,null,null,3,null,0,null,3,5,null,null,7,null,5,null,null]
+      ],
+      kicks:[1,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0],
+      hats:[0,0,1,0,0,1,0,0,0,0,1,0,0,1,0,0] },
+    { name:"Quantum Flow",       bpm:78,  key:-1, voice:"chime",
+      progs:[[0,-2,3,-5],[0,-2,3,-5],[-5,3,-2,0],[3,0,-5,-2]],
+      melodies:[
+        [5,null,3,null,0,null,null,3,5,null,7,null,null,5,null,null],
+        [0,3,null,5,7,null,5,3,null,0,3,null,5,null,7,null],
+        [7,null,10,null,12,10,null,7,5,null,7,10,null,12,null,10],
+        [3,null,5,null,7,null,5,null,3,null,0,null,3,5,null,null]
+      ],
+      kicks:[1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0],
+      hats:[0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0] },
+    { name:"Grimace Wave",       bpm:84,  key:4,  voice:"ep",
+      progs:[[0,3,-3,5],[0,3,-3,5],[3,5,0,-3],[-3,0,5,3]],
+      melodies:[
+        [0,null,3,null,7,null,5,null,3,null,0,null,null,3,null,null],
+        [5,3,null,5,7,null,10,7,null,5,3,null,0,null,3,null],
+        [10,null,12,null,10,7,null,10,12,14,null,12,10,null,7,null],
+        [7,null,5,3,null,5,7,null,5,null,3,null,0,null,null,null]
+      ],
+      kicks:[1,0,0,1,0,0,1,0,1,0,0,1,0,0,1,0],
+      hats:[0,1,0,1,1,0,1,0,0,1,0,1,1,0,1,1] },
+    { name:"Mewing Clouds",      bpm:65,  key:-3, voice:"pad",
+      progs:[[0,-2,5,3],[0,-2,5,3],[5,3,-2,0],[3,-2,0,5]],
+      melodies:[
+        [null,null,7,null,null,null,5,null,null,null,3,null,null,null,5,null],
+        [0,null,null,3,null,5,null,7,null,5,null,3,null,null,null,null],
+        [7,null,5,null,7,null,10,null,7,null,5,null,3,null,5,null],
+        [null,5,null,null,7,null,null,5,null,3,null,null,0,null,null,null]
+      ],
+      kicks:[1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0],
+      hats:[0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1] },
+    { name:"Inferno March",      bpm:92,  key:6,  voice:"marimba",
+      progs:[[0,-3,2,-5],[0,-3,2,-5],[2,-5,-3,0],[-5,2,0,-3]],
+      melodies:[
+        [0,null,3,null,5,null,3,null,0,null,3,null,5,3,null,null],
+        [5,3,5,null,7,5,3,null,5,7,null,10,7,null,5,null],
+        [10,7,null,10,12,null,10,7,5,null,7,10,null,12,null,10],
+        [3,null,5,3,null,0,null,3,5,null,7,null,5,3,null,null]
+      ],
+      kicks:[1,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0],
+      hats:[1,1,0,1,1,1,0,1,1,1,0,1,1,1,1,0] },
+    { name:"Crystal Bells",      bpm:72,  key:-6, voice:"chime",
+      progs:[[0,3,-2,5],[0,3,-2,5],[3,5,-2,0],[-2,0,5,3]],
+      melodies:[
+        [7,null,null,5,null,null,3,null,5,null,null,7,null,null,null,null],
+        [3,null,5,null,7,null,10,null,7,5,null,3,null,5,null,null],
+        [10,null,12,null,14,12,null,10,7,null,10,null,12,null,null,10],
+        [5,null,7,null,5,3,null,5,7,null,null,5,3,null,null,null]
+      ],
+      kicks:[1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
+      hats:[0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0] },
+    { name:"Mirror Echo",        bpm:76,  key:8,  voice:"ep",
+      progs:[[0,5,2,-3],[0,5,2,-3],[2,-3,5,0],[-3,2,0,5]],
+      melodies:[
+        [0,null,null,5,null,null,0,null,null,7,null,null,5,null,null,null],
+        [5,null,7,null,5,3,null,0,null,3,5,null,7,null,null,5],
+        [7,10,null,12,null,10,7,null,5,7,null,10,12,null,10,null],
+        [3,null,0,null,3,5,null,7,null,5,null,3,null,null,null,null]
+      ],
+      kicks:[1,0,0,0,0,1,0,0,1,0,0,0,0,1,0,0],
+      hats:[0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0] },
+    { name:"Galactic Drift",     bpm:68,  key:-8, voice:"pad",
+      progs:[[0,-2,3,5],[0,-2,3,5],[3,5,-2,0],[5,0,3,-2]],
+      melodies:[
+        [12,null,null,null,10,null,null,null,7,null,null,null,5,null,null,null],
+        [5,null,7,null,10,null,7,null,5,null,3,null,5,null,7,null],
+        [10,null,12,null,14,null,12,10,7,null,10,12,null,14,null,12],
+        [7,null,null,5,null,null,3,null,5,null,null,7,null,null,null,null]
+      ],
+      kicks:[1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
+      hats:[0,0,0,1,0,0,0,1,0,0,0,1,0,0,1,0] },
+    { name:"Time Spiral",        bpm:80,  key:2,  voice:"chime",
+      progs:[[0,3,-5,2],[0,3,-5,2],[-5,2,3,0],[2,-5,0,3]],
+      melodies:[
+        [0,null,3,null,null,5,null,null,7,null,5,null,null,3,null,null],
+        [3,5,null,7,null,5,3,null,0,null,3,5,7,null,null,5],
+        [7,null,10,null,12,null,10,7,5,7,null,10,null,12,null,10],
+        [5,null,null,3,null,0,null,null,3,null,5,null,null,7,null,null]
+      ],
+      kicks:[1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0],
+      hats:[0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1] },
+    { name:"Gigachad Anthem",    bpm:94,  key:-4, voice:"ep",
+      progs:[[0,2,-3,5],[0,2,-3,5],[5,-3,2,0],[2,0,5,-3]],
+      melodies:[
+        [0,null,3,null,5,3,null,0,null,3,null,5,7,null,null,null],
+        [5,3,5,7,null,10,7,null,5,null,3,5,7,null,null,5],
+        [10,10,null,12,null,10,7,null,10,12,null,14,12,null,10,null],
+        [7,null,5,null,3,5,null,7,null,5,3,null,0,null,null,null]
+      ],
+      kicks:[1,0,1,0,0,1,0,0,1,0,1,0,0,1,0,0],
+      hats:[1,0,1,1,0,1,1,0,1,0,1,1,0,1,1,1] },
+    { name:"Final Stench",       bpm:88,  key:5,  voice:"marimba",
+      progs:[[0,-2,5,3],[2,-5,0,3],[5,3,-2,0],[0,5,2,-3]],
+      melodies:[
+        [0,3,null,5,null,7,null,5,3,null,5,null,7,null,null,null],
+        [5,null,7,null,10,7,null,5,3,5,null,7,null,10,null,7],
+        [12,null,10,null,12,14,null,12,10,null,12,null,14,12,null,10],
+        [7,null,5,3,null,5,7,null,5,null,3,null,0,null,3,null]
+      ],
+      kicks:[1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
+      hats:[1,1,0,1,1,1,0,1,1,1,0,1,1,0,1,1] }
+];
 
-// ---------- sequencer + track rotation ----------
-// catchy vi-IV-I-V style chord movement (semitone transpose per bar)
-const PROG = [0, -4, 3, -2];
+// ---------- Section structure (bars per section, repeating song form) ----------
+// Form: intro(4) → verse(8) → chorus(8) → verse(8) → bridge(4) → chorus(8) → outro(4) = 44 bars ~3min
+const SONG_FORM = [
+    { section: 0, bars: 4  },  // intro  (sparse melody 0)
+    { section: 1, bars: 8  },  // verse  (melody 1, light drums)
+    { section: 2, bars: 8  },  // chorus (melody 2, full drums)
+    { section: 1, bars: 8  },  // verse2 (melody 1)
+    { section: 3, bars: 4  },  // bridge (melody 3, minimal drums)
+    { section: 2, bars: 8  },  // chorus2(melody 2, full drums)
+    { section: 0, bars: 4  },  // outro  (melody 0, fade)
+]; // total 44 bars, then loops
+
+const PHONK = { idx: 0, step: 0, timer: null, playing: false, bars: 0, formIdx: 0, formBar: 0 };
+
+function getSong() { return WORLD_SONGS[game.worldIdx % WORLD_SONGS.length]; }
+
+function currentSection() {
+    let bar = PHONK.bars % 44;
+    let acc = 0;
+    for (let i = 0; i < SONG_FORM.length; i++) {
+        acc += SONG_FORM[i].bars;
+        if (bar < acc) return SONG_FORM[i];
+    }
+    return SONG_FORM[0];
+}
+
 function phonkTick() {
     const ctx = getCtx(); if (!ctx) return;
-    const tr = TRACKS[PHONK.idx % TRACKS.length];
+    const song = getSong();
     const t = ctx.currentTime + 0.02;
     const s = PHONK.step % 16;
-    const key = worldKey();
-    const barRoot = PROG[PHONK.bars % PROG.length] + key;
-    if (s === 0) phonkPad(ctx, t, barRoot);
-    if (tr.kick[s]) phonkKick(ctx, t);
-    if (tr.hat[s]) phonkHat(ctx, t);
-    const bn = tr.bell[s];
-    if (bn !== null && bn !== undefined) phonkLead(ctx, t, bn + barRoot);
-    if (tr.bass[s]) phonk808(ctx, t, barRoot);
+    const sec = currentSection();
+    const secIdx = sec.section;
+
+    // chord root: pick from song's progression for current section
+    const prog = song.progs[secIdx] || song.progs[0];
+    const barInSec = PHONK.bars % prog.length;
+    const root = prog[barInSec] + song.key;
+
+    // pad chord every bar start
+    if (s === 0) {
+        const master = ensureMaster(); if (master) {
+            const f = ctx.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = 1900; f.Q.value = 0.5;
+            const g = ctx.createGain();
+            g.gain.setValueAtTime(0.0001, t);
+            g.gain.linearRampToValueAtTime(0.028 * game.settings.musicVol, t + 0.9);
+            g.gain.linearRampToValueAtTime(0.0001, t + 2.3);
+            [0, 4, 7, 11, 12].forEach(iv => {
+                const o = ctx.createOscillator(); o.type = "sine";
+                o.frequency.value = midiHz(root + iv - 12); o.detune.value = Math.random()*6-3;
+                o.connect(f); o.start(t); o.stop(t+2.4);
+            });
+            f.connect(g); g.connect(master); routeWet(g);
+        }
+    }
+
+    // drums — chorus sections (2) get full kit, bridge/intro get sparse
+    const drumVol = game.settings.musicVol;
+    const fullDrums = secIdx === 2;
+    const noDrums   = secIdx === 0;
+    if (!noDrums && song.kicks[s]) vKick(ctx, t, 0.32 * drumVol);
+    if (!noDrums && song.hats[s] && (fullDrums || Math.random() < 0.55)) vHat(ctx, t, 0.028 * drumVol);
+
+    // melody
+    const mel = song.melodies[secIdx] || song.melodies[0];
+    const note = mel[s];
+    if (note !== null && note !== undefined) {
+        const freq = midiHz(note + root + 12);
+        const vol = 0.10 * game.settings.musicVol;
+        const master = ensureMaster(); if (master) {
+            switch (song.voice) {
+                case "marimba": vMarimba(ctx, t, freq, vol, master); break;
+                case "ep":      vEP(ctx, t, freq, vol, master); break;
+                case "chime":   vChime(ctx, t, freq, vol*1.1, master); break;
+                default:        vPad(ctx, t, freq, vol*0.85, master);
+            }
+        }
+    }
+
+    // bass on beat 1 and 3 of bar
+    if (s === 0 || s === 8) {
+        const master = ensureMaster(); if (master)
+            vBass(ctx, t, midiHz(root - 12), 0.28 * drumVol, master);
+    }
+
     PHONK.step++;
     if (PHONK.step % 16 === 0) PHONK.bars++;
 }
-// each world has its own track + musical key so it sounds different
-function worldTrackIdx() { return (game.worldIdx || 0) % TRACKS.length; }
-function worldKey() {
-    const keys = [0,-2,3,-5,5,-4,2,-7,7,1,-1,4,-3,6,-6,8,-8,2,-4,5];
-    return keys[(game.worldIdx || 0) % keys.length] || 0;
-}
+
+function worldTrackIdx() { return game.worldIdx % WORLD_SONGS.length; }
+function worldKey() { return getSong().key; }
 function announceTrack() {
-    const tr = TRACKS[PHONK.idx % TRACKS.length];
+    const song = getSong();
     const el = document.getElementById("now-playing");
-    if (el) el.textContent = "♪ " + tr.name;
+    if (el) el.textContent = "♪ " + song.name;
 }
-function curStepMs() { return (60000 / TRACKS[PHONK.idx % TRACKS.length].bpm) / 2; }
+function curStepMs() { return (60000 / getSong().bpm) / 4; }
 
 function startMusic() {
     if (PHONK.playing || !game.settings.musicOn) return;
     const ctx = getCtx(); if (!ctx) return;
     ensureMaster();
     PHONK.playing = true;
-    PHONK.idx = worldTrackIdx();
+    PHONK.step = 0; PHONK.bars = 0;
     announceTrack();
     const loop = () => {
         if (!PHONK.playing) return;
@@ -469,25 +665,30 @@ function startMusic() {
 }
 function stopMusic() { PHONK.playing = false; if (PHONK.timer) { clearTimeout(PHONK.timer); PHONK.timer = null; } }
 function skipTrack() {
-    PHONK.idx = (PHONK.idx + 1) % TRACKS.length; PHONK.step = 0; announceTrack();
-    if (!PHONK.playing && game.settings.musicOn) startMusic();
+    stopMusic();
+    setTimeout(() => { if (game.settings.musicOn) startMusic(); }, 80);
 }
 
 
 // ---------- ROBUST audio unlock (fixes mobile/iOS no-sound) ----------
+// On iOS, AudioContext MUST be created AND resumed inside a user-gesture handler.
 function unlockAudio() {
-    const ctx = getCtx(); if (!ctx) return;
     try {
+        const ctx = createCtx(); // creates context if not yet made — must be inside gesture
+        if (!ctx) return;
         if (ctx.state === "suspended") ctx.resume();
-        // play a silent buffer to satisfy iOS gesture requirement
-        const b = ctx.createBuffer(1, 1, 22050);
+        // Silent 1-sample buffer tricks iOS into fully unlocking audio output
+        const b = ctx.createBuffer(1, 1, ctx.sampleRate);
         const src = ctx.createBufferSource();
         src.buffer = b; src.connect(ctx.destination); src.start(0);
     } catch (e) {}
 }
 function startAudio() {
-    unlockAudio();
-    if (audioStarted) { if (game.settings.musicOn) startMusic(); return; }
+    unlockAudio(); // always call inside gesture so iOS context gets created
+    if (audioStarted) {
+        if (game.settings.musicOn && !PHONK.playing) startMusic();
+        return;
+    }
     audioStarted = true;
     ensureMaster();
     if (game.settings.musicOn) startMusic();
@@ -498,15 +699,16 @@ function startAudio() {
         startAudio();
     }, { once: true, passive: true });
 });
-// keep context alive on every interaction (mobile suspends it)
-["pointerdown","touchend"].forEach(ev => {
+// keep context alive on every interaction (iOS suspends AudioContext on app switch)
+["pointerdown","touchstart","touchend"].forEach(ev => {
     document.addEventListener(ev, () => {
-        const c = getCtx(); if (c && c.state === "suspended") c.resume();
+        if (!audioCtx) return;
+        if (audioCtx.state === "suspended") audioCtx.resume();
         if (audioStarted && game.settings.musicOn && !PHONK.playing) startMusic();
     }, { passive: true });
 });
 document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) { const c = getCtx(); if (c && c.state === "suspended") c.resume(); }
+    if (!document.hidden && audioCtx && audioCtx.state === "suspended") audioCtx.resume();
 });
 
 
@@ -638,9 +840,20 @@ function handleMainClick(e) {
     game.points += dmg; game.totalEarned += dmg;
 
     sfxClick();
-    floatText(e.clientX, e.clientY, "+" + fmt(dmg), criticalMultiplier > 1 ? "#FFD54A" : (comboValue > 60 ? "#00E0FF" : "#7FFF00"), criticalMultiplier > 1);
-    if (comboValue > 50 && Math.random() < 0.4) ringAt(e.clientX, e.clientY, comboValue > 80 ? "#FF3D9A" : "#00E0FF");
+    const w = WORLDS[game.worldIdx || 0];
+    const wColor = (w && w.theme) ? w.theme.p : "#7FFF00";
+    const textColor = criticalMultiplier > 1 ? "#FFD54A" : (comboValue > 60 ? "#00E0FF" : wColor);
+    floatText(e.clientX, e.clientY, "+" + fmt(dmg), textColor, criticalMultiplier > 1);
+    // rings scale with combo
+    if (comboValue > 30) ringAt(e.clientX, e.clientY, wColor);
+    if (comboValue > 60) ringAt(e.clientX, e.clientY, comboValue > 80 ? "#FF3D9A" : "#00E0FF");
+    if (comboValue > 90) ringAt(e.clientX, e.clientY, "#FFD54A");
     clickPuff(e.clientX, e.clientY);
+    // extra world-colored puffs at high combo
+    if (comboValue > 50 && Math.random() < 0.5) burstAt(e.clientX, e.clientY, wColor, 6);
+    if (comboValue > 80 && Math.random() < 0.4) burstAt(e.clientX, e.clientY, "#FF3D9A", 8);
+    // milestone combo flash
+    if (comboValue >= 100 && Math.random() < 0.08) screenFlash(wColor);
     popButton();
     maybeBrainrotPop();
     refreshCombo();
@@ -761,10 +974,15 @@ function openSheet(name) {
     if (name === "aura") renderAura();
     if (name === "settings") syncSettingsUI();
     overlay.classList.add("visible"); sheet.classList.add("open");
+    // highlight the active nav button
+    document.querySelectorAll(".nav-btn").forEach(b => {
+        b.classList.toggle("sel", b.dataset.sheet === name);
+    });
 }
 function closeSheet() {
     document.querySelectorAll(".sheet").forEach(s => s.classList.remove("open"));
     const overlay = document.getElementById("sheet-overlay"); if (overlay) overlay.classList.remove("visible");
+    document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("sel"));
 }
 function showUpTab(name, btn) {
     document.querySelectorAll("#sheet-upgrades .up-tab").forEach(t => t.classList.remove("active"));
@@ -921,9 +1139,9 @@ function fuseGroups() {
 }
 // ---------- FUSION: combine N identical pets → one ⭐ stronger pet ----------
 const MAX_STAR = 5;
-function fuseNeeded(star) { return 3 + star * 3; } // 3,6,9,12,15
+function fuseNeeded(star) { return Math.min(4 + star * 4, 20); } // 4,8,12,16,20 — caps at 20
 function renderFuse() {
-    let html = '<p class="fuse-info">Fuse identical pets into a ⭐ stronger one (2.2x power each star). Higher stars need more pets — max <b>' + MAX_STAR + '⭐</b>.</p><div class="pet-grid">';
+    let html = '<p class="fuse-info">Fuse identical pets into a ⭐ stronger one (2.2x power each star). Higher stars need more pets — starts at 4, scales up, max <b>' + MAX_STAR + '⭐</b>.</p><div class="pet-grid">';
     const groups = fuseGroups();
     const fusable = groups.filter(g => g.star < MAX_STAR && g.items.length >= fuseNeeded(g.star));
     if (fusable.length === 0) html += '<p class="empty-text">No fusions ready. Collect more copies of the same pet (same ⭐ level).</p>';
@@ -1133,53 +1351,59 @@ function playHatch(pet, egg) {
     rays.style.background = "conic-gradient(from 0deg," + r.color + "00," + r.color + "66," + r.color + "00," + r.color + "66," + r.color + "00)";
     overlay.style.setProperty("--rc", r.color);
     overlay.className = "hatch-overlay tier" + r.tier;
-    skip.style.opacity = "0";
+    skip.style.opacity = "0"; skip.style.pointerEvents = "none";
     overlay.classList.remove("hidden");
     sfxWhoosh();
 
     // charge glow + crack ticks during shake (intensity by tier)
     let ticks = 0;
+    const tickInterval = Math.max(60, 140 - r.tier * 20);
     const chargeInt = setInterval(() => {
-        tone(280 + ticks*55, 0.05, "square", 0.05);
+        tone(200 + ticks * 40, 0.08, "sine", 0.06 + r.tier * 0.015);
         sparkleRise(r.color);
+        if (r.tier >= 3 && ticks % 2 === 0) sparkleRise(r.color);
+        if (r.tier >= 5) sparkleRise("#ffffff");
         ticks++;
-    }, 150 - r.tier*8);
+    }, tickInterval);
 
-    const shakeTime = 850 + r.tier * 160;
+    const shakeTime = 700 + r.tier * 250; // longer build-up for rarer pets
     setTimeout(() => {
         clearInterval(chargeInt);
-        // BURST
+        // BURST — scales hard with tier
         eggEl.className = "hatch-egg burst";
         shockwave(r.color);
-        spawnConfetti(r.color, 26 + r.tier * 26);
-        if (r.tier >= 1) screenFlash(r.color);
-        if (r.tier >= 2) { lightBurst(r.color); }
-        if (r.tier >= 3) { shake(); rays.style.opacity = "1"; rays.classList.add("spin"); }
-        if (r.tier >= 4) { emojiRain([pet.emoji,"🌟","✨","💫"], 30); document.body.classList.add("slowmo"); }
-        if (r.tier >= 5) { emojiRain(["✦","💎",pet.emoji], 44); rainbowFlash(); }
+        spawnConfetti(r.color, 20 + r.tier * 40);
+        if (r.tier >= 1) { screenFlash(r.color); }
+        if (r.tier >= 2) { lightBurst(r.color); shockwave(r.color); spawnConfetti(r.color, 30); }
+        if (r.tier >= 3) { shake(); rays.style.opacity = "1"; rays.classList.add("spin"); screenFlash(r.color); burstAt(window.innerWidth/2, window.innerHeight*0.4, r.color, 40); }
+        if (r.tier >= 4) { emojiRain([pet.emoji,"🌟","✨","💫","⭐"], 50); document.body.classList.add("slowmo"); shake(); shockwave(r.color); }
+        if (r.tier >= 5) { emojiRain(["✦","💎",pet.emoji,"🌈","💥"], 80); rainbowFlash(); shake(); shockwave("#ffffff"); spawnConfetti("#ffffff", 60); }
         sfxRare(r.tier);
+        // extra dramatic sounds for high tiers
+        if (r.tier >= 3) setTimeout(() => sfxRare(r.tier), 180);
+        if (r.tier >= 5) setTimeout(() => sfxRare(5), 360);
 
         setTimeout(() => {
             eggEl.textContent = pet.emoji;
             eggEl.className = "hatch-egg reveal tier" + r.tier;
-            eggEl.style.filter = "drop-shadow(0 0 28px " + r.color + ")";
+            eggEl.style.filter = "drop-shadow(0 0 " + (18 + r.tier * 18) + "px " + r.color + ")";
             const stars = pet.star ? "⭐".repeat(Math.min(pet.star,5)) : "";
             resEl.innerHTML = '<div class="hatch-rarity" style="color:' + r.color + '">' + r.label + ' ' + stars + '</div>' +
                 '<div class="hatch-name">' + pet.name + '</div>' +
                 '<div class="hatch-power" style="color:' + r.color + '">' + pet.power.toFixed(2) + 'x click power</div>';
             resEl.classList.add("show");
-            if (r.tier >= 4) bigBanner(r.label + "!!!", r.color);
-            skip.style.opacity = "1";
+            if (r.tier >= 3) bigBanner(r.label + "!!!", r.color);
+            skip.style.opacity = "1"; skip.style.pointerEvents = "auto";
             document.body.classList.remove("slowmo");
-        }, 360);
+        }, 300 + r.tier * 60);
     }, shakeTime);
 
     if (hatchTimeout) clearTimeout(hatchTimeout);
-    // tier 0-1: auto-dismiss quickly. tier 2+: wait for tap (no auto)
+    // common/rare: auto-dismiss. epic+: must tap to continue
     if (r.tier <= 1) {
-        hatchTimeout = setTimeout(finishHatch, shakeTime + 1400);
+        hatchTimeout = setTimeout(finishHatch, shakeTime + 1600);
     } else {
-        hatchTimeout = null; // player must tap
+        hatchTimeout = null; // player must tap skip button
     }
 }
 let hatchTimeout = null;
@@ -1208,22 +1432,66 @@ function finishHatch() {
 function fxLayer() { return document.getElementById("golden-layer"); }
 
 // little fart-cloud puffs + sparks on every click
-const PUFFS = ["💨","💨","💨","✨","⭐","💫"];
+const PUFFS = ["💨","💨","💨","✨","⭐","💫","🌟","💥","🔥","⚡"];
 function clickPuff(x, y) {
     if (!game.settings.particles) return;
     const layer = fxLayer(); if (!layer) return;
-    const n = 2 + Math.floor(Math.random()*2);
-    for (let i=0;i<n;i++) {
+    const w = WORLDS[game.worldIdx || 0];
+    const wColor = (w && w.theme) ? w.theme.p : "#7FFF00";
+    // more puffs at higher combo
+    const n = 3 + Math.floor(comboValue / 20) + Math.floor(Math.random()*3);
+    for (let i = 0; i < n; i++) {
         const p = document.createElement("div");
         p.className = "click-puff";
         p.textContent = PUFFS[Math.floor(Math.random()*PUFFS.length)];
         p.style.left = x + "px"; p.style.top = y + "px";
-        const ang = -Math.PI/2 + (Math.random()-0.5)*1.6, dist = 30 + Math.random()*55;
+        const ang = -Math.PI/2 + (Math.random()-0.5)*2.2, dist = 35 + Math.random()*80;
         p.style.setProperty("--dx", Math.cos(ang)*dist + "px");
         p.style.setProperty("--dy", (Math.sin(ang)*dist) + "px");
-        p.style.fontSize = (0.8 + Math.random()*0.8) + "rem";
+        p.style.fontSize = (0.7 + Math.random()*1.1) + "rem";
         layer.appendChild(p); setTimeout(()=>p.remove(), 700);
     }
+    // spark dots in world color
+    const sparks = 4 + Math.floor(comboValue / 15);
+    for (let i = 0; i < sparks; i++) {
+        const s = document.createElement("div"); s.className = "confetti";
+        s.style.left = x + "px"; s.style.top = y + "px";
+        s.style.width = s.style.height = (3 + Math.random()*4) + "px";
+        s.style.borderRadius = "50%";
+        s.style.background = Math.random() < 0.6 ? wColor : "#ffffff";
+        const ang = Math.random()*Math.PI*2, dist = 20 + Math.random()*70;
+        s.style.setProperty("--dx", Math.cos(ang)*dist + "px");
+        s.style.setProperty("--dy", Math.sin(ang)*dist + "px");
+        layer.appendChild(s); setTimeout(()=>s.remove(), 600);
+    }
+}
+
+// ambient floating particles around the button
+let ambientTimer = null;
+function startAmbientParticles() {
+    if (ambientTimer) return;
+    ambientTimer = setInterval(() => {
+        if (!game.settings.particles) return;
+        const layer = fxLayer(); if (!layer) return;
+        const w = WORLDS[game.worldIdx || 0];
+        const wColor = (w && w.theme) ? w.theme.p : "#7FFF00";
+        const btn = document.getElementById("main-btn"); if (!btn) return;
+        const rect = btn.getBoundingClientRect();
+        const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
+        const angle = Math.random() * Math.PI * 2;
+        const r = rect.width/2 + 10 + Math.random()*20;
+        const sx = cx + Math.cos(angle)*r, sy = cy + Math.sin(angle)*r;
+        const p = document.createElement("div"); p.className = "click-puff";
+        const emojis = ["✨","💫","⭐","🌟","💨"];
+        p.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+        p.style.left = sx + "px"; p.style.top = sy + "px";
+        p.style.fontSize = (0.5 + Math.random()*0.7) + "rem";
+        p.style.opacity = "0.7";
+        const drift = -30 - Math.random()*40;
+        p.style.setProperty("--dx", (Math.random()*20-10) + "px");
+        p.style.setProperty("--dy", drift + "px");
+        layer.appendChild(p); setTimeout(()=>p.remove(), 900);
+    }, 300);
 }
 
 function floatText(x, y, txt, color, big) {
@@ -1328,10 +1596,12 @@ function spawnGoldenFart() {
     requestAnimationFrame(() => { el.style.left = "112%"; });
     el.onclick = () => {
         const goldMult = 1 + auraLevel("golden") * 0.5;
-        // reward = 2 minutes worth of income OR 500 clicks worth, whichever bigger
-        const incomeBase = getPassive() * getPetMult() * 120;
-        const clickBase  = getClickPower() * getPetMult() * 500;
-        const reward = Math.max(incomeBase, clickBase, game.points * 0.05, 100) * goldMult;
+        // world scaling: each world makes golden farts exponentially more valuable
+        const worldScale = Math.pow(1.6, game.worldIdx || 0);
+        // reward = 5 minutes passive OR 1000 clicks, whichever bigger, times world scale
+        const incomeBase = getPassive() * getPetMult() * 300;
+        const clickBase  = getClickPower() * getPetMult() * 1000;
+        const reward = Math.max(incomeBase, clickBase, game.points * 0.08, 100) * goldMult * worldScale;
         game.points += reward;
         floatText(window.innerWidth/2, window.innerHeight/2, "🤑 +" + fmt(reward), "#FFD54A", true);
         screenFlash("#ffd54a"); sfxRare(4); shake(); burstAt(window.innerWidth/2, window.innerHeight/2, "#FFD54A", 36);
@@ -1389,6 +1659,7 @@ function initGame() {
         mainBtn.addEventListener("touchstart", function(ev){ ev.preventDefault(); const tp = ev.touches&&ev.touches[0]; handleMainClick({clientX: tp?tp.clientX:innerWidth/2, clientY: tp?tp.clientY:innerHeight/2}); }, { passive:false });
     }
     buildButtonDecor();
+    startAmbientParticles();
 }
 
 // inject decorative orbiting emojis inside the main button
@@ -1416,17 +1687,36 @@ function applyWorldTheme() {
     const w = WORLDS[game.worldIdx || 0]; if (!w || !w.theme) return;
     const t = w.theme;
     const root = document.documentElement;
-    root.style.setProperty("--green", t.p);
+    // core palette
+    root.style.setProperty("--green",  t.p);
     root.style.setProperty("--purple", t.s);
-    root.style.setProperty("--cyan", t.a);
-    root.style.setProperty("--bg0", t.bg2);
-    root.style.setProperty("--bg1", t.bg1);
-    root.style.setProperty("--stroke", t.s + "59"); // ~35% alpha
+    root.style.setProperty("--cyan",   t.a);
+    root.style.setProperty("--pink",   t.p);
+    root.style.setProperty("--bg0",    t.bg2);
+    root.style.setProperty("--bg1",    t.bg1);
+    root.style.setProperty("--stroke", t.s + "66");
+    // panel bg uses world bg tinted by secondary color
+    root.style.setProperty("--panel",  hexToRgba(t.bg1, 0.75));
+    // muted text slightly tinted by primary
+    root.style.setProperty("--muted",  hexToRgba(t.p, 0.55));
+    // update bottom nav border glow
+    const nav = document.querySelector(".bottom-nav");
+    if (nav) nav.style.borderTopColor = t.s + "99";
+    // update body gradient
+    document.body.style.background =
+        "linear-gradient(160deg," + t.bg1 + "," + t.bg2 + ")";
     // recolor particles to primary
     const overlay = document.getElementById("particle-overlay");
     if (overlay) overlay.querySelectorAll(".particle").forEach(p => {
         p.style.background = "radial-gradient(circle, " + t.p + "e6, " + t.p + "00)";
     });
+}
+function hexToRgba(hex, alpha) {
+    // handles 6-char hex like #1a2b3c
+    try {
+        const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+        return "rgba(" + r + "," + g + "," + b + "," + alpha + ")";
+    } catch(e) { return "rgba(30,18,55," + alpha + ")"; }
 }
 
 // ============================================================
