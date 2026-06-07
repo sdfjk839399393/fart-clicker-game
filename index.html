@@ -69,6 +69,13 @@
             <button class="stab" onclick="showUpTab('passive', this)">💰 Passive</button>
             <button class="stab" onclick="showUpTab('slots', this)">🐾 Slots</button>
         </div>
+        <div class="buymode-row">
+            <span class="buymode-label">Buy:</span>
+            <button class="buymode-btn active" onclick="setBuyMode(1, this)">x1</button>
+            <button class="buymode-btn" onclick="setBuyMode(10, this)">x10</button>
+            <button class="buymode-btn" onclick="setBuyMode(100, this)">x100</button>
+            <button class="buymode-btn" onclick="setBuyMode('max', this)">MAX</button>
+        </div>
         <div class="sheet-body">
             <div id="up-click" class="up-tab active"></div>
             <div id="up-passive" class="up-tab"></div>

@@ -32,6 +32,7 @@ let comboValue = 0, comboDecayTimer = null;
 let upgradesRendered = false, audioStarted = false, hatchActive = false;
 let audioCtx = null, pendingHatch = null;
 let petTabCur = "collection", indexWorld = 0;
+let buyMode = 1; // 1, 10, 100, or "max"
 
 
 // ---------- 20 Worlds ----------
@@ -136,7 +137,9 @@ const AURA_UPGRADES = [
     { name: "Lucky Aura",       icon: "🍀", base: 5, effect: "luck",     per: 1,    desc: "+1 luck roll on eggs / level" },
     { name: "Golden Aura",      icon: "🌟", base: 4, effect: "golden",   per: 0.5,  desc: "Golden farts: +50% reward / level" },
     { name: "Aura Magnet",      icon: "🧲", base: 8, effect: "auragain", per: 0.25, desc: "+25% Aura per rebirth / level" },
-    { name: "Combo Master",     icon: "🔥", base: 6, effect: "combo",    per: 0.30, desc: "Combo builds +30% faster / level" }
+    { name: "Combo Master",     icon: "🔥", base: 6, effect: "combo",    per: 0.30, desc: "Combo builds +30% faster / level" },
+    { name: "Triple Hatch",     icon: "🥚", base: 60, effect: "multi",   per: 1,    desc: "Unlock Open x3 eggs at once", max: 1 },
+    { name: "Mega Hatch",       icon: "🪺", base: 400, effect: "mega",    per: 1,    desc: "Unlock Open x10 eggs at once", max: 1 }
 ];
 
 
@@ -231,31 +234,46 @@ function sfxRare(tier) {
 
 // ---------- PHONK tracks (each = distinct beat + melody) ----------
 const TRACKS = [
-    { name: "Sigma Drift", bpm: 145, wave: "square",
+    { name: "Sigma Drift", bpm: 145, voice: "bell",
       kick: [1,0,0,0, 0,0,1,0, 0,0,1,0, 0,0,0,0],
       hat:  [1,0,1,0, 1,0,1,0, 1,0,1,0, 1,0,1,1],
       bell: [0,null,3,0, null,7,5,3, 0,null,3,5, 7,null,5,3],
       bass: [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,1,0] },
-    { name: "Ohio Nights", bpm: 132, wave: "sawtooth",
+    { name: "Ohio Nights", bpm: 132, voice: "pluck",
       kick: [1,0,0,1, 0,0,1,0, 1,0,0,1, 0,0,1,0],
       hat:  [0,1,0,1, 0,1,0,1, 0,1,0,1, 0,1,1,1],
       bell: [5,null,5,3, 0,null,3,null, 5,7,null,8, 7,5,3,null],
       bass: [1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,0,0] },
-    { name: "Rizz Tek", bpm: 160, wave: "square",
+    { name: "Rizz Tek", bpm: 160, voice: "brass",
       kick: [1,0,1,0, 0,1,0,0, 1,0,1,0, 0,1,0,0],
       hat:  [1,1,0,1, 1,1,0,1, 1,1,0,1, 1,1,0,1],
       bell: [7,7,null,5, 3,null,5,7, 10,null,8,7, 5,null,3,0],
       bass: [1,0,0,1, 0,0,1,0, 1,0,0,1, 0,0,1,0] },
-    { name: "Gigachad Theme", bpm: 120, wave: "triangle",
+    { name: "Gigachad Theme", bpm: 120, voice: "piano",
       kick: [1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,1,0],
       hat:  [0,0,1,0, 0,0,1,0, 0,0,1,0, 0,0,1,0],
       bell: [0,null,null,3, null,null,5,null, 7,null,null,5, null,3,null,0],
       bass: [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0] },
-    { name: "Skibidi Core", bpm: 150, wave: "sawtooth",
+    { name: "Skibidi Core", bpm: 150, voice: "flute",
       kick: [1,0,0,1, 1,0,0,0, 0,1,0,0, 1,0,0,1],
       hat:  [1,0,1,1, 1,0,1,1, 1,0,1,1, 1,0,1,1],
       bell: [3,3,5,null, 7,5,3,null, 10,8,7,null, 5,3,2,null],
-      bass: [1,0,0,0, 1,0,0,0, 0,0,1,0, 1,0,0,0] }
+      bass: [1,0,0,0, 1,0,0,0, 0,0,1,0, 1,0,0,0] },
+    { name: "Quantum Funk", bpm: 138, voice: "pluck",
+      kick: [1,0,0,0, 0,1,0,0, 1,0,0,0, 0,1,0,1],
+      hat:  [1,1,1,0, 1,1,1,0, 1,1,1,0, 1,1,1,1],
+      bell: [0,3,7,3, 5,3,0,null, 7,5,3,0, 2,3,5,7],
+      bass: [1,0,0,1, 0,0,1,0, 1,0,0,1, 0,1,0,0] },
+    { name: "Voidwave", bpm: 110, voice: "bell",
+      kick: [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,1,0],
+      hat:  [0,0,1,0, 0,0,1,0, 0,0,1,0, 0,1,0,1],
+      bell: [0,null,null,7, null,5,null,3, 0,null,null,5, 7,null,10,null],
+      bass: [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0] },
+    { name: "Hyper Rizz", bpm: 170, voice: "brass",
+      kick: [1,0,1,0, 1,0,1,0, 1,0,1,0, 1,0,1,0],
+      hat:  [1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1],
+      bell: [12,10,7,10, 12,null,10,7, 5,7,10,12, 10,7,5,3],
+      bass: [1,0,1,0, 1,0,1,0, 1,0,1,0, 1,0,1,0] }
 ];
 
 const PHONK = { idx: 0, step: 0, timer: null, playing: false, bars: 0 };
@@ -319,29 +337,71 @@ function ensureMaster() {
 }
 function routeWet(node) { if (reverbSend) node.connect(reverbSend); }
 
-// warm melodic lead: detuned saws + sine sub + vibrato, gentle filter
-function phonkLead(ctx, t, semi, wave) {
-    const master = ensureMaster(); if (!master) return;
-    const f = ctx.createBiquadFilter(); f.type = "lowpass";
-    f.frequency.setValueAtTime(700, t); f.frequency.exponentialRampToValueAtTime(2200, t + 0.06);
-    f.frequency.exponentialRampToValueAtTime(800, t + 0.4); f.Q.value = 3;
+// ---------- distinct instrument voices (real timbral variety) ----------
+function vEnv(ctx, peak, atk, dec, t) {
     const g = ctx.createGain();
     g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(0.13 * game.settings.musicVol, t + 0.03);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.42);
-    const base = midiHz(semi + 12);
-    // vibrato LFO
-    const lfo = ctx.createOscillator(), lfoG = ctx.createGain();
-    lfo.frequency.value = 5.5; lfoG.gain.value = base * 0.006;
-    lfo.connect(lfoG); lfo.start(t); lfo.stop(t + 0.44);
-    [-0.08, 0.08].forEach(det => {
-        const o = ctx.createOscillator();
-        o.type = "sawtooth"; o.frequency.value = base * (1 + det/12);
-        lfoG.connect(o.frequency); o.connect(f); o.start(t); o.stop(t + 0.44);
-    });
-    const sub = ctx.createOscillator(); sub.type = "sine"; sub.frequency.value = base/2;
-    sub.connect(f); sub.start(t); sub.stop(t + 0.44);
+    g.gain.exponentialRampToValueAtTime(Math.max(peak,0.0002), t + atk);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + atk + dec);
+    return g;
+}
+// FM bell / electric-piano (metallic, glassy)
+function vBell(ctx, t, freq, vol, master) {
+    const car = ctx.createOscillator(); car.type = "sine"; car.frequency.value = freq;
+    const mod = ctx.createOscillator(); mod.type = "sine"; mod.frequency.value = freq * 2.01;
+    const mg = ctx.createGain(); mg.gain.setValueAtTime(freq * 3, t); mg.gain.exponentialRampToValueAtTime(1, t + 0.5);
+    mod.connect(mg); mg.connect(car.frequency);
+    const g = vEnv(ctx, vol, 0.005, 0.55, t);
+    car.connect(g); g.connect(master); routeWet(g);
+    mod.start(t); car.start(t); mod.stop(t + 0.6); car.stop(t + 0.6);
+}
+// pluck (guitar/koto-ish): saw through fast-closing filter
+function vPluck(ctx, t, freq, vol, master) {
+    const o = ctx.createOscillator(); o.type = "sawtooth"; o.frequency.value = freq;
+    const f = ctx.createBiquadFilter(); f.type = "lowpass"; f.Q.value = 2;
+    f.frequency.setValueAtTime(5000, t); f.frequency.exponentialRampToValueAtTime(600, t + 0.18);
+    const g = vEnv(ctx, vol, 0.003, 0.28, t);
+    o.connect(f); f.connect(g); g.connect(master); routeWet(g);
+    o.start(t); o.stop(t + 0.32);
+}
+// brass / supersaw (fat, slow attack)
+function vBrass(ctx, t, freq, vol, master) {
+    const f = ctx.createBiquadFilter(); f.type = "lowpass"; f.Q.value = 4;
+    f.frequency.setValueAtTime(500, t); f.frequency.linearRampToValueAtTime(2600, t + 0.12); f.frequency.linearRampToValueAtTime(900, t + 0.5);
+    const g = vEnv(ctx, vol, 0.05, 0.45, t);
+    [-7,-0.1,0.1,7].forEach(det => { const o = ctx.createOscillator(); o.type = "sawtooth"; o.frequency.value = freq; o.detune.value = det; o.connect(f); o.start(t); o.stop(t + 0.55); });
     f.connect(g); g.connect(master); routeWet(g);
+}
+// piano-ish (triangle+sine stack, percussive)
+function vPiano(ctx, t, freq, vol, master) {
+    const g = vEnv(ctx, vol, 0.004, 0.5, t);
+    const o1 = ctx.createOscillator(); o1.type = "triangle"; o1.frequency.value = freq;
+    const o2 = ctx.createOscillator(); o2.type = "sine"; o2.frequency.value = freq * 2;
+    const g2 = ctx.createGain(); g2.gain.value = 0.4; o2.connect(g2); g2.connect(g);
+    o1.connect(g); g.connect(master); routeWet(g);
+    o1.start(t); o2.start(t); o1.stop(t + 0.55); o2.stop(t + 0.55);
+}
+// flute (breathy sine + vibrato)
+function vFlute(ctx, t, freq, vol, master) {
+    const o = ctx.createOscillator(); o.type = "sine"; o.frequency.value = freq;
+    const lfo = ctx.createOscillator(); lfo.frequency.value = 6; const lg = ctx.createGain(); lg.gain.value = freq*0.01;
+    lfo.connect(lg); lg.connect(o.frequency); lfo.start(t); lfo.stop(t + 0.5);
+    const g = vEnv(ctx, vol, 0.04, 0.4, t);
+    o.connect(g); g.connect(master); routeWet(g);
+    o.start(t); o.stop(t + 0.5);
+}
+function phonkLead(ctx, t, semi) {
+    const master = ensureMaster(); if (!master) return;
+    const tr = TRACKS[PHONK.idx % TRACKS.length];
+    const freq = midiHz(semi + 12);
+    const vol = 0.13 * game.settings.musicVol;
+    switch (tr.voice) {
+        case "pluck": vPluck(ctx, t, freq, vol, master); break;
+        case "brass": vBrass(ctx, t, freq, vol*0.85, master); break;
+        case "piano": vPiano(ctx, t, freq, vol, master); break;
+        case "flute": vFlute(ctx, t, freq, vol*1.1, master); break;
+        default:      vBell(ctx, t, freq, vol, master);
+    }
 }
 // lush chord pad (follows the bar's chord root)
 function phonkPad(ctx, t, root) {
@@ -369,21 +429,22 @@ function phonkTick() {
     const tr = TRACKS[PHONK.idx % TRACKS.length];
     const t = ctx.currentTime + 0.02;
     const s = PHONK.step % 16;
-    const barRoot = PROG[PHONK.bars % PROG.length];
+    const key = worldKey();
+    const barRoot = PROG[PHONK.bars % PROG.length] + key;
     if (s === 0) phonkPad(ctx, t, barRoot);
     if (tr.kick[s]) phonkKick(ctx, t);
     if (tr.hat[s]) phonkHat(ctx, t);
     const bn = tr.bell[s];
-    if (bn !== null && bn !== undefined) phonkLead(ctx, t, bn + barRoot, tr.wave);
-    if (tr.bass[s]) phonk808(ctx, t, barRoot + ((bn === null || bn === undefined) ? 0 : 0));
+    if (bn !== null && bn !== undefined) phonkLead(ctx, t, bn + barRoot);
+    if (tr.bass[s]) phonk808(ctx, t, barRoot);
     PHONK.step++;
-    if (PHONK.step % 16 === 0) {
-        PHONK.bars++;
-        if (PHONK.bars % 8 === 0) {
-            PHONK.idx = (PHONK.idx + Math.floor(1 + Math.random()*(TRACKS.length-1))) % TRACKS.length;
-            announceTrack();
-        }
-    }
+    if (PHONK.step % 16 === 0) PHONK.bars++;
+}
+// each world has its own track + musical key so it sounds different
+function worldTrackIdx() { return (game.worldIdx || 0) % TRACKS.length; }
+function worldKey() {
+    const keys = [0,-2,3,-5,5,-4,2,-7,7,1,-1,4,-3,6,-6,8,-8,2,-4,5];
+    return keys[(game.worldIdx || 0) % keys.length] || 0;
 }
 function announceTrack() {
     const tr = TRACKS[PHONK.idx % TRACKS.length];
@@ -397,6 +458,7 @@ function startMusic() {
     const ctx = getCtx(); if (!ctx) return;
     ensureMaster();
     PHONK.playing = true;
+    PHONK.idx = worldTrackIdx();
     announceTrack();
     const loop = () => {
         if (!PHONK.playing) return;
@@ -431,14 +493,20 @@ function startAudio() {
     if (game.settings.musicOn) startMusic();
 }
 // attach to every gesture type for max mobile compatibility
-["pointerdown","touchend","click","keydown"].forEach(ev => {
+["pointerdown","touchstart","touchend","click","keydown"].forEach(ev => {
     document.addEventListener(ev, function once() {
         startAudio();
     }, { once: true, passive: true });
 });
 // keep context alive on every interaction (mobile suspends it)
 ["pointerdown","touchend"].forEach(ev => {
-    document.addEventListener(ev, () => { const c = getCtx(); if (c && c.state === "suspended") c.resume(); }, { passive: true });
+    document.addEventListener(ev, () => {
+        const c = getCtx(); if (c && c.state === "suspended") c.resume();
+        if (audioStarted && game.settings.musicOn && !PHONK.playing) startMusic();
+    }, { passive: true });
+});
+document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) { const c = getCtx(); if (c && c.state === "suspended") c.resume(); }
 });
 
 
@@ -604,13 +672,33 @@ function maybeBrainrotPop() {
 }
 
 
+function levelCost(i, lvl) { return Math.floor(UPGRADES[i].baseCost * Math.pow(1.15, lvl)); }
+// how many levels you'd buy in current mode, and total cost
+function bulkInfo(i) {
+    const cur = game.upgrades[i] || 0;
+    let count = 0, total = 0;
+    const cap = (buyMode === "max") ? 100000 : buyMode;
+    let pts = game.points;
+    for (let k = 0; k < cap; k++) {
+        const c = levelCost(i, cur + k);
+        if (buyMode === "max") { if (pts < c) break; pts -= c; }
+        total += c; count++;
+    }
+    if (buyMode !== "max") { // fixed mode: affordable only if can pay full batch
+        return { count: count, total: total, affordable: game.points >= total };
+    }
+    return { count: count, total: total, affordable: count > 0 };
+}
 function upCard(i) {
-    const u = UPGRADES[i], lvl = game.upgrades[i] || 0, cost = upgradeCost(i), ok = game.points >= cost;
+    const u = UPGRADES[i], lvl = game.upgrades[i] || 0;
+    const info = bulkInfo(i);
+    const ok = info.affordable && info.count > 0;
     const stat = u.type === "click" ? "+" + fmt(u.clickPower) + " / click" : "+" + fmt(u.passivePower) + " / sec";
+    const buyLabel = (buyMode === "max") ? ("MAX (" + (info.count||0) + ")") : ("x" + buyMode);
     return '<button class="up-card ' + (ok ? "" : "locked") + '" onclick="buyUpgrade(' + i + ')">' +
         '<div class="up-ico">' + u.icon + '</div>' +
-        '<div class="up-mid"><div class="up-name">' + u.name + '</div>' +
-        '<div class="up-stat">' + stat + '</div><div class="up-cost">' + fmt(cost) + ' 💨</div></div>' +
+        '<div class="up-mid"><div class="up-name">' + u.name + ' <span class="buy-badge">' + buyLabel + '</span></div>' +
+        '<div class="up-stat">' + stat + '</div><div class="up-cost">' + fmt(info.total) + ' 💨</div></div>' +
         '<div class="up-lvl">Lv ' + lvl + '</div></button>';
 }
 function renderUpgradeTabs() {
@@ -637,11 +725,17 @@ function renderUpgradeTabs() {
 // ============================================================
 function buyUpgrade(i) {
     const u = UPGRADES[i]; if (!u) return;
-    const cost = upgradeCost(i);
-    if (game.points >= cost) {
-        game.points -= cost; game.upgrades[i] = (game.upgrades[i] || 0) + 1;
+    const info = bulkInfo(i);
+    if (info.count > 0 && info.affordable && game.points >= info.total) {
+        game.points -= info.total; game.upgrades[i] = (game.upgrades[i] || 0) + info.count;
         sfxBuy(); updateDisplay(); renderUpgradeTabs(); saveGame();
     } else sfxError();
+}
+function setBuyMode(m, btn) {
+    buyMode = m;
+    document.querySelectorAll("#sheet-upgrades .buymode-btn").forEach(b => b.classList.remove("active"));
+    if (btn) btn.classList.add("active");
+    renderUpgradeTabs();
 }
 function buyPetSlot(idx) {
     const u = PET_SLOTS[idx]; if (!u) return;
@@ -738,7 +832,8 @@ function renderWorlds() {
 function selectWorld(i) {
     const w = WORLDS[i]; if (!w || game.rebirths < w.reqRebirths) { sfxError(); return; }
     game.worldIdx = i; indexWorld = i; sfxBuy(); updateDisplay(); renderWorlds(); saveGame();
-    showToast("🌍 Travelled to " + w.name + "!", 2000);
+    PHONK.idx = worldTrackIdx(); PHONK.step = 0; announceTrack();
+    showToast("🌍 Travelled to " + w.name + " · 🎵 " + TRACKS[PHONK.idx].name, 2400);
 }
 
 
@@ -750,21 +845,27 @@ function renderAura() {
         '<div class="aura-sub">Aura · permanent power. Next rebirth grants <b>+' + auraGainPreview() + ' ✦</b></div></div>';
     html += '<div class="aura-list">';
     AURA_UPGRADES.forEach((u, i) => {
-        const lvl = game.auraUpgrades[i] || 0, cost = auraUpCost(i), ok = game.aura >= cost;
-        html += '<button class="aura-card ' + (ok?"":"locked") + '" onclick="buyAura(' + i + ')">' +
+        const lvl = game.auraUpgrades[i] || 0;
+        const maxed = u.max && lvl >= u.max;
+        const cost = auraUpCost(i), ok = game.aura >= cost && !maxed;
+        html += '<button class="aura-card ' + (ok?"":"locked") + (maxed?" maxed":"") + '" onclick="buyAura(' + i + ')">' +
             '<div class="up-ico">' + u.icon + '</div><div class="up-mid">' +
             '<div class="up-name">' + u.name + '</div><div class="up-stat">' + u.desc + '</div>' +
-            '<div class="aura-cost">✦ ' + fmt(cost) + '</div></div><div class="up-lvl">Lv ' + lvl + '</div></button>';
+            '<div class="aura-cost">' + (maxed ? "✅ UNLOCKED" : "✦ " + fmt(cost)) + '</div></div><div class="up-lvl">' + (u.max ? (maxed?"MAX":"") : "Lv " + lvl) + '</div></button>';
     });
     html += '</div>';
     const el = document.getElementById("aura-body"); if (el) el.innerHTML = html;
 }
 function buyAura(i) {
+    const u = AURA_UPGRADES[i]; if (!u) return;
+    const lvl = game.auraUpgrades[i] || 0;
+    if (u.max && lvl >= u.max) { sfxError(); return; }
     const cost = auraUpCost(i);
     if (game.aura >= cost) {
-        game.aura -= cost; game.auraUpgrades[i] = (game.auraUpgrades[i] || 0) + 1;
+        game.aura -= cost; game.auraUpgrades[i] = lvl + 1;
         sfxRare(2); burstAt(window.innerWidth/2, window.innerHeight*0.4, "#b14eff", 18);
         renderAura(); updateDisplay(); saveGame();
+        if (u.effect === "multi" || u.effect === "mega") showToast("🥚 Multi-hatch unlocked!", 2200);
     } else sfxError();
 }
 
@@ -816,27 +917,47 @@ function fuseGroups() {
     });
     return Object.values(map);
 }
+// ---------- FUSION: combine N identical pets → one ⭐ stronger pet ----------
+const MAX_STAR = 5;
+function fuseNeeded(star) { return 3 + star * 3; } // 3,6,9,12,15
 function renderFuse() {
-    let html = '<p class="fuse-info">Fuse <b>3 identical pets</b> into one ⭐ stronger pet (2.2x power)!</p><div class="pet-grid">';
-    const groups = fuseGroups().filter(g => g.items.length >= 3);
-    if (groups.length === 0) html += '<p class="empty-text">No fusions available. Collect 3 of the same pet (same star level).</p>';
-    else groups.forEach(g => {
+    let html = '<p class="fuse-info">Fuse identical pets into a ⭐ stronger one (2.2x power each star). Higher stars need more pets — max <b>' + MAX_STAR + '⭐</b>.</p><div class="pet-grid">';
+    const groups = fuseGroups();
+    const fusable = groups.filter(g => g.star < MAX_STAR && g.items.length >= fuseNeeded(g.star));
+    if (fusable.length === 0) html += '<p class="empty-text">No fusions ready. Collect more copies of the same pet (same ⭐ level).</p>';
+    else fusable.forEach(g => {
         const r = RARITY[g.rarity] || RARITY.common;
-        const stars = g.star ? "⭐".repeat(Math.min(g.star,5)) : "";
+        const stars = g.star ? "⭐".repeat(g.star) : "";
+        const need = fuseNeeded(g.star);
         html += '<div class="fuse-card" style="border-color:' + r.color + '">' +
             '<span class="pet-chip-emoji">' + g.emoji + '</span><span class="pet-stars">' + stars + '</span>' +
             '<span class="pet-chip-name" style="color:' + r.color + '">' + g.name + '</span>' +
-            '<span class="fuse-count">x' + g.items.length + '</span>' +
-            '<button class="fuse-btn" onclick="fusePet(\'' + g.name.replace(/'/g,"\\'") + '\',' + g.star + ')">FUSE 3 →</button></div>';
+            '<span class="fuse-count">' + g.items.length + ' / ' + need + '</span>' +
+            '<button class="fuse-btn" onclick="fusePet(\'' + g.name.replace(/'/g,"\\'") + '\',' + g.star + ')">FUSE ' + need + ' →</button></div>';
     });
     html += '</div>';
+    // also show groups that are close but not ready
+    const pending = groups.filter(g => g.star < MAX_STAR && g.items.length < fuseNeeded(g.star) && g.items.length > 1);
+    if (pending.length) {
+        html += '<div class="pet-block-title">In progress</div><div class="pet-grid">';
+        pending.forEach(g => {
+            const r = RARITY[g.rarity] || RARITY.common;
+            html += '<div class="fuse-card dim" style="border-color:' + r.color + '">' +
+                '<span class="pet-chip-emoji">' + g.emoji + '</span>' +
+                '<span class="pet-chip-name" style="color:' + r.color + '">' + g.name + '</span>' +
+                '<span class="fuse-count">' + g.items.length + ' / ' + fuseNeeded(g.star) + '</span></div>';
+        });
+        html += '</div>';
+    }
     const el = document.getElementById("pets-body"); if (el) el.innerHTML = html;
 }
 function fusePet(name, star) {
+    if (star >= MAX_STAR) { sfxError(); showToast("⭐ Max star reached!", 1800); return; }
+    const need = fuseNeeded(star);
     const matches = (game.pets||[]).filter(p => p.name === name && (p.star||0) === star);
-    if (matches.length < 3) { sfxError(); return; }
+    if (matches.length < need) { sfxError(); return; }
     matches.sort((a,b) => b.power - a.power);
-    const consumed = matches.slice(0,3);
+    const consumed = matches.slice(0, need);
     const ids = consumed.map(p => p.id);
     game.equippedPets = (game.equippedPets||[]).filter(p => !ids.includes(p.id));
     game.pets = game.pets.filter(p => !ids.includes(p.id));
@@ -844,8 +965,8 @@ function fusePet(name, star) {
     const fused = { id: Date.now()+Math.floor(Math.random()*100000), name: top.name, emoji: top.emoji,
         rarity: top.rarity, star: (star||0)+1, power: +(top.power * 2.2).toFixed(2) };
     game.pets.push(fused);
-    sfxRare(3); screenFlash(RARITY[fused.rarity].color); burstAt(window.innerWidth/2, window.innerHeight*0.4, RARITY[fused.rarity].color, 30); shake();
-    showToast("✨ Fused into " + fused.name + " " + "⭐".repeat(Math.min(fused.star,5)) + " (" + fused.power.toFixed(2) + "x)!", 3000);
+    sfxRare(4); screenFlash(RARITY[fused.rarity].color); burstAt(window.innerWidth/2, window.innerHeight*0.4, RARITY[fused.rarity].color, 36); shake(); emojiRain(["✨","⭐",fused.emoji],18);
+    showToast("✨ Fused " + fused.name + " " + "⭐".repeat(fused.star) + " (" + fused.power.toFixed(2) + "x)!", 3000);
     renderFuse(); updateDisplay(); saveGame();
 }
 
@@ -924,23 +1045,48 @@ function equipPet() {
 // ============================================================
 //  EGG SHOP + ROLL (Lucky Aura + discovery)
 // ============================================================
+let hatchQueue = [];
 function openEggModal() { closeSheet(); renderEggShop(); const m=document.getElementById("egg-modal"); if(m)m.classList.remove("hidden"); }
 function closeEggModal() { const m=document.getElementById("egg-modal"); if(m)m.classList.add("hidden"); }
 function renderEggShop() {
     const bal = document.getElementById("egg-balance"); if (bal) bal.innerText = fmt(game.points);
+    const multiLvl = auraLevel("multi"), megaLvl = auraLevel("mega");
     let html = '<div class="egg-grid">';
     EGG_TEMPLATES.forEach((egg, idx) => {
         const cost = eggCost(egg, game.worldIdx), ok = game.points >= cost;
         let odds = egg.pets.map(p => { const r=RARITY[p.rarity];
             return '<div class="odds-row"><span style="color:' + r.color + '">' + p.emoji + ' ' + p.name + '</span><span class="odds-pct">' + p.odds + '%</span></div>'; }).join("");
+        let multiBtns = '';
+        if (multiLvl > 0 && game.points >= cost*3) multiBtns += '<button class="egg-buy-multi" onclick="rollEggMulti(' + idx + ',3)">x3 · ' + fmt(cost*3) + '</button>';
+        if (megaLvl > 0 && game.points >= cost*10) multiBtns += '<button class="egg-buy-multi mega" onclick="rollEggMulti(' + idx + ',10)">x10 · ' + fmt(cost*10) + '</button>';
         html += '<div class="egg-card" style="border-color:' + egg.color + '">' +
             '<div class="egg-emoji" style="filter:drop-shadow(0 0 12px ' + egg.color + ')">' + egg.emoji + '</div>' +
             '<div class="egg-name" style="color:' + egg.color + '">' + egg.name + '</div>' +
             '<div class="egg-odds">' + odds + '</div>' +
-            '<button class="egg-buy ' + (ok?"":"locked") + '" onclick="rollEgg(' + idx + ')">Open · ' + fmt(cost) + '</button></div>';
+            '<button class="egg-buy ' + (ok?"":"locked") + '" onclick="rollEgg(' + idx + ')">Open · ' + fmt(cost) + '</button>' +
+            multiBtns + '</div>';
     });
     html += '</div>';
     const sel = document.getElementById("egg-selection"); if (sel) sel.innerHTML = html;
+}
+function rollEggMulti(idx, count) {
+    const egg = EGG_TEMPLATES[idx]; if (!egg) return;
+    const cost = eggCost(egg, game.worldIdx) * count;
+    if (game.points < cost) { sfxError(); showToast("❌ Not enough Stink!", 1500); return; }
+    game.points -= cost;
+    const results = [];
+    for (let i=0; i<count; i++) {
+        const chosen = pickFromEgg(egg);
+        const pet = { id: Date.now()+Math.floor(Math.random()*100000)+i, name: chosen.name, emoji: chosen.emoji,
+            rarity: chosen.rarity, star: 0, power: petPower(chosen.base, game.worldIdx) };
+        game.pets.push(pet);
+        game.discovered[dexKey(game.worldIdx, pet.name)] = true;
+        results.push({ pet, egg });
+    }
+    updateDisplay(); saveGame();
+    // queue all hatches — first plays immediately, rest queued
+    hatchQueue = results.slice(1);
+    playHatch(results[0].pet, results[0].egg);
 }
 function pickFromEgg(egg) {
     let roll = Math.random() * 100, chosen = egg.pets[0];
@@ -1027,7 +1173,12 @@ function playHatch(pet, egg) {
     }, shakeTime);
 
     if (hatchTimeout) clearTimeout(hatchTimeout);
-    hatchTimeout = setTimeout(finishHatch, shakeTime + 1900 + r.tier * 320);
+    // tier 0-1: auto-dismiss quickly. tier 2+: wait for tap (no auto)
+    if (r.tier <= 1) {
+        hatchTimeout = setTimeout(finishHatch, shakeTime + 1400);
+    } else {
+        hatchTimeout = null; // player must tap
+    }
 }
 let hatchTimeout = null;
 function finishHatch() {
@@ -1037,9 +1188,15 @@ function finishHatch() {
     if (rays) rays.classList.remove("spin");
     if (overlay) overlay.classList.add("hidden");
     document.body.classList.remove("slowmo");
+    // queue up next in multi-open
+    if (hatchQueue && hatchQueue.length > 0) {
+        const next = hatchQueue.shift();
+        setTimeout(() => playHatch(next.pet, next.egg), 400);
+        return;
+    }
     renderEggShop();
     const m = document.getElementById("egg-modal"); if (m) m.classList.remove("hidden");
-    if (petTabCur !== "collection") petTabCur = "collection";
+    petTabCur = "collection";
 }
 
 
@@ -1169,16 +1326,20 @@ function spawnGoldenFart() {
     requestAnimationFrame(() => { el.style.left = "112%"; });
     el.onclick = () => {
         const goldMult = 1 + auraLevel("golden") * 0.5;
-        const reward = Math.max(getClickPower()*60, getPassive()*30, 50) * goldMult;
+        // reward = 2 minutes worth of income OR 500 clicks worth, whichever bigger
+        const incomeBase = getPassive() * getPetMult() * 120;
+        const clickBase  = getClickPower() * getPetMult() * 500;
+        const reward = Math.max(incomeBase, clickBase, game.points * 0.05, 100) * goldMult;
         game.points += reward;
         floatText(window.innerWidth/2, window.innerHeight/2, "🤑 +" + fmt(reward), "#FFD54A", true);
-        screenFlash("#ffd54a"); sfxRare(3); shake(); burstAt(window.innerWidth/2, window.innerHeight/2, "#FFD54A", 28);
+        screenFlash("#ffd54a"); sfxRare(4); shake(); burstAt(window.innerWidth/2, window.innerHeight/2, "#FFD54A", 36);
+        emojiRain(["💨","🌟","💰","✦"], 20);
         showToast("🌟 GOLDEN FART! +" + fmt(reward) + " Stink!", 2500);
         el.remove(); updateDisplay(); saveGame();
     };
     setTimeout(() => el.remove(), 9000);
 }
-setInterval(() => { if (Math.random() < 0.5) spawnGoldenFart(); }, 42000);
+setInterval(() => { if (Math.random() < 0.5) spawnGoldenFart(); }, 35000);
 
 
 // ============================================================
