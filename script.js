@@ -37,26 +37,26 @@ let buyMode = 1; // 1, 10, 100, or "max"
 
 // ---------- 20 Worlds ----------
 const WORLDS = [
-    { name: "Basement",         reqRebirths: 0,   icon: "🏚️" },
-    { name: "Sewer Tunnels",    reqRebirths: 1,   icon: "🕳️" },
-    { name: "Skibidi Toilet",   reqRebirths: 3,   icon: "🚽" },
-    { name: "Rizz Dojo",        reqRebirths: 6,   icon: "😎" },
-    { name: "Ohio",             reqRebirths: 10,  icon: "🌽" },
-    { name: "Outer Space",      reqRebirths: 15,  icon: "🚀" },
-    { name: "Gyatt Canyon",     reqRebirths: 21,  icon: "🏜️" },
-    { name: "Nether Realm",     reqRebirths: 28,  icon: "🔥" },
-    { name: "Sigma City",       reqRebirths: 36,  icon: "🏙️" },
-    { name: "Dimension X",      reqRebirths: 45,  icon: "🛸" },
-    { name: "Quantum Realm",    reqRebirths: 55,  icon: "⚛️" },
-    { name: "Grimace Shake",    reqRebirths: 66,  icon: "🟣" },
-    { name: "Mewing Heights",   reqRebirths: 78,  icon: "☁️" },
-    { name: "Inferno Depths",   reqRebirths: 91,  icon: "👹" },
-    { name: "Crystal Cavern",   reqRebirths: 105, icon: "💎" },
-    { name: "Mirror Dimension", reqRebirths: 120, icon: "🪞" },
-    { name: "Galactic Core",    reqRebirths: 136, icon: "🌌" },
-    { name: "Time Rift",        reqRebirths: 153, icon: "⏳" },
-    { name: "Gigachad Nexus",   reqRebirths: 171, icon: "💪" },
-    { name: "The Final Stench", reqRebirths: 190, icon: "👑" }
+    { name: "Basement",         reqRebirths: 0,    icon: "🏚️", theme: { p:"#7FFF00", s:"#B14EFF", a:"#00E0FF", bg1:"#160a2e", bg2:"#08040f" } },
+    { name: "Sewer Tunnels",    reqRebirths: 1,    icon: "🕳️", theme: { p:"#8db300", s:"#5a7d2c", a:"#a0ffaa", bg1:"#1a2a14", bg2:"#0a1408" } },
+    { name: "Skibidi Toilet",   reqRebirths: 4,    icon: "🚽", theme: { p:"#5dd2ff", s:"#ffffff", a:"#ffd54a", bg1:"#0e2236", bg2:"#06121f" } },
+    { name: "Rizz Dojo",        reqRebirths: 9,    icon: "😎", theme: { p:"#ff3d9a", s:"#ff6b35", a:"#ffd54a", bg1:"#2e0a1c", bg2:"#170510" } },
+    { name: "Ohio",             reqRebirths: 16,   icon: "🌽", theme: { p:"#ffd54a", s:"#ff8a3d", a:"#7fff00", bg1:"#2e1f08", bg2:"#170f04" } },
+    { name: "Outer Space",      reqRebirths: 26,   icon: "🚀", theme: { p:"#5d8eff", s:"#b14eff", a:"#00e0ff", bg1:"#0a0a3a", bg2:"#04041a" } },
+    { name: "Gyatt Canyon",     reqRebirths: 40,   icon: "🏜️", theme: { p:"#ff8a3d", s:"#ffd54a", a:"#ff3d9a", bg1:"#3a1808", bg2:"#1a0a04" } },
+    { name: "Nether Realm",     reqRebirths: 58,   icon: "🔥", theme: { p:"#ff3030", s:"#ff8030", a:"#ffd54a", bg1:"#2a0606", bg2:"#140303" } },
+    { name: "Sigma City",       reqRebirths: 80,   icon: "🏙️", theme: { p:"#c0c0d0", s:"#00e0ff", a:"#ffffff", bg1:"#1a1a2a", bg2:"#0a0a14" } },
+    { name: "Dimension X",      reqRebirths: 108,  icon: "🛸", theme: { p:"#7fff80", s:"#00ff80", a:"#b14eff", bg1:"#0e2410", bg2:"#061206" } },
+    { name: "Quantum Realm",    reqRebirths: 142,  icon: "⚛️", theme: { p:"#00e0ff", s:"#5d8eff", a:"#ffd54a", bg1:"#0a1a3a", bg2:"#04081a" } },
+    { name: "Grimace Shake",    reqRebirths: 184,  icon: "🟣", theme: { p:"#a040ff", s:"#ff3d9a", a:"#ffd54a", bg1:"#2a0a3a", bg2:"#14041a" } },
+    { name: "Mewing Heights",   reqRebirths: 235,  icon: "☁️", theme: { p:"#bfdfff", s:"#7fa8ff", a:"#ffffff", bg1:"#1a2840", bg2:"#0a141f" } },
+    { name: "Inferno Depths",   reqRebirths: 295,  icon: "👹", theme: { p:"#ff2020", s:"#ff5010", a:"#ffd54a", bg1:"#1a0202", bg2:"#0a0101" } },
+    { name: "Crystal Cavern",   reqRebirths: 365,  icon: "💎", theme: { p:"#40ffd0", s:"#80ffff", a:"#b14eff", bg1:"#0a2828", bg2:"#041414" } },
+    { name: "Mirror Dimension", reqRebirths: 450,  icon: "🪞", theme: { p:"#e0e0ff", s:"#a0a0ff", a:"#ff3d9a", bg1:"#1a1a30", bg2:"#0a0a18" } },
+    { name: "Galactic Core",    reqRebirths: 555,  icon: "🌌", theme: { p:"#ffd54a", s:"#b14eff", a:"#00e0ff", bg1:"#0a0428", bg2:"#040214" } },
+    { name: "Time Rift",        reqRebirths: 680,  icon: "⏳", theme: { p:"#ffe080", s:"#40ffd0", a:"#ff3d9a", bg1:"#2a200a", bg2:"#141004" } },
+    { name: "Gigachad Nexus",   reqRebirths: 830,  icon: "💪", theme: { p:"#ff1050", s:"#ffd54a", a:"#00e0ff", bg1:"#2a0820", bg2:"#140410" } },
+    { name: "The Final Stench", reqRebirths: 1000, icon: "👑", theme: { p:"#ffd700", s:"#ff00ff", a:"#00ffd0", bg1:"#1a001a", bg2:"#0a000a" } }
 ];
 
 // ---------- Number format (NaN-safe) ----------
@@ -833,6 +833,8 @@ function selectWorld(i) {
     const w = WORLDS[i]; if (!w || game.rebirths < w.reqRebirths) { sfxError(); return; }
     game.worldIdx = i; indexWorld = i; sfxBuy(); updateDisplay(); renderWorlds(); saveGame();
     PHONK.idx = worldTrackIdx(); PHONK.step = 0; announceTrack();
+    applyWorldTheme();
+    screenFlash(w.theme && w.theme.p ? w.theme.p : "#ffd54a");
     showToast("🌍 Travelled to " + w.name + " · 🎵 " + TRACKS[PHONK.idx].name, 2400);
 }
 
@@ -1375,6 +1377,7 @@ function initGame() {
     loadGame();
     if (!game.settings.particles) { const o=document.getElementById("particle-overlay"); if(o)o.style.display="none"; }
     createParticles();
+    applyWorldTheme();
     updateDisplay();
     renderUpgradeTabs();
     renderPets();
@@ -1403,3 +1406,129 @@ function buildButtonDecor() {
 }
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initGame);
 else initGame();
+
+
+
+// ============================================================
+//  WORLD THEMING — recolor whole UI per world
+// ============================================================
+function applyWorldTheme() {
+    const w = WORLDS[game.worldIdx || 0]; if (!w || !w.theme) return;
+    const t = w.theme;
+    const root = document.documentElement;
+    root.style.setProperty("--green", t.p);
+    root.style.setProperty("--purple", t.s);
+    root.style.setProperty("--cyan", t.a);
+    root.style.setProperty("--bg0", t.bg2);
+    root.style.setProperty("--bg1", t.bg1);
+    root.style.setProperty("--stroke", t.s + "59"); // ~35% alpha
+    // recolor particles to primary
+    const overlay = document.getElementById("particle-overlay");
+    if (overlay) overlay.querySelectorAll(".particle").forEach(p => {
+        p.style.background = "radial-gradient(circle, " + t.p + "e6, " + t.p + "00)";
+    });
+}
+
+// ============================================================
+//  EXTRA HATCH FX — only fire on rarer pets (tier 3+)
+// ============================================================
+function lightningStrike(color) {
+    const layer = fxLayer(); if (!layer) return;
+    const bolt = document.createElement("div");
+    bolt.className = "lightning-bolt";
+    bolt.style.background = "linear-gradient(180deg, transparent, " + color + ", #fff, " + color + ", transparent)";
+    bolt.style.left = (10 + Math.random() * 80) + "%";
+    layer.appendChild(bolt);
+    setTimeout(() => bolt.remove(), 400);
+}
+function spotlightBeam(color) {
+    const layer = fxLayer(); if (!layer) return;
+    const beam = document.createElement("div");
+    beam.className = "spot-beam";
+    beam.style.background = "linear-gradient(180deg, " + color + "00, " + color + "70, " + color + "00)";
+    layer.appendChild(beam);
+    setTimeout(() => beam.remove(), 1200);
+}
+function fanfareSfx(tier) {
+    // layered melodic fanfare — gets richer with rarity
+    const ctx = getCtx(); if (!ctx) return;
+    const m = ensureMaster(); if (!m) return;
+    const notes = [
+        [262, 330, 392],          // C major triad
+        [330, 392, 494],          // E minor
+        [392, 494, 587],          // G
+        [523, 659, 784, 988],     // C5 maj
+        [523, 659, 784, 988, 1175], // bigger
+        [523, 659, 784, 988, 1175, 1397] // mythic
+    ];
+    const set = notes[Math.min(tier, notes.length - 1)];
+    set.forEach((freq, i) => {
+        setTimeout(() => {
+            const t = ctx.currentTime;
+            const o = ctx.createOscillator(); o.type = "triangle"; o.frequency.value = freq;
+            const o2 = ctx.createOscillator(); o2.type = "sine"; o2.frequency.value = freq * 2;
+            const g = vEnv(ctx, 0.18 * (game.settings.sfxVol || 0.7), 0.005, 0.45, t);
+            const g2 = ctx.createGain(); g2.gain.value = 0.4;
+            o.connect(g); o2.connect(g2); g2.connect(g); g.connect(m); routeWet(g);
+            o.start(t); o2.start(t); o.stop(t + 0.5); o2.stop(t + 0.5);
+        }, i * 90);
+    });
+}
+function chargeUpSfx() {
+    // rising "anticipation" sweep
+    const ctx = getCtx(); if (!ctx) return;
+    const m = ensureMaster(); if (!m) return;
+    const t = ctx.currentTime;
+    const o = ctx.createOscillator(); o.type = "sawtooth";
+    o.frequency.setValueAtTime(80, t); o.frequency.exponentialRampToValueAtTime(800, t + 0.9);
+    const f = ctx.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = 1200; f.Q.value = 8;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(0.18 * (game.settings.sfxVol || 0.7), t + 0.85);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 1.0);
+    o.connect(f); f.connect(g); g.connect(m); routeWet(g);
+    o.start(t); o.stop(t + 1.05);
+}
+
+// patch playHatch with extra FX based on tier
+const _originalPlayHatch = playHatch;
+playHatch = function(pet, egg) {
+    const r = RARITY[pet.rarity] || RARITY.common;
+    // tier 3+: anticipation charge-up sweep at start
+    if (r.tier >= 3) chargeUpSfx();
+    // tier 4+: spotlight beam appears
+    if (r.tier >= 4) setTimeout(() => spotlightBeam(r.color), 200);
+    // tier 5: lightning strikes during shake
+    if (r.tier >= 5) {
+        let bolts = 0;
+        const li = setInterval(() => {
+            lightningStrike(r.color);
+            screenFlash(r.color);
+            bolts++;
+            if (bolts >= 4) clearInterval(li);
+        }, 220);
+    }
+    _originalPlayHatch(pet, egg);
+    // schedule reveal-time fanfare
+    const shakeTime = 850 + r.tier * 160;
+    setTimeout(() => {
+        fanfareSfx(r.tier);
+        // tier 3+: extra stacked shockwaves
+        if (r.tier >= 3) {
+            setTimeout(() => shockwave(r.color), 100);
+            setTimeout(() => shockwave("#fff"), 250);
+            setTimeout(() => shockwave(r.color), 400);
+        }
+        // tier 4+: even more confetti waves
+        if (r.tier >= 4) {
+            setTimeout(() => spawnConfetti(r.color, 40), 500);
+            setTimeout(() => spawnConfetti("#fff", 40), 800);
+        }
+        // tier 5: epic rainbow burst
+        if (r.tier >= 5) {
+            ["#ff3d9a","#ffd54a","#7fff00","#00e0ff","#b14eff"].forEach((c, i) => {
+                setTimeout(() => { spawnConfetti(c, 25); shockwave(c); }, i * 200);
+            });
+        }
+    }, shakeTime);
+};
