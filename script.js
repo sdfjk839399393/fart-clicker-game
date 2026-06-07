@@ -1158,47 +1158,53 @@ function playHatch(pet, egg) {
 
     // charge glow + crack ticks during shake (intensity by tier)
     let ticks = 0;
+    const tickInterval = Math.max(60, 140 - r.tier * 20);
     const chargeInt = setInterval(() => {
-        tone(280 + ticks*55, 0.05, "square", 0.05);
+        tone(200 + ticks * 40, 0.08, "sine", 0.06 + r.tier * 0.015);
         sparkleRise(r.color);
+        if (r.tier >= 3 && ticks % 2 === 0) sparkleRise(r.color);
+        if (r.tier >= 5) sparkleRise("#ffffff");
         ticks++;
-    }, 150 - r.tier*8);
+    }, tickInterval);
 
-    const shakeTime = 850 + r.tier * 160;
+    const shakeTime = 700 + r.tier * 250; // longer build-up for rarer pets
     setTimeout(() => {
         clearInterval(chargeInt);
-        // BURST
+        // BURST — scales hard with tier
         eggEl.className = "hatch-egg burst";
         shockwave(r.color);
-        spawnConfetti(r.color, 26 + r.tier * 26);
-        if (r.tier >= 1) screenFlash(r.color);
-        if (r.tier >= 2) { lightBurst(r.color); }
-        if (r.tier >= 3) { shake(); rays.style.opacity = "1"; rays.classList.add("spin"); }
-        if (r.tier >= 4) { emojiRain([pet.emoji,"🌟","✨","💫"], 30); document.body.classList.add("slowmo"); }
-        if (r.tier >= 5) { emojiRain(["✦","💎",pet.emoji], 44); rainbowFlash(); }
+        spawnConfetti(r.color, 20 + r.tier * 40);
+        if (r.tier >= 1) { screenFlash(r.color); }
+        if (r.tier >= 2) { lightBurst(r.color); shockwave(r.color); spawnConfetti(r.color, 30); }
+        if (r.tier >= 3) { shake(); rays.style.opacity = "1"; rays.classList.add("spin"); screenFlash(r.color); burstAt(window.innerWidth/2, window.innerHeight*0.4, r.color, 40); }
+        if (r.tier >= 4) { emojiRain([pet.emoji,"🌟","✨","💫","⭐"], 50); document.body.classList.add("slowmo"); shake(); shockwave(r.color); }
+        if (r.tier >= 5) { emojiRain(["✦","💎",pet.emoji,"🌈","💥"], 80); rainbowFlash(); shake(); shockwave("#ffffff"); spawnConfetti("#ffffff", 60); }
         sfxRare(r.tier);
+        // extra dramatic sounds for high tiers
+        if (r.tier >= 3) setTimeout(() => sfxRare(r.tier), 180);
+        if (r.tier >= 5) setTimeout(() => sfxRare(5), 360);
 
         setTimeout(() => {
             eggEl.textContent = pet.emoji;
             eggEl.className = "hatch-egg reveal tier" + r.tier;
-            eggEl.style.filter = "drop-shadow(0 0 28px " + r.color + ")";
+            eggEl.style.filter = "drop-shadow(0 0 " + (18 + r.tier * 18) + "px " + r.color + ")";
             const stars = pet.star ? "⭐".repeat(Math.min(pet.star,5)) : "";
             resEl.innerHTML = '<div class="hatch-rarity" style="color:' + r.color + '">' + r.label + ' ' + stars + '</div>' +
                 '<div class="hatch-name">' + pet.name + '</div>' +
                 '<div class="hatch-power" style="color:' + r.color + '">' + pet.power.toFixed(2) + 'x click power</div>';
             resEl.classList.add("show");
-            if (r.tier >= 4) bigBanner(r.label + "!!!", r.color);
+            if (r.tier >= 3) bigBanner(r.label + "!!!", r.color);
             skip.style.opacity = "1";
             document.body.classList.remove("slowmo");
-        }, 360);
+        }, 300 + r.tier * 60);
     }, shakeTime);
 
     if (hatchTimeout) clearTimeout(hatchTimeout);
-    // tier 0-1: auto-dismiss quickly. tier 2+: wait for tap (no auto)
+    // common/rare: auto-dismiss. epic+: must tap to continue
     if (r.tier <= 1) {
-        hatchTimeout = setTimeout(finishHatch, shakeTime + 1400);
+        hatchTimeout = setTimeout(finishHatch, shakeTime + 1600);
     } else {
-        hatchTimeout = null; // player must tap
+        hatchTimeout = null; // player must tap skip button
     }
 }
 let hatchTimeout = null;
