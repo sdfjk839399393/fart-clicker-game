@@ -97,3 +97,99 @@
 /* ---- world-specific stat-cell colors ---- */
 .stat-cell .stat-value { color: var(--cyan); }
 .stat-cell.big .stat-value, .hero-value { color: var(--green) !important; text-shadow: 0 0 26px var(--green) !important; }
+
+
+/* ============================================================
+   AMBIENT SCREEN EFFECTS — floating orbs, streaks, pulses
+   ============================================================ */
+
+/* Floating orbs that drift around the background */
+.amb-orb {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: -1;
+    filter: blur(40px);
+    opacity: 0;
+    animation: orbDrift linear infinite;
+}
+@keyframes orbDrift {
+    0%   { transform: translate(0, 0) scale(0.8); opacity: 0; }
+    15%  { opacity: 0.35; }
+    50%  { transform: translate(var(--dx), var(--dy)) scale(1.2); opacity: 0.25; }
+    85%  { opacity: 0.3; }
+    100% { transform: translate(var(--dx2), var(--dy2)) scale(0.9); opacity: 0; }
+}
+
+/* Shooting streaks across the screen */
+.amb-streak {
+    position: fixed;
+    height: 2px;
+    border-radius: 2px;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0;
+    animation: streakFly linear forwards;
+}
+@keyframes streakFly {
+    0%   { opacity: 0; transform: translateX(-120px) rotate(var(--ang)); }
+    10%  { opacity: 0.7; }
+    90%  { opacity: 0.5; }
+    100% { opacity: 0; transform: translateX(calc(120vw + 120px)) rotate(var(--ang)); }
+}
+
+/* Pulsing ring glow that expands and fades */
+.amb-ring {
+    position: fixed;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0;
+    animation: ringPulse ease-out forwards;
+}
+@keyframes ringPulse {
+    0%   { transform: scale(0.2); opacity: 0.8; }
+    100% { transform: scale(4); opacity: 0; }
+}
+
+/* Floating sparkle dots */
+.amb-spark {
+    position: fixed;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    animation: sparkFloat ease-out forwards;
+}
+@keyframes sparkFloat {
+    0%   { transform: translateY(0) scale(1); opacity: 0.9; }
+    100% { transform: translateY(var(--rise)) scale(0); opacity: 0; }
+}
+
+/* Corner glow blobs that slowly breathe */
+.corner-glow {
+    position: fixed;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: -2;
+    filter: blur(80px);
+    opacity: 0.18;
+    animation: cornerBreathe 5s ease-in-out infinite alternate;
+}
+.corner-glow.tl { top: -80px; left: -80px; }
+.corner-glow.tr { top: -80px; right: -80px; }
+.corner-glow.bl { bottom: 60px; left: -80px; }
+.corner-glow.br { bottom: 60px; right: -80px; }
+@keyframes cornerBreathe {
+    0%   { opacity: 0.12; transform: scale(0.9); }
+    100% { opacity: 0.28; transform: scale(1.15); }
+}
+
+/* More particles floating up */
+.particle {
+    width: 5px; height: 5px;
+    animation: floatUp linear infinite;
+}
