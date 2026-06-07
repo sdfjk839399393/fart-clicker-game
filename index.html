@@ -18,7 +18,10 @@
     <div id="game-container">
         <header class="top-bar">
             <div class="logo-mini">💨 FART CLICKER</div>
-            <button class="gear-btn" onclick="openSheet('settings')" aria-label="Settings">⚙️</button>
+            <div class="top-right">
+                <span id="aura-mini" class="aura-pill">✦ 0</span>
+                <button class="gear-btn" onclick="openSheet('settings')" aria-label="Settings">⚙️</button>
+            </div>
         </header>
 
         <div class="stats-panel">
@@ -34,7 +37,6 @@
             </div>
         </div>
 
-
         <div class="clicker-zone">
             <div class="combo-wrap">
                 <div class="combo-track"><div id="combo-bar"></div></div>
@@ -49,15 +51,15 @@
         <button onclick="rebirth()" id="rebirth-btn" class="rebirth-btn">🔄 REBIRTH<span class="rb-cost">1M 💨</span></button>
     </div>
 
-    <!-- Bottom Nav -->
     <nav class="bottom-nav">
         <button class="nav-btn" onclick="openSheet('upgrades')"><span class="nav-ico">🛒</span><span class="nav-txt">Upgrades</span></button>
         <button class="nav-btn" onclick="openSheet('pets')"><span class="nav-ico">🐾</span><span class="nav-txt">Pets</span></button>
         <button class="nav-btn" onclick="openSheet('worlds')"><span class="nav-ico">🌍</span><span class="nav-txt">Worlds</span></button>
-        <button class="nav-btn" onclick="openSheet('settings')"><span class="nav-ico">⚙️</span><span class="nav-txt">Settings</span></button>
+        <button class="nav-btn" onclick="openSheet('aura')"><span class="nav-ico">✦</span><span class="nav-txt">Aura</span></button>
     </nav>
 
     <div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()"></div>
+
 
     <!-- Upgrades Sheet -->
     <div class="sheet" id="sheet-upgrades">
@@ -74,10 +76,14 @@
         </div>
     </div>
 
-
-    <!-- Pets Sheet -->
+    <!-- Pets Sheet (tabs: collection / fuse / index) -->
     <div class="sheet" id="sheet-pets">
         <div class="sheet-head"><h2>🐾 Pets</h2><button class="sheet-close" onclick="closeSheet()">&times;</button></div>
+        <div class="sheet-tabs">
+            <button class="stab active" onclick="showPetTab('collection', this)">🎒 Collection</button>
+            <button class="stab" onclick="showPetTab('fuse', this)">✨ Fuse</button>
+            <button class="stab" onclick="showPetTab('index', this)">📖 Index</button>
+        </div>
         <div class="sheet-body" id="pets-body"></div>
     </div>
 
@@ -87,10 +93,18 @@
         <div class="sheet-body" id="worlds-body"></div>
     </div>
 
+    <!-- Aura Sheet -->
+    <div class="sheet" id="sheet-aura">
+        <div class="sheet-head"><h2>✦ Aura Prestige</h2><button class="sheet-close" onclick="closeSheet()">&times;</button></div>
+        <div class="sheet-body" id="aura-body"></div>
+    </div>
+
+
     <!-- Settings Sheet -->
     <div class="sheet" id="sheet-settings">
         <div class="sheet-head"><h2>⚙️ Settings</h2><button class="sheet-close" onclick="closeSheet()">&times;</button></div>
         <div class="sheet-body">
+            <div class="now-playing-row">🎧 <span id="now-playing">♪ —</span><button class="skip-btn" onclick="skipTrack()">⏭ Skip</button></div>
             <div class="set-group">
                 <label class="set-row"><span>🎵 Music Volume</span><span id="music-vol-val" class="set-val">35%</span></label>
                 <input type="range" id="music-vol" min="0" max="100" value="35" class="slider" oninput="setMusicVol(this.value)">
@@ -114,7 +128,6 @@
         </div>
     </div>
 
-
     <!-- Egg Modal -->
     <div id="egg-modal" class="modal hidden">
         <div class="modal-content egg-modal-content">
@@ -125,9 +138,10 @@
         </div>
     </div>
 
-    <!-- Hatch Animation Overlay -->
+    <!-- Hatch Overlay -->
     <div id="hatch-overlay" class="hatch-overlay hidden">
         <div class="hatch-rays" id="hatch-rays"></div>
+        <div class="hatch-vignette"></div>
         <div class="hatch-stage">
             <div id="hatch-egg" class="hatch-egg">🥚</div>
             <div id="hatch-result" class="hatch-result"></div>
@@ -147,7 +161,7 @@
         </div>
     </div>
 
-    <!-- Offline earnings modal -->
+    <!-- Offline Modal -->
     <div id="offline-modal" class="modal hidden">
         <div class="modal-content offline-content">
             <div class="offline-emoji">😴💨</div>
