@@ -422,21 +422,21 @@ body.slowmo .hatch-egg, body.slowmo .hatch-rays { animation-duration:2s !importa
 .main-click-btn {
     overflow:visible;
     background:
-        radial-gradient(circle at 35% 28%, #fff0d6 0%, #ffb964 22%, #ff8a3d 48%, #ef6a1e 72%, #c44e10 100%);
+        radial-gradient(circle at 35% 28%, rgba(255,200,120,0.18) 0%, rgba(80,20,120,0.55) 60%, rgba(10,4,30,0.85) 100%);
     border:none;
     box-shadow:
         0 0 0 7px rgba(255,255,255,0.07),
         0 0 0 15px rgba(177,78,255,0.22),
-        0 0 70px 6px rgba(255,138,61,0.6),
-        inset 0 -18px 36px rgba(120,40,0,0.55),
-        inset 0 16px 34px rgba(255,255,255,0.5);
+        0 0 70px 6px rgba(177,78,255,0.5),
+        inset 0 -18px 36px rgba(0,0,0,0.55),
+        inset 0 16px 34px rgba(255,255,255,0.18);
 }
-/* rotating conic aura ring behind button */
+/* rotating conic aura ring behind button — always fully visible */
 .main-click-btn::before {
     content:""; position:absolute; inset:-26px; border-radius:50%; z-index:-1;
-    background:conic-gradient(from 0deg, #ff3d9a, #ffd54a, #7fff00, #00e0ff, #b14eff, #ff3d9a);
-    filter:blur(14px); opacity:0.75;
-    animation:auraSpin 6s linear infinite;
+    background:conic-gradient(from 0deg, #ff3d9a, #ffd54a, #7fff00, #00e0ff, #b14eff, #ff8a3d, #ff3d9a);
+    filter:blur(14px); opacity:1 !important;
+    animation:auraSpin 5s linear infinite !important;
 }
 @keyframes auraSpin { to { transform:rotate(360deg); } }
 /* glossy moving shine on top */
