@@ -22,7 +22,7 @@ let game = {
 const WORLDS = Array.from({ length: 100 }, (_, i) => ({
     id: i,
     name: generateWorldName(i),
-    reqRebirths: Math.floor(i * 0.3),
+    reqRebirths: Math.floor(Math.pow(1.15, i / 5)),
     scale: 1 + (i * 0.08),
     color: generateWorldColor(i)
 }));
@@ -62,40 +62,40 @@ function generateWorldColor(idx) {
     return colors[idx % colors.length];
 }
 
-// Generate 50+ Upgrades with Exponential Scaling
+// Generate 60 Upgrades with proper initialization
 const UPGRADES = [
     // Click Power (0-29)
-    { name: "Fart Bean", baseCost: 10, clickPower: 1, type: "click" },
-    { name: "Cabbage Burst", baseCost: 50, clickPower: 3, type: "click" },
-    { name: "Taco Bomb", baseCost: 250, clickPower: 12, type: "click" },
-    { name: "Sewer Gas Cloud", baseCost: 1200, clickPower: 40, type: "click" },
-    { name: "Swamp Miasma", baseCost: 5500, clickPower: 150, type: "click" },
-    { name: "Gym Sock Stench", baseCost: 25000, clickPower: 450, type: "click" },
-    { name: "Rotten Egg Blaster", baseCost: 110000, clickPower: 1200, type: "click" },
-    { name: "Durian Nuke", baseCost: 500000, clickPower: 3500, type: "click" },
-    { name: "Sewer Pipe Cannon", baseCost: 2200000, clickPower: 10000, type: "click" },
-    { name: "Toxic Barrel Bomb", baseCost: 10000000, clickPower: 30000, type: "click" },
-    { name: "Methane Eruption", baseCost: 45000000, clickPower: 85000, type: "click" },
-    { name: "Hydrogen Sulfide Blast", baseCost: 200000000, clickPower: 250000, type: "click" },
-    { name: "Ammonia Surge", baseCost: 900000000, clickPower: 750000, type: "click" },
-    { name: "Fecal Matter Strike", baseCost: 4000000000, clickPower: 2200000, type: "click" },
-    { name: "Intestinal Rupture", baseCost: 18000000000, clickPower: 6500000, type: "click" },
-    { name: "Volcanic Flatulence", baseCost: 80000000000, clickPower: 19000000, type: "click" },
-    { name: "Plague Winds", baseCost: 360000000000, clickPower: 55000000, type: "click" },
-    { name: "Apocalyptic Gas", baseCost: 1600000000000, clickPower: 160000000, type: "click" },
-    { name: "Reality Fart", baseCost: 7200000000000, clickPower: 465000000, type: "click" },
-    { name: "Dimensional Rupture", baseCost: 32000000000000, clickPower: 1350000000, type: "click" },
-    { name: "Cosmic Explosion", baseCost: 145000000000000, clickPower: 3900000000, type: "click" },
-    { name: "Multiverse Collapse", baseCost: 650000000000000, clickPower: 11000000000, type: "click" },
-    { name: "Time Distortion", baseCost: 3000000000000000, clickPower: 32000000000, type: "click" },
-    { name: "Singularity Formation", baseCost: 14000000000000000, clickPower: 92000000000, type: "click" },
-    { name: "Universe Bender", baseCost: 63000000000000000, clickPower: 265000000000, type: "click" },
-    { name: "Omnipotent Fart", baseCost: 285000000000000000, clickPower: 770000000000, type: "click" },
-    { name: "Infinity Gauntlet", baseCost: 1300000000000000000, clickPower: 2200000000000, type: "click" },
-    { name: "Beyond Infinity", baseCost: 5800000000000000000, clickPower: 6400000000000, type: "click" },
-    { name: "Void Collapse", baseCost: 26000000000000000000, clickPower: 18500000000000, type: "click" },
-    { name: "Ultimate Power", baseCost: 118000000000000000000, clickPower: 53500000000000, type: "click" },
-    // Passive Income (30-59)
+    { name: "Fart Bean", baseCost: 10, clickPower: 1, passivePower: 0, type: "click" },
+    { name: "Cabbage Burst", baseCost: 50, clickPower: 3, passivePower: 0, type: "click" },
+    { name: "Taco Bomb", baseCost: 250, clickPower: 12, passivePower: 0, type: "click" },
+    { name: "Sewer Gas Cloud", baseCost: 1200, clickPower: 40, passivePower: 0, type: "click" },
+    { name: "Swamp Miasma", baseCost: 5500, clickPower: 150, passivePower: 0, type: "click" },
+    { name: "Gym Sock Stench", baseCost: 25000, clickPower: 450, passivePower: 0, type: "click" },
+    { name: "Rotten Egg Blaster", baseCost: 110000, clickPower: 1200, passivePower: 0, type: "click" },
+    { name: "Durian Nuke", baseCost: 500000, clickPower: 3500, passivePower: 0, type: "click" },
+    { name: "Sewer Pipe Cannon", baseCost: 2200000, clickPower: 10000, passivePower: 0, type: "click" },
+    { name: "Toxic Barrel Bomb", baseCost: 10000000, clickPower: 30000, passivePower: 0, type: "click" },
+    { name: "Methane Eruption", baseCost: 45000000, clickPower: 85000, passivePower: 0, type: "click" },
+    { name: "Hydrogen Sulfide Blast", baseCost: 200000000, clickPower: 250000, passivePower: 0, type: "click" },
+    { name: "Ammonia Surge", baseCost: 900000000, clickPower: 750000, passivePower: 0, type: "click" },
+    { name: "Fecal Matter Strike", baseCost: 4000000000, clickPower: 2200000, passivePower: 0, type: "click" },
+    { name: "Intestinal Rupture", baseCost: 18000000000, clickPower: 6500000, passivePower: 0, type: "click" },
+    { name: "Volcanic Flatulence", baseCost: 80000000000, clickPower: 19000000, passivePower: 0, type: "click" },
+    { name: "Plague Winds", baseCost: 360000000000, clickPower: 55000000, passivePower: 0, type: "click" },
+    { name: "Apocalyptic Gas", baseCost: 1600000000000, clickPower: 160000000, passivePower: 0, type: "click" },
+    { name: "Reality Fart", baseCost: 7200000000000, clickPower: 465000000, passivePower: 0, type: "click" },
+    { name: "Dimensional Rupture", baseCost: 32000000000000, clickPower: 1350000000, passivePower: 0, type: "click" },
+    { name: "Cosmic Explosion", baseCost: 145000000000000, clickPower: 3900000000, passivePower: 0, type: "click" },
+    { name: "Multiverse Collapse", baseCost: 650000000000000, clickPower: 11000000000, passivePower: 0, type: "click" },
+    { name: "Time Distortion", baseCost: 3000000000000000, clickPower: 32000000000, passivePower: 0, type: "click" },
+    { name: "Singularity Formation", baseCost: 14000000000000000, clickPower: 92000000000, passivePower: 0, type: "click" },
+    { name: "Universe Bender", baseCost: 63000000000000000, clickPower: 265000000000, passivePower: 0, type: "click" },
+    { name: "Omnipotent Fart", baseCost: 285000000000000000, clickPower: 770000000000, passivePower: 0, type: "click" },
+    { name: "Infinity Gauntlet", baseCost: 1300000000000000000, clickPower: 2200000000000, passivePower: 0, type: "click" },
+    { name: "Beyond Infinity", baseCost: 5800000000000000000, clickPower: 6400000000000, passivePower: 0, type: "click" },
+    { name: "Void Collapse", baseCost: 26000000000000000000, clickPower: 18500000000000, passivePower: 0, type: "click" },
+    { name: "Ultimate Power", baseCost: 118000000000000000000, clickPower: 53500000000000, passivePower: 0, type: "click" },
+    // Passive Income (30-59) - MUST have passivePower defined
     { name: "Small Fan", baseCost: 30, clickPower: 0, passivePower: 1, type: "passive" },
     { name: "Air Blower", baseCost: 150, clickPower: 0, passivePower: 5, type: "passive" },
     { name: "Industrial Vent", baseCost: 750, clickPower: 0, passivePower: 20, type: "passive" },
@@ -128,7 +128,7 @@ const UPGRADES = [
     { name: "Transcendence", baseCost: 410000000000000000000, clickPower: 0, passivePower: 420000000000000, type: "passive" }
 ];
 
-// Pet Slot Upgrade (unlocks extra pet slots)
+// Pet Slot Upgrade
 const PET_SLOT_UPGRADES = [
     { slot: 4, cost: 100000000, name: "Extra Pet Slot #4" },
     { slot: 5, cost: 500000000, name: "Extra Pet Slot #5" },
@@ -139,7 +139,7 @@ const PET_SLOT_UPGRADES = [
     { slot: 10, cost: 1562500000000, name: "Extra Pet Slot #10" }
 ];
 
-// FART-THEMED EGG NAMES
+// PET POOLS - properly initialized
 const PET_POOLS = {};
 for (let w = 0; w < 100; w++) {
     PET_POOLS[w] = {
@@ -148,34 +148,75 @@ for (let w = 0; w < 100; w++) {
                 name: "💨 Benign Breeze Egg",
                 cost: 500 * Math.pow(1.8, w),
                 color: "#8B7355",
-                pets: Array.from({ length: 10 }, (_, i) => ({
-                    name: ["Toot", "Squeaker", "Puff", "Whoosh", "Breeze", "Zephyr", "Gentle Gust", "Light Wind", "Soft Snort", "Tiny Burp"][i],
-                    power: 1.1 + (i * 0.05),
-                    odds: [25, 25, 20, 15, 8, 3, 2, 1, 0.5, 0.5][i]
-                }))
+                pets: [
+                    { name: "Toot", power: 1.1, odds: 25 },
+                    { name: "Squeaker", power: 1.15, odds: 25 },
+                    { name: "Puff", power: 1.2, odds: 20 },
+                    { name: "Whoosh", power: 1.25, odds: 15 },
+                    { name: "Breeze", power: 1.3, odds: 8 },
+                    { name: "Zephyr", power: 1.35, odds: 3 },
+                    { name: "Gentle Gust", power: 1.4, odds: 2 },
+                    { name: "Light Wind", power: 1.45, odds: 1 },
+                    { name: "Soft Snort", power: 1.5, odds: 0.5 },
+                    { name: "Tiny Burp", power: 1.55, odds: 0.5 }
+                ]
             },
             {
                 name: "💜 Catastrophic Rumble Egg",
                 cost: 2000 * Math.pow(1.9, w),
                 color: "#9370DB",
-                pets: Array.from({ length: 10 }, (_, i) => ({
-                    name: ["Thunder Cheeks", "Boom Butt", "Sonic Sphincter", "Rumble Rump", "Quake Crack", "Shockwave Cheeks", "Blast Bottom", "Explosion Posterior", "Volcanic Valve", "Detonator"][i],
-                    power: 1.8 + (i * 0.15),
-                    odds: [25, 25, 20, 15, 8, 3, 2, 1, 0.5, 0.5][i]
-                }))
+                pets: [
+                    { name: "Thunder Cheeks", power: 1.8, odds: 25 },
+                    { name: "Boom Butt", power: 1.9, odds: 25 },
+                    { name: "Sonic Sphincter", power: 2.0, odds: 20 },
+                    { name: "Rumble Rump", power: 2.1, odds: 15 },
+                    { name: "Quake Crack", power: 2.2, odds: 8 },
+                    { name: "Shockwave Cheeks", power: 2.3, odds: 3 },
+                    { name: "Blast Bottom", power: 2.4, odds: 2 },
+                    { name: "Explosion Posterior", power: 2.5, odds: 1 },
+                    { name: "Volcanic Valve", power: 2.6, odds: 0.5 },
+                    { name: "Detonator", power: 2.7, odds: 0.5 }
+                ]
             },
             {
                 name: "✨ Legendary Stench Egg",
                 cost: 8000 * Math.pow(2.0, w),
                 color: "#FFD700",
-                pets: Array.from({ length: 10 }, (_, i) => ({
-                    name: ["Odor Overlord", "Stink Lord", "Smell Supreme", "Fume Phantom", "Gas God", "Miasma Master", "Reek Royalty", "Stench Sovereign", "Pungent Prophet", "Aroma Apocalypse"][i],
-                    power: 3.5 + (i * 0.35),
-                    odds: [25, 25, 20, 15, 8, 3, 2, 1, 0.5, 0.5][i]
-                }))
+                pets: [
+                    { name: "Odor Overlord", power: 3.5, odds: 25 },
+                    { name: "Stink Lord", power: 3.6, odds: 25 },
+                    { name: "Smell Supreme", power: 3.7, odds: 20 },
+                    { name: "Fume Phantom", power: 3.8, odds: 15 },
+                    { name: "Gas God", power: 3.9, odds: 8 },
+                    { name: "Miasma Master", power: 4.0, odds: 3 },
+                    { name: "Reek Royalty", power: 4.1, odds: 2 },
+                    { name: "Stench Sovereign", power: 4.2, odds: 1 },
+                    { name: "Pungent Prophet", power: 4.3, odds: 0.5 },
+                    { name: "Aroma Apocalypse", power: 4.4, odds: 0.5 }
+                ]
             }
         ]
     };
+}
+
+// NUMBER FORMATTING FUNCTION
+function formatNumber(num) {
+    if (num === undefined || isNaN(num)) return "0";
+    
+    const absNum = Math.abs(num);
+    
+    if (absNum < 1000) return Math.floor(num).toString();
+    if (absNum < 1000000) return (num / 1000).toFixed(1).replace(/\.?0+$/, '') + "K";
+    if (absNum < 1000000000) return (num / 1000000).toFixed(1).replace(/\.?0+$/, '') + "M";
+    if (absNum < 1000000000000) return (num / 1000000000).toFixed(1).replace(/\.?0+$/, '') + "B";
+    if (absNum < 1000000000000000) return (num / 1000000000000).toFixed(1).replace(/\.?0+$/, '') + "T";
+    if (absNum < 1000000000000000000) return (num / 1000000000000000).toFixed(1).replace(/\.?0+$/, '') + "Qa";
+    if (absNum < 1000000000000000000000) return (num / 1000000000000000000).toFixed(1).replace(/\.?0+$/, '') + "Qi";
+    if (absNum < 1e24) return (num / 1e21).toFixed(1).replace(/\.?0+$/, '') + "Sx";
+    if (absNum < 1e27) return (num / 1e24).toFixed(1).replace(/\.?0+$/, '') + "Sp";
+    if (absNum < 1e30) return (num / 1e27).toFixed(1).replace(/\.?0+$/, '') + "Oc";
+    
+    return num.toExponential(2);
 }
 
 // Audio Management
@@ -228,6 +269,7 @@ function createCriticalSound() {
 
 function createParticles() {
     const overlay = document.getElementById('particle-overlay');
+    if (!overlay) return;
     for (let i = 0; i < 20; i++) {
         const particle = document.createElement('div');
         particle.className = 'particle';
@@ -242,7 +284,7 @@ function createParticles() {
 function showClickPop(e, damage) {
     const pop = document.createElement('div');
     pop.className = 'click-pop';
-    pop.textContent = '+' + Math.floor(damage).toLocaleString();
+    pop.textContent = '+' + formatNumber(damage);
     pop.style.left = e.clientX + 'px';
     pop.style.top = e.clientY + 'px';
     pop.style.color = game.criticalMultiplier > 2 ? '#FFD700' : game.spamMultiplier > 3 ? '#00D9FF' : '#7FFF00';
@@ -275,8 +317,14 @@ function showRarePopup(text, duration = 3000) {
 function loadGame() {
     const saved = localStorage.getItem('fartSave');
     if (saved) {
-        game = JSON.parse(saved);
+        try {
+            game = JSON.parse(saved);
+        } catch (e) {
+            console.error("Failed to load save", e);
+        }
     }
+    // Ensure maxPets is set
+    if (!game.maxPets) game.maxPets = 3;
     initializeUpgrades();
 }
 
@@ -307,7 +355,8 @@ function getPassiveIncome() {
     let income = 0;
     UPGRADES.forEach((upgrade, i) => {
         if (upgrade.type === "passive" && game.upgrades[i]) {
-            income += upgrade.passivePower * game.upgrades[i];
+            const passivePower = upgrade.passivePower || 0;
+            income += passivePower * game.upgrades[i];
         }
     });
     return income;
@@ -371,12 +420,14 @@ document.getElementById("main-btn").addEventListener("click", (e) => {
 
 function buyUpgrade(idx) {
     const upgrade = UPGRADES[idx];
-    const level = game.upgrades[idx];
+    if (!upgrade) return;
+    
+    const level = game.upgrades[idx] || 0;
     const cost = Math.floor(upgrade.baseCost * Math.pow(1.15, level));
 
     if (game.points >= cost) {
         game.points -= cost;
-        game.upgrades[idx]++;
+        game.upgrades[idx] = (game.upgrades[idx] || 0) + 1;
         createPurchaseSound();
         updateDisplay();
         updateUpgradesDisplay();
@@ -401,16 +452,18 @@ function buyPetSlot(slotIdx) {
 
 function updateUpgradesDisplay() {
     const upgradesTab = document.getElementById('upgrades');
-    if (!upgradesTab.classList.contains('active')) return;
+    if (!upgradesTab || !upgradesTab.classList.contains('active')) return;
     
     document.querySelectorAll('.upgrade-btn').forEach((btn, idx) => {
         const upgrade = UPGRADES[idx];
-        const level = game.upgrades[idx];
+        if (!upgrade) return;
+        
+        const level = game.upgrades[idx] || 0;
         const nextCost = Math.floor(upgrade.baseCost * Math.pow(1.15, level));
         const affordable = game.points >= nextCost;
         
         const costEl = btn.querySelector('.upgrade-cost');
-        if (costEl) costEl.innerText = `Cost: ${nextCost.toLocaleString()}`;
+        if (costEl) costEl.innerText = `Cost: ${formatNumber(nextCost)}`;
         
         const levelEl = btn.querySelector('.upgrade-level');
         if (levelEl) levelEl.innerText = `Level: ${level}`;
@@ -433,7 +486,10 @@ function closeEggModal() {
 }
 
 function renderEggSelection() {
-    const eggPool = PET_POOLS[game.worldIdx].eggs;
+    const worldPets = PET_POOLS[game.worldIdx];
+    if (!worldPets) return;
+    
+    const eggPool = worldPets.eggs;
     let html = "<div style='display: grid; gap: 15px;'>";
     
     eggPool.forEach((egg, idx) => {
@@ -446,7 +502,7 @@ function renderEggSelection() {
         html += `
             <button class="modal-btn" style="background: linear-gradient(135deg, ${egg.color}, ${egg.color}dd); border: 3px solid ${egg.color}; text-align: left; padding: 15px; cursor: pointer;" onclick="selectEgg(${idx})">
                 <div style="font-size: 1.1rem; margin-bottom: 8px;">${egg.name}</div>
-                <div style="font-size: 0.9rem; margin-bottom: 10px;">Cost: ${Math.floor(egg.cost).toLocaleString()}</div>
+                <div style="font-size: 0.9rem; margin-bottom: 10px;">Cost: ${formatNumber(egg.cost)}</div>
                 ${petsList}
             </button>
         `;
@@ -457,7 +513,10 @@ function renderEggSelection() {
 }
 
 function selectEgg(eggIdx) {
-    const egg = PET_POOLS[game.worldIdx].eggs[eggIdx];
+    const worldPets = PET_POOLS[game.worldIdx];
+    if (!worldPets) return;
+    
+    const egg = worldPets.eggs[eggIdx];
     
     if (game.points < egg.cost) {
         alert("Not enough Stink!");
@@ -482,7 +541,7 @@ function selectEgg(eggIdx) {
     closeEggModal();
     updateDisplay();
     saveGame();
-    showRarePopup(`🎉 You got <strong>${pet.name}</strong>! (${pet.power.toFixed(1)}x)`, 3000);
+    showRarePopup(`🎉 You got <strong>${pet.name}</strong>! (${pet.power.toFixed(2)}x)`, 3000);
 }
 
 let selectedPetId = null;
@@ -526,6 +585,7 @@ function equipPet() {
     }
     closePetModal();
     updateDisplay();
+    renderPets();
     saveGame();
 }
 
@@ -566,7 +626,7 @@ function renderUpgrades() {
     let passiveHtml = "<h3 class='passive'>💰 Passive Income</h3>";
     
     UPGRADES.forEach((upgrade, i) => {
-        const level = game.upgrades[i];
+        const level = game.upgrades[i] || 0;
         const nextCost = Math.floor(upgrade.baseCost * Math.pow(1.15, level));
         const affordable = game.points >= nextCost;
         
@@ -574,26 +634,25 @@ function renderUpgrades() {
             <button class="upgrade-btn ${affordable ? "" : "unaffordable"}" onclick="buyUpgrade(${i})">
                 <div class="upgrade-name">${upgrade.name}</div>
                 <div class="upgrade-level">Level: ${level}</div>
-                <div class="upgrade-cost">Cost: ${nextCost.toLocaleString()}</div>
+                <div class="upgrade-cost">Cost: ${formatNumber(nextCost)}</div>
             </button>
         `;
         
         if (upgrade.type === "click") {
             clickHtml += btn;
-        } else {
+        } else if (upgrade.type === "passive") {
             passiveHtml += btn;
         }
     });
     
-    // Add pet slot upgrades
     let petSlotsHtml = "<h3 style='color: #FF006E; margin-top: 20px;'>🐾 Pet Slot Upgrades</h3>";
     PET_SLOT_UPGRADES.forEach((upgrade, idx) => {
-        if (game.maxPets > upgrade.slot) return; // Skip if already purchased
+        if (game.maxPets > upgrade.slot) return;
         const affordable = game.points >= upgrade.cost;
         petSlotsHtml += `
             <button class="upgrade-btn ${affordable ? "" : "unaffordable"}" onclick="buyPetSlot(${idx})">
                 <div class="upgrade-name">${upgrade.name}</div>
-                <div class="upgrade-cost">Cost: ${upgrade.cost.toLocaleString()}</div>
+                <div class="upgrade-cost">Cost: ${formatNumber(upgrade.cost)}</div>
             </button>
         `;
     });
@@ -626,7 +685,8 @@ function renderPets() {
     }
     html += "</div>";
 
-    html += `<div class='pet-section'><h3>Equipped Pets (${game.equippedPets.length}/${game.maxPets})</h3>`;
+    const maxPets = game.maxPets || 3;
+    html += `<div class='pet-section'><h3>Equipped Pets (${game.equippedPets.length}/${maxPets})</h3>`;
     if (game.equippedPets.length === 0) {
         html += "<p class='empty-text'>No equipped pets. Select a pet to equip!</p>";
     } else {
@@ -663,13 +723,13 @@ function renderWorlds() {
 }
 
 function updateDisplay() {
-    document.getElementById("points").innerText = Math.floor(game.points).toLocaleString();
-    document.getElementById("per-click").innerText = getClickPower().toLocaleString();
+    document.getElementById("points").innerText = formatNumber(game.points);
+    document.getElementById("per-click").innerText = formatNumber(getClickPower());
     document.getElementById("spam-mult").innerText = game.spamMultiplier.toFixed(1) + "x";
-    document.getElementById("passive-income").innerText = (getPassiveIncome() * getPetMultiplier()).toFixed(1) + "/s";
+    document.getElementById("passive-income").innerText = formatNumber(getPassiveIncome() * getPetMultiplier()) + "/s";
     document.getElementById("rebirths").innerText = game.rebirths;
-    document.getElementById("world-name").innerText = WORLDS[game.worldIdx].name;
-    document.getElementById("rebirth-btn").innerText = `REBIRTH (Req: ${getRebirthCost().toLocaleString()})`;
+    document.getElementById("world-name").innerText = WORLDS[game.worldIdx] ? WORLDS[game.worldIdx].name : "Unknown";
+    document.getElementById("rebirth-btn").innerText = `REBIRTH (Req: ${formatNumber(getRebirthCost())})`;
 }
 
 setInterval(() => {
@@ -679,6 +739,7 @@ setInterval(() => {
     saveGame();
 }, 1000);
 
+// Initialize
 loadGame();
 createParticles();
 updateDisplay();
