@@ -775,10 +775,15 @@ function openSheet(name) {
     if (name === "aura") renderAura();
     if (name === "settings") syncSettingsUI();
     overlay.classList.add("visible"); sheet.classList.add("open");
+    // highlight the active nav button
+    document.querySelectorAll(".nav-btn").forEach(b => {
+        b.classList.toggle("sel", b.dataset.sheet === name);
+    });
 }
 function closeSheet() {
     document.querySelectorAll(".sheet").forEach(s => s.classList.remove("open"));
     const overlay = document.getElementById("sheet-overlay"); if (overlay) overlay.classList.remove("visible");
+    document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("sel"));
 }
 function showUpTab(name, btn) {
     document.querySelectorAll("#sheet-upgrades .up-tab").forEach(t => t.classList.remove("active"));

@@ -53,10 +53,10 @@
     </div>
 
     <nav class="bottom-nav">
-        <button class="nav-btn" onclick="openSheet('upgrades')"><span class="nav-ico">🛒</span><span class="nav-txt">Upgrades</span></button>
-        <button class="nav-btn" onclick="openSheet('pets')"><span class="nav-ico">🐾</span><span class="nav-txt">Pets</span></button>
-        <button class="nav-btn" onclick="openSheet('worlds')"><span class="nav-ico">🌍</span><span class="nav-txt">Worlds</span></button>
-        <button class="nav-btn" onclick="openSheet('aura')"><span class="nav-ico">✦</span><span class="nav-txt">Aura</span></button>
+        <button class="nav-btn" data-sheet="upgrades" onclick="openSheet('upgrades')"><span class="nav-ico">🛒</span><span class="nav-txt">Upgrades</span></button>
+        <button class="nav-btn" data-sheet="pets" onclick="openSheet('pets')"><span class="nav-ico">🐾</span><span class="nav-txt">Pets</span></button>
+        <button class="nav-btn" data-sheet="worlds" onclick="openSheet('worlds')"><span class="nav-ico">🌍</span><span class="nav-txt">Worlds</span></button>
+        <button class="nav-btn" data-sheet="aura" onclick="openSheet('aura')"><span class="nav-ico">✦</span><span class="nav-txt">Aura</span></button>
     </nav>
 
     <div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()"></div>
