@@ -1750,6 +1750,46 @@ function spawnGoldenFart() {
 }
 setInterval(() => { if (Math.random() < 0.5) spawnGoldenFart(); }, 35000);
 
+// ============================================================
+//  FLYING LEGENDARY EGG — super rare, free hatch for current world
+// ============================================================
+function spawnFlyingEgg() {
+    const layer = fxLayer(); if (!layer) return;
+    // pick a random egg template for current world
+    const egg = EGG_TEMPLATES[Math.floor(Math.random() * EGG_TEMPLATES.length)];
+    const el = document.createElement("div");
+    el.className = "golden-fart"; // reuse flying animation
+    el.style.fontSize = "2.2rem";
+    el.style.filter = "drop-shadow(0 0 12px " + egg.color + ") drop-shadow(0 0 24px " + egg.color + ")";
+    el.style.top = (15 + Math.random() * 50) + "%";
+    el.style.left = "-70px";
+    el.textContent = egg.emoji;
+    // sparkle trail
+    el.style.transition = "left 7s linear";
+    layer.appendChild(el);
+    requestAnimationFrame(() => { el.style.left = "115%"; });
+    el.onclick = () => {
+        el.remove();
+        sfxRare(3);
+        screenFlash(egg.color);
+        shake();
+        burstAt(window.innerWidth/2, window.innerHeight/2, egg.color, 40);
+        emojiRain([egg.emoji, "🌟", "✨", "⭐"], 30);
+        showToast("🥚 FREE " + egg.name + "! Lucky!", 2800);
+        // give a free hatch from this egg for the current world
+        const chosen = pickFromEgg(egg);
+        const pet = { id: Date.now()+Math.floor(Math.random()*100000), name: chosen.name, emoji: chosen.emoji,
+            rarity: chosen.rarity, star: 0, power: petPower(chosen.base, game.worldIdx) };
+        game.pets.push(pet);
+        game.discovered[dexKey(game.worldIdx, pet.name)] = true;
+        updateDisplay(); saveGame();
+        setTimeout(() => playHatch(pet, egg), 600);
+    };
+    setTimeout(() => el.remove(), 8000);
+}
+// spawn roughly every 4-8 minutes, but very randomly — super rare
+setInterval(() => { if (Math.random() < 0.18) spawnFlyingEgg(); }, 90000);
+
 
 // ============================================================
 //  DISPLAY + BOOT
