@@ -14,34 +14,82 @@
     <!-- Audio Elements -->
     <audio id="click-sound" preload="auto"></audio>
     <audio id="purchase-sound" preload="auto"></audio>
+    <audio id="bgm" loop></audio>
 
     <div id="game-container">
-        <div class="header">
-            <h1>💨 FART CLICKER 💨</h1>
-            <div class="stats-panel">
-                <div class="stat-row">
-                    <span class="stat-label">Stink Level:</span>
-                    <span id="points" class="stat-value">0</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label">Per Click:</span>
-                    <span id="per-click" class="stat-value">1</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label">Spam Multiplier:</span>
-                    <span id="spam-mult" class="stat-value">1.0x</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label">Passive Income:</span>
-                    <span id="passive-income" class="stat-value">0/s</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label">Rebirths: <span id="rebirths">0</span> | World: <span id="world-name">Basement</span></span>
-                </div>
+        <!-- Logo Container -->
+        <div class="logo-container">
+            <img id="game-logo" src="" alt="Fart Clicker Logo" onerror="this.style.display='none'; this.parentElement.style.background='none'; this.parentElement.style.border='none';">
+        </div>
+
+        <!-- Title -->
+        <h1>💨 FART CLICKER 💨</h1>
+
+        <div class="stats-panel">
+            <div class="stat-row">
+                <span class="stat-label"> Stink Level</span>
+                <span id="points" class="stat-value">0</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label"> Per Click</span>
+                <span id="per-click" class="stat-value">1</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label"> Spam Multiplier</span>
+                <span id="spam-mult" class="stat-value">1.0x</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label"> Passive Income</span>
+                <span id="passive-income" class="stat-value">0/s</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label"> Rebirths</span>
+                <span id="rebirths" class="stat-value">0</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label"> Current World</span>
+                <span id="world-name" class="stat-value">Basement</span>
             </div>
         </div>
 
-        <button id="main-btn" class="main-click-btn">💨 CLICK ME! 💨</button>
+        <!-- Centered Main Button -->
+        <button id="main-btn" class="main-click-btn">
+            <span>💨</span>
+            <span>CLICK ME!</span>
+        </button>
+
+        <!-- Modern Sliding Upgrades Menu -->
+        <div id="upgrades-btn-container">
+            <button class="upgrades-toggle-btn" onclick="toggleUpgradesMenu()">
+                <span>🛒 Upgrades</span>
+            </button>
+        </div>
+
+        <!-- Sliding Panel -->
+        <div class="upgrades-overlay" id="upgrades-overlay" onclick="toggleUpgradesMenu()"></div>
+        <div id="upgrades-panel">
+            <div id="upgrades-panel-header">
+                <h2>🛒 Upgrades</h2>
+                <button class="close-upgrades-btn" onclick="toggleUpgradesMenu()">&times;</button>
+            </div>
+            <div id="upgrades-panel-content">
+                <!-- Click Power Section -->
+                <div class="upgrades-panel-section">
+                    <h3>⬆️ Click Power</h3>
+                    <div id="upgrades-panel-click"></div>
+                </div>
+                <!-- Passive Income Section -->
+                <div class="upgrades-panel-section">
+                    <h3>💰 Passive Income</h3>
+                    <div id="upgrades-panel-passive"></div>
+                </div>
+                <!-- Pet Slots Section -->
+                <div class="upgrades-panel-section">
+                    <h3>🐾 Pet Slots</h3>
+                    <div id="upgrades-panel-pets"></div>
+                </div>
+            </div>
+        </div>
 
         <div class="tabs">
             <button class="tab-btn active" onclick="showTab('upgrades', this)">🛒 Upgrades</button>

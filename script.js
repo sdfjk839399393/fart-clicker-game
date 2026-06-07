@@ -15,14 +15,19 @@ let game = {
     totalClicks: 0,
     totalEarned: 0,
     maxPets: 3,
-    petSlotsPurchased: 0
+    petSlotsPurchased: 0,
+    bgmEnabled: true,
+    bgmVolume: 0.3
 };
 
-// Generate 100 Worlds with Exponential Scaling
+let upgradesRendered = false;
+
+// Generate 100 Worlds with EXPONENTIAL Scaling
+// World 1: 1 rebirth, World 2: 2 rebirths, World 3: 6 rebirths, World 4: 15 rebirths, etc.
 const WORLDS = Array.from({ length: 100 }, (_, i) => ({
     id: i,
     name: generateWorldName(i),
-    reqRebirths: Math.floor(Math.pow(1.15, i / 5)),
+    reqRebirths: Math.floor(Math.pow(2.5, i / 4) / 2),
     scale: 1 + (i * 0.08),
     color: generateWorldColor(i)
 }));
@@ -221,50 +226,136 @@ function formatNumber(num) {
 
 // Audio Management
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+let bgmNode = null;
+let bgmOscillators = [];
 
+// High-quality click sound with better timbre
 function createClickSound() {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
     const now = audioCtx.currentTime;
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.frequency.setValueAtTime(400, now);
-    osc.frequency.exponentialRampToValueAtTime(100, now + 0.1);
-    osc.type = 'sine';
-    gain.gain.setValueAtTime(0.3, now);
-    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-    osc.start(now);
-    osc.stop(now + 0.1);
+    
+    // Main click sound
+    const osc1 = audioCtx.createOscillator();
+    const gain1 = audioCtx.createGain();
+    osc1.connect(gain1);
+    gain1.connect(audioCtx.destination);
+    
+    osc1.frequency.setValueAtTime(300 + Math.random() * 100, now);
+    osc1.frequency.exponentialRampToValueAtTime(50, now + 0.15);
+    osc1.type = 'triangle';
+    gain1.gain.setValueAtTime(0.4, now);
+    gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+    
+    osc1.start(now);
+    osc1.stop(now + 0.15);
+    
+    // Add subtle higher harmonics for better audio quality
+    const osc2 = audioCtx.createOscillator();
+    const gain2 = audioCtx.createGain();
+    osc2.connect(gain2);
+    gain2.connect(audioCtx.destination);
+    
+    osc2.frequency.setValueAtTime(800, now);
+    osc2.frequency.exponentialRampToValueAtTime(400, now + 0.08);
+    osc2.type = 'sine';
+    gain2.gain.setValueAtTime(0.15, now);
+    gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+    
+    osc2.start(now);
+    osc2.stop(now + 0.08);
 }
 
+// Purchase sound
 function createPurchaseSound() {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
     const now = audioCtx.currentTime;
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.frequency.setValueAtTime(800, now);
-    osc.frequency.exponentialRampToValueAtTime(1200, now + 0.15);
-    osc.type = 'square';
-    gain.gain.setValueAtTime(0.2, now);
-    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
-    osc.start(now);
-    osc.stop(now + 0.15);
+    
+    // Arpeggio effect
+    const notes = [523.25, 659.25, 783.99, 1046.50]; // C major
+    notes.forEach((freq, i) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        osc.frequency.setValueAtTime(freq, now + i * 0.05);
+        osc.frequency.exponentialRampToValueAtTime(freq * 0.5, now + i * 0.05 + 0.15);
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.1, now + i * 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.05 + 0.15);
+        
+        osc.start(now + i * 0.05);
+        osc.stop(now + i * 0.05 + 0.15);
+    });
 }
 
+// Critical sound
 function createCriticalSound() {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
     const now = audioCtx.currentTime;
+    
+    // Power-up sound with slide
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     osc.connect(gain);
     gain.connect(audioCtx.destination);
-    osc.frequency.setValueAtTime(1600, now);
-    osc.frequency.exponentialRampToValueAtTime(2400, now + 0.2);
-    osc.type = 'sine';
-    gain.gain.setValueAtTime(0.3, now);
-    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+    
+    osc.frequency.setValueAtTime(200, now);
+    osc.frequency.linearRampToValueAtTime(1200, now + 0.3);
+    osc.type = 'sawtooth';
+    gain.gain.setValueAtTime(0.2, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+    
     osc.start(now);
-    osc.stop(now + 0.2);
+    osc.stop(now + 0.3);
+}
+
+// Toggle background music
+function toggleBGM() {
+    if (!game.bgmEnabled) {
+        game.bgmEnabled = true;
+        playBGM();
+    } else {
+        game.bgmEnabled = false;
+        stopBGM();
+    }
+}
+
+// Simple background music loop
+function playBGM() {
+    if (!game.bgmEnabled || !audioCtx) return;
+    
+    stopBGM();
+    
+    const notes = [146.83, 164.81, 196.00, 220.00, 196.00, 164.81]; // D minor arpeggio
+    let noteIndex = 0;
+    
+    function playNextNote() {
+        if (!game.bgmEnabled) return;
+        
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        osc.frequency.setValueAtTime(notes[noteIndex], now);
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(game.bgmVolume * 0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+        
+        osc.start(now);
+        osc.stop(now + 0.6);
+        
+        noteIndex = (noteIndex + 1) % notes.length;
+        setTimeout(playNextNote, 300);
+    }
+    
+    playNextNote();
+}
+
+function stopBGM() {
+    game.bgmEnabled = false;
 }
 
 function createParticles() {
@@ -281,22 +372,59 @@ function createParticles() {
     }
 }
 
+// Modern click effect with optimized visual
 function showClickPop(e, damage) {
+    // Limit particles to prevent performance issues
+    const overlay = document.getElementById('particle-overlay');
+    if (!overlay) return;
+    
+    // Create click pop text
     const pop = document.createElement('div');
     pop.className = 'click-pop';
     pop.textContent = '+' + formatNumber(damage);
     pop.style.left = e.clientX + 'px';
     pop.style.top = e.clientY + 'px';
     pop.style.color = game.criticalMultiplier > 2 ? '#FFD700' : game.spamMultiplier > 3 ? '#00D9FF' : '#7FFF00';
+    
+    // Add click effect ring
+    const ring = document.createElement('div');
+    ring.className = 'click-ring';
+    ring.style.left = e.clientX + 'px';
+    ring.style.top = e.clientY + 'px';
+    ring.style.backgroundColor = game.criticalMultiplier > 2 ? '#FFD700' : game.spamMultiplier > 3 ? '#00D9FF' : '#7FFF00';
+    
     document.body.appendChild(pop);
-    setTimeout(() => pop.remove(), 1000);
+    document.body.appendChild(ring);
+    
+    setTimeout(() => pop.remove(), 800);
+    setTimeout(() => ring.remove(), 500);
 }
+
+// Add click ring CSS dynamically
+const clickRingCSS = document.createElement('style');
+clickRingCSS.textContent = `
+    .click-ring {
+        position: fixed;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        border: 3px solid rgba(255, 255, 255, 0.5);
+        pointer-events: none;
+        z-index: 501;
+        animation: clickRing 0.5s ease-out forwards;
+    }
+    @keyframes clickRing {
+        0% { transform: translate(-50%, -50%) scale(0.8); opacity: 1; }
+        100% { transform: translate(-50%, -50%) scale(2); opacity: 0; border-width: 0; }
+    }
+`;
+document.head.appendChild(clickRingCSS);
 
 function showCriticalHit(e) {
     const critical = document.createElement('div');
     critical.className = 'critical-hit';
     critical.textContent = '⚡ CRITICAL! ⚡';
-    critical.style.left = (e.clientX - 80) + 'px';
+    critical.style.left = (e.clientX - 100) + 'px';
     critical.style.top = (e.clientY - 50) + 'px';
     document.body.appendChild(critical);
     createCriticalSound();
@@ -451,6 +579,16 @@ function buyPetSlot(slotIdx) {
 }
 
 function updateUpgradesDisplay() {
+    // Update sliding panel
+    const panelClick = document.getElementById("upgrades-panel-click");
+    const panelPassive = document.getElementById("upgrades-panel-passive");
+    const panelPets = document.getElementById("upgrades-panel-pets");
+    
+    if (panelClick || panelPassive || panelPets) {
+        renderUpgradesPanel();
+        return;
+    }
+    
     const upgradesTab = document.getElementById('upgrades');
     if (!upgradesTab || !upgradesTab.classList.contains('active')) return;
     
@@ -621,6 +759,61 @@ function showTab(tabId, btn) {
     if (tabId === "worlds") renderWorlds();
 }
 
+// Render upgrades for sliding menu
+function renderUpgradesPanel() {
+    let clickHtml = "";
+    let passiveHtml = "";
+    
+    UPGRADES.forEach((upgrade, i) => {
+        const level = game.upgrades[i] || 0;
+        const nextCost = Math.floor(upgrade.baseCost * Math.pow(1.15, level));
+        const affordable = game.points >= nextCost;
+        
+        let statsText = "";
+        if (upgrade.clickPower > 0) {
+            statsText = `+${formatNumber(upgrade.clickPower)} Click`;
+        } else if (upgrade.passivePower > 0) {
+            statsText = `+${formatNumber(upgrade.passivePower)}/s Passive`;
+        }
+        
+        const btn = `
+            <button class="upgrade-panel-btn ${affordable ? "" : "unaffordable"}" onclick="buyUpgrade(${i})">
+                <div class="upgrade-panel-name">${upgrade.name}</div>
+                <div class="upgrade-panel-stats">${statsText}</div>
+                <div class="upgrade-panel-cost">Cost: ${formatNumber(nextCost)}</div>
+                <div class="upgrade-panel-level">Lvl ${level}</div>
+            </button>
+        `;
+        
+        if (upgrade.type === "click") {
+            clickHtml += btn;
+        } else if (upgrade.type === "passive") {
+            passiveHtml += btn;
+        }
+    });
+    
+    let petSlotsHtml = "";
+    PET_SLOT_UPGRADES.forEach((upgrade, idx) => {
+        if (game.maxPets > upgrade.slot) return;
+        const affordable = game.points >= upgrade.cost;
+        petSlotsHtml += `
+            <button class="upgrade-panel-btn ${affordable ? "" : "unaffordable"}" onclick="buyPetSlot(${idx})">
+                <div class="upgrade-panel-name">${upgrade.name}</div>
+                <div class="upgrade-panel-stats">Unlocks slot ${upgrade.slot}</div>
+                <div class="upgrade-panel-cost">Cost: ${formatNumber(upgrade.cost)}</div>
+                <div class="upgrade-panel-level">Lvl 1</div>
+            </button>
+        `;
+    });
+    
+    document.getElementById("upgrades-panel-click").innerHTML = clickHtml;
+    document.getElementById("upgrades-panel-passive").innerHTML = passiveHtml;
+    document.getElementById("upgrades-panel-pets").innerHTML = petSlotsHtml;
+    
+    upgradesRendered = true;
+}
+
+// Original renderUpgrades for backward compatibility with tab content
 function renderUpgrades() {
     let clickHtml = "<h3>⬆️ Click Power</h3>";
     let passiveHtml = "<h3 class='passive'>💰 Passive Income</h3>";
@@ -707,12 +900,13 @@ function renderPets() {
 function renderWorlds() {
     let html = "<div class='worlds-list'>";
     WORLDS.forEach((world, i) => {
-        const unlocked = game.rebirths >= world.reqRebirths;
+        // Fix: Current world is always unlocked
+        const unlocked = (game.rebirths >= world.reqRebirths) || (game.worldIdx === i);
         const current = game.worldIdx === i;
         html += `
-            <div class="world-card ${unlocked ? "unlocked" : "locked"} ${current ? "current" : ""}">
+            <div class="world-card ${unlocked ? "unlocked" : "locked"} ${current ? "current" : ""}" onclick="${unlocked && !current ? 'selectWorld(' + i + ')' : ''}">
                 <div class="world-name">${world.name}</div>
-                <div class="world-req">Requires ${world.reqRebirths} Rebirths</div>
+                <div class="world-req">${unlocked ? 'Unlocked' : 'Requires ' + world.reqRebirths + ' Rebirths'}</div>
                 ${current ? "<div class='current-badge'>🌍 Current</div>" : ""}
                 ${!unlocked ? "<div class='locked-badge'>🔒 Locked</div>" : ""}
             </div>
@@ -720,6 +914,18 @@ function renderWorlds() {
     });
     html += "</div>";
     document.getElementById("worlds").innerHTML = html;
+}
+
+// World selection
+function selectWorld(idx) {
+    if (game.rebirths >= WORLDS[idx].reqRebirths) {
+        game.worldIdx = idx;
+        createPurchaseSound();
+        updateDisplay();
+        renderWorlds();
+        showRarePopup(`🌍 Journeying to ${WORLDS[idx].name}...`, 3000);
+        saveGame();
+    }
 }
 
 function updateDisplay() {
@@ -730,6 +936,40 @@ function updateDisplay() {
     document.getElementById("rebirths").innerText = game.rebirths;
     document.getElementById("world-name").innerText = WORLDS[game.worldIdx] ? WORLDS[game.worldIdx].name : "Unknown";
     document.getElementById("rebirth-btn").innerText = `REBIRTH (Req: ${formatNumber(getRebirthCost())})`;
+}
+
+// Sliding Menu Functions
+function toggleUpgradesMenu() {
+    const panel = document.getElementById("upgrades-panel");
+    const overlay = document.getElementById("upgrades-overlay");
+    
+    if (panel.classList.contains("open")) {
+        panel.classList.remove("open");
+        overlay.classList.remove("visible");
+    } else {
+        panel.classList.add("open");
+        overlay.classList.add("visible");
+        if (!upgradesRendered) {
+            renderUpgrades();
+        }
+    }
+}
+
+function openUpgradesMenu() {
+    const panel = document.getElementById("upgrades-panel");
+    const overlay = document.getElementById("upgrades-overlay");
+    panel.classList.add("open");
+    overlay.classList.add("visible");
+    if (!upgradesRendered) {
+        renderUpgrades();
+    }
+}
+
+function closeUpgradesMenu() {
+    const panel = document.getElementById("upgrades-panel");
+    const overlay = document.getElementById("upgrades-overlay");
+    panel.classList.remove("open");
+    overlay.classList.remove("visible");
 }
 
 setInterval(() => {
@@ -744,3 +984,14 @@ loadGame();
 createParticles();
 updateDisplay();
 showTab("upgrades", document.querySelectorAll(".tab-btn")[0]);
+
+// Play BGM on first interaction
+let audioStarted = false;
+document.addEventListener('click', function startAudio() {
+    if (!audioStarted && audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume().then(() => {
+            playBGM();
+        });
+        audioStarted = true;
+    }
+}, { once: true });
