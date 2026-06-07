@@ -1,34 +1,31 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fart Clicker: Ultimate Gacha</title>
+    <title>Fart Clicker: Sigma Edition</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="game-container">
+    <div id="game">
         <h1>☢️ FART CLICKER ☢️</h1>
-        <div id="stats">
+        <div class="stats">
             <p>Stink: <span id="points">0</span></p>
             <p>Multiplier: <span id="mult">1.0</span>x</p>
+            <p>Rebirths: <span id="rebirths">0</span></p>
         </div>
-        <button id="main-fart-btn">💨 PUSH 💨</button>
-        
-        <div id="tabs">
+        <button id="main-btn">💨 PUSH 💨</button>
+
+        <div class="tabs">
             <button onclick="showTab('upgrades')">🛒 Upgrades</button>
             <button onclick="showTab('pets')">🐶 Pets</button>
-            <button onclick="showTab('leaderboard')">🏆 Leaderboard</button>
         </div>
 
-        <div id="tab-content">
-            <div id="upgrades-tab" class="tab"></div>
-            <div id="pets-tab" class="tab" style="display:none;"></div>
-            <div id="leaderboard-tab" class="tab" style="display:none;">
-                <ul id="leaderboard-list"><li>Loading...</li></ul>
-            </div>
+        <div id="upgrades" class="tab-content"></div>
+        <div id="pets" class="tab-content" style="display:none;">
+            <button onclick="rollPet()" style="background:#FF4500; color:white; padding:10px;">Roll Pet (Cost: 5000)</button>
+            <div id="pet-display"></div>
         </div>
+        <button onclick="rebirth()" style="margin-top:20px; background:#4B0082; color:white;">REBIRTH</button>
     </div>
     <script src="script.js"></script>
 </body>
