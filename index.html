@@ -1,0 +1,35 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fart Clicker: Ultimate Gacha</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <h1>☢️ FART CLICKER ☢️</h1>
+        <div id="stats">
+            <p>Stink: <span id="points">0</span></p>
+            <p>Multiplier: <span id="mult">1.0</span>x</p>
+        </div>
+        <button id="main-fart-btn">💨 PUSH 💨</button>
+        
+        <div id="tabs">
+            <button onclick="showTab('upgrades')">🛒 Upgrades</button>
+            <button onclick="showTab('pets')">🐶 Pets</button>
+            <button onclick="showTab('leaderboard')">🏆 Leaderboard</button>
+        </div>
+
+        <div id="tab-content">
+            <div id="upgrades-tab" class="tab"></div>
+            <div id="pets-tab" class="tab" style="display:none;"></div>
+            <div id="leaderboard-tab" class="tab" style="display:none;">
+                <ul id="leaderboard-list"><li>Loading...</li></ul>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
