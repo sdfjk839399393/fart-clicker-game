@@ -153,155 +153,37 @@ const RARITY = {
     secret:    { label: "✦ SECRET ✦",color: "#00ffd0", tier: 5 }
 };
 
-// ---------- Per-world egg sets — each world has 3 unique eggs with unique pets ----------
-const WORLD_EGGS = [
-    // 0 Basement
-    [{ id:"common",  name:"Musty Egg",      emoji:"🥚", color:"#9fb0c9", baseCost:800,   growth:2.2, pets:[
-        {name:"Toot",        base:1.1, odds:45, rarity:"common",    emoji:"💨"},
-        {name:"Squeaker",    base:1.3, odds:30, rarity:"common",    emoji:"🐭"},
-        {name:"Puff",        base:1.8, odds:18, rarity:"rare",      emoji:"☁️"},
-        {name:"Skibidi Jr",  base:3.0, odds:6,  rarity:"epic",      emoji:"🚽"},
-        {name:"Gigachad",    base:6.0, odds:1,  rarity:"legendary", emoji:"💪"}]},
-     {id:"rare",    name:"Dank Egg",       emoji:"🟤", color:"#8B6914", baseCost:12000,  growth:2.4, pets:[
-        {name:"Basement Rat",base:2.4, odds:45, rarity:"rare",      emoji:"🐀"},
-        {name:"Drain Snake", base:3.6, odds:30, rarity:"rare",      emoji:"🐍"},
-        {name:"Mold Demon",  base:5.5, odds:18, rarity:"epic",      emoji:"🍄"},
-        {name:"Sewer Lord",  base:9.0, odds:6,  rarity:"legendary", emoji:"🕳️"},
-        {name:"Bruh Beast",  base:18.0,odds:1,  rarity:"mythic",    emoji:"😤"}]},
-     {id:"legendary",name:"Sigma Egg",     emoji:"🗿", color:"#ffd54a", baseCost:90000,  growth:2.6, pets:[
-        {name:"Grind Ghost", base:7.0, odds:44, rarity:"epic",      emoji:"👻"},
-        {name:"Hustle Hound",base:12.0,odds:30, rarity:"legendary", emoji:"🐕"},
-        {name:"Sigma Wolf",  base:22.0,odds:18, rarity:"legendary", emoji:"🐺"},
-        {name:"Ohio Boss",   base:45.0,odds:7,  rarity:"mythic",    emoji:"🌽"},
-        {name:"NPC God",     base:120.0,odds:1, rarity:"secret",    emoji:"🗿"}]}],
-    // 1 Sewer Tunnels
-    [{ id:"common",  name:"Slime Egg",      emoji:"🥚", color:"#8db300", baseCost:800,   growth:2.2, pets:[
-        {name:"Drain Bug",   base:1.1, odds:45, rarity:"common",    emoji:"🪲"},
-        {name:"Sewer Rat",   base:1.3, odds:30, rarity:"common",    emoji:"🐀"},
-        {name:"Slime Pup",   base:1.8, odds:18, rarity:"rare",      emoji:"🐸"},
-        {name:"Gunk Golem",  base:3.0, odds:6,  rarity:"epic",      emoji:"🤢"},
-        {name:"Pipe Master", base:6.0, odds:1,  rarity:"legendary", emoji:"🔧"}]},
-     {id:"rare",    name:"Muck Egg",       emoji:"🟢", color:"#4a8c00", baseCost:12000,  growth:2.4, pets:[
-        {name:"Tunnel Toad", base:2.4, odds:45, rarity:"rare",      emoji:"🐊"},
-        {name:"Sludge Sprite",base:3.6,odds:30, rarity:"rare",      emoji:"💚"},
-        {name:"Moss Monk",   base:5.5, odds:18, rarity:"epic",      emoji:"🌿"},
-        {name:"Sewage Sage", base:9.0, odds:6,  rarity:"legendary", emoji:"🧙"},
-        {name:"Grime Titan", base:18.0,odds:1,  rarity:"mythic",    emoji:"🏚️"}]},
-     {id:"legendary",name:"Toxic Egg",     emoji:"☣️", color:"#a0ffaa", baseCost:90000,  growth:2.6, pets:[
-        {name:"Toxin Drake", base:7.0, odds:44, rarity:"epic",      emoji:"🐉"},
-        {name:"Waste Wraith",base:12.0,odds:30, rarity:"legendary", emoji:"👾"},
-        {name:"Neon Newt",   base:22.0,odds:18, rarity:"legendary", emoji:"🦎"},
-        {name:"Sewer King",  base:45.0,odds:7,  rarity:"mythic",    emoji:"👑"},
-        {name:"The Stench",  base:120.0,odds:1, rarity:"secret",    emoji:"☣️"}]}],
-    // 2 Skibidi Toilet
-    [{ id:"common",  name:"Toilet Egg",     emoji:"🥚", color:"#5dd2ff", baseCost:800,   growth:2.2, pets:[
-        {name:"Flush Pup",   base:1.1, odds:45, rarity:"common",    emoji:"🚿"},
-        {name:"Bowl Buddy",  base:1.3, odds:30, rarity:"common",    emoji:"🪣"},
-        {name:"Skibidi Jr",  base:1.8, odds:18, rarity:"rare",      emoji:"🚽"},
-        {name:"Plunge Lord", base:3.0, odds:6,  rarity:"epic",      emoji:"🪠"},
-        {name:"Toilet God",  base:6.0, odds:1,  rarity:"legendary", emoji:"💪"}]},
-     {id:"rare",    name:"Rizz Egg",       emoji:"😎", color:"#ffffff", baseCost:12000,  growth:2.4, pets:[
-        {name:"Rizz Rookie", base:2.4, odds:45, rarity:"rare",      emoji:"😏"},
-        {name:"Swagger Cat", base:3.6, odds:30, rarity:"rare",      emoji:"😺"},
-        {name:"Drip Demon",  base:5.5, odds:18, rarity:"epic",      emoji:"👟"},
-        {name:"W Rizz Wolf", base:9.0, odds:6,  rarity:"legendary", emoji:"🐺"},
-        {name:"Rizz God",    base:18.0,odds:1,  rarity:"mythic",    emoji:"😎"}]},
-     {id:"legendary",name:"Golden Toilet",  emoji:"🌟", color:"#ffd54a", baseCost:90000,  growth:2.6, pets:[
-        {name:"Gyatt Ghost", base:7.0, odds:44, rarity:"epic",      emoji:"👻"},
-        {name:"Flush Phoenix",base:12.0,odds:30,rarity:"legendary", emoji:"🔥"},
-        {name:"Chrome Commode",base:22.0,odds:18,rarity:"legendary",emoji:"🪞"},
-        {name:"Skibidi KING",base:45.0, odds:7, rarity:"mythic",    emoji:"👑"},
-        {name:"Skibidi GOD", base:120.0,odds:1, rarity:"secret",    emoji:"🚽"}]}],
-    // 3 Rizz Dojo
-    [{ id:"common",  name:"Drip Egg",       emoji:"🥚", color:"#ff3d9a", baseCost:800,   growth:2.2, pets:[
-        {name:"Swag Slug",   base:1.1, odds:45, rarity:"common",    emoji:"🐌"},
-        {name:"Chill Crab",  base:1.3, odds:30, rarity:"common",    emoji:"🦀"},
-        {name:"Rizz Rabbit", base:1.8, odds:18, rarity:"rare",      emoji:"🐰"},
-        {name:"Drip Dragon", base:3.0, odds:6,  rarity:"epic",      emoji:"🐲"},
-        {name:"Sigma Sensei",base:6.0, odds:1,  rarity:"legendary", emoji:"🥋"}]},
-     {id:"rare",    name:"Gyatt Egg",      emoji:"🍑", color:"#ff6b35", baseCost:12000,  growth:2.4, pets:[
-        {name:"Gyatt Goblin",base:2.4, odds:45, rarity:"rare",      emoji:"👺"},
-        {name:"Thicc Toad",  base:3.6, odds:30, rarity:"rare",      emoji:"🐸"},
-        {name:"Slay Sphinx", base:5.5, odds:18, rarity:"epic",      emoji:"🦁"},
-        {name:"W Rizz Rider",base:9.0, odds:6,  rarity:"legendary", emoji:"🏇"},
-        {name:"Rizz Titan",  base:18.0,odds:1,  rarity:"mythic",    emoji:"🗿"}]},
-     {id:"legendary",name:"Aura Egg",      emoji:"✨", color:"#ffd54a", baseCost:90000,  growth:2.6, pets:[
-        {name:"Aura Angel",  base:7.0, odds:44, rarity:"epic",      emoji:"😇"},
-        {name:"Vibe Vampire",base:12.0,odds:30, rarity:"legendary", emoji:"🧛"},
-        {name:"Drip Deity",  base:22.0,odds:18, rarity:"legendary", emoji:"💅"},
-        {name:"Rizz Reaper", base:45.0,odds:7,  rarity:"mythic",    emoji:"💀"},
-        {name:"The Rizzler", base:120.0,odds:1, rarity:"secret",    emoji:"😎"}]}],
-    // 4 Ohio
-    [{ id:"common",  name:"Corn Egg",       emoji:"🌽", color:"#ffd54a", baseCost:800,   growth:2.2, pets:[
-        {name:"Corn Cob",    base:1.1, odds:45, rarity:"common",    emoji:"🌽"},
-        {name:"Flat Fox",    base:1.3, odds:30, rarity:"common",    emoji:"🦊"},
-        {name:"Ohio Deer",   base:1.8, odds:18, rarity:"rare",      emoji:"🦌"},
-        {name:"Buckeye Beast",base:3.0,odds:6,  rarity:"epic",      emoji:"🌰"},
-        {name:"Ohio Legend", base:6.0, odds:1,  rarity:"legendary", emoji:"🏆"}]},
-     {id:"rare",    name:"Only In Ohio",   emoji:"🤔", color:"#ff8a3d", baseCost:12000,  growth:2.4, pets:[
-        {name:"Ohio Cryptid",base:2.4, odds:45, rarity:"rare",      emoji:"👁️"},
-        {name:"Midwest Myth",base:3.6, odds:30, rarity:"rare",      emoji:"🌀"},
-        {name:"Corn Golem",  base:5.5, odds:18, rarity:"epic",      emoji:"🌾"},
-        {name:"Buckeye God", base:9.0, odds:6,  rarity:"legendary", emoji:"🌰"},
-        {name:"Ohio Omen",   base:18.0,odds:1,  rarity:"mythic",    emoji:"😰"}]},
-     {id:"legendary",name:"Rare Ohio Egg", emoji:"🌟", color:"#7fff00", baseCost:90000,  growth:2.6, pets:[
-        {name:"Corn King",   base:7.0, odds:44, rarity:"epic",      emoji:"👑"},
-        {name:"Ohio Oracle", base:12.0,odds:30, rarity:"legendary", emoji:"🔮"},
-        {name:"Flat Earth God",base:22.0,odds:18,rarity:"legendary",emoji:"🌍"},
-        {name:"Ohio Overlord",base:45.0,odds:7, rarity:"mythic",    emoji:"😤"},
-        {name:"Only In Ohio",base:120.0,odds:1, rarity:"secret",    emoji:"🌽"}]}],
-    // 5-19: generate remaining worlds procedurally with unique names
+const EGG_TEMPLATES = [
+    { id: "common", name: "Common Egg", emoji: "🥚", color: "#9fb0c9", baseCost: 800, growth: 2.2, pets: [
+        { name: "Toot",      base: 1.1,  odds: 45, rarity: "common",    emoji: "💨" },
+        { name: "Squeaker",  base: 1.3,  odds: 30, rarity: "common",    emoji: "🐭" },
+        { name: "Puff",      base: 1.8,  odds: 18, rarity: "rare",      emoji: "☁️" },
+        { name: "Skibidi",   base: 3.0,  odds: 6,  rarity: "epic",      emoji: "🚽" },
+        { name: "Gigachad",  base: 6.0,  odds: 1,  rarity: "legendary", emoji: "💪" }
+    ]},
+    { id: "rare", name: "Rare Egg", emoji: "🥚", color: "#3da5ff", baseCost: 12000, growth: 2.4, pets: [
+        { name: "Boom Butt",  base: 2.4,  odds: 45, rarity: "rare",      emoji: "💣" },
+        { name: "Sonic Blast",base: 3.6,  odds: 30, rarity: "rare",      emoji: "💨" },
+        { name: "Rizzler",    base: 5.5,  odds: 18, rarity: "epic",      emoji: "😎" },
+        { name: "Sigma",      base: 9.0,  odds: 6,  rarity: "legendary", emoji: "🗿" },
+        { name: "Grimace",    base: 18.0, odds: 1,  rarity: "mythic",    emoji: "🟣" }
+    ]},
+    { id: "legendary", name: "Legendary Egg", emoji: "🌟", color: "#ffd54a", baseCost: 90000, growth: 2.6, pets: [
+        { name: "Stink Lord",  base: 7.0,   odds: 44, rarity: "epic",      emoji: "👑" },
+        { name: "Fume Phantom",base: 12.0,  odds: 30, rarity: "legendary", emoji: "👻" },
+        { name: "Gas God",     base: 22.0,  odds: 18, rarity: "legendary", emoji: "🌬️" },
+        { name: "Ohio Boss",   base: 45.0,  odds: 7,  rarity: "mythic",    emoji: "🌽" },
+        { name: "Skibidi GOD", base: 120.0, odds: 1,  rarity: "secret",   emoji: "🚽" }
+    ]}
 ];
-
-// Fill worlds 5-19 with unique themed pet sets
-const WORLD_PET_THEMES = [
-    { world:"Outer Space",   c:["Space Slug","Moon Mutt","Comet Cat"],     r:["Nebula Newt","Star Shark","Void Viper"],   l:["Pulsar Pup","Quasar Queen","Galaxy Ghost","Black Hole Bear","The Void"],       ce:"🚀",re:"⭐",le:"🌌", cc:"#5d8eff",rc:"#b14eff",lc:"#00e0ff" },
-    { world:"Gyatt Canyon",  c:["Dust Bunny","Canyon Cat","Rock Rat"],     r:["Mesa Monster","Gulch Ghost","Dune Drake"], l:["Canyon Colossus","Sandstorm Sage","Desert Deity","Mirage Master","The Gyatt"],   ce:"🏜️",re:"🔥",le:"🌟", cc:"#ff8a3d",rc:"#ffd54a",lc:"#ff3d9a" },
-    { world:"Nether Realm",  c:["Ember Imp","Cinder Cat","Ash Ant"],       r:["Flame Fox","Lava Lizard","Blaze Bear"],    l:["Inferno Idol","Magma Monk","Hellfire Hound","Brimstone Boss","The Infernal"],    ce:"🔥",re:"😈",le:"👹", cc:"#ff3030",rc:"#ff8030",lc:"#ffd54a" },
-    { world:"Sigma City",    c:["Grid Gecko","Pixel Pup","Byte Bug"],      r:["Chrome Cat","Neon Newt","Data Drake"],     l:["Silicon Sage","Cyber Colossus","Quantum Cat","Matrix Master","The Algorithm"],   ce:"🏙️",re:"💻",le:"🌟", cc:"#c0c0d0",rc:"#00e0ff",lc:"#ffffff" },
-    { world:"Dimension X",   c:["Glitch Gnat","Phase Pup","Warp Worm"],    r:["Rift Raven","Void Vole","Portal Panther"],l:["Dimension Drake","Phase Phantom","Reality Ripper","Nexus Noble","The Glitch"],    ce:"🛸",re:"🌀",le:"💥", cc:"#7fff80",rc:"#00ff80",lc:"#b14eff" },
-    { world:"Quantum Realm", c:["Quark Cat","Boson Bug","Lepton Lizard"],  r:["Photon Fox","Neutrino Newt","Higgs Hound"],l:["Quantum Queen","Superstring Sage","Entangle Eagle","Wave Wolf","The Collapse"],   ce:"⚛️",re:"🔬",le:"🌌", cc:"#00e0ff",rc:"#5d8eff",lc:"#ffd54a" },
-    { world:"Grimace Shake", c:["Purple Pup","Grape Ghost","Plum Pixie"],  r:["Violet Viper","Mauve Monster","Lilac Lord"],l:["Grimace God","Purple Phantom","Grape Titan","Violet Void","The Grimace"],        ce:"🟣",re:"💜",le:"🌟", cc:"#a040ff",rc:"#ff3d9a",lc:"#ffd54a" },
-    { world:"Mewing Heights",c:["Cloud Cat","Sky Slug","Mist Mutt"],       r:["Nimbus Newt","Cirrus Crow","Stratus Snake"],l:["Heaven Hound","Celestial Cat","Sky Sovereign","Cloud Colossus","The Mewer"],     ce:"☁️",re:"🕊️",le:"✨", cc:"#bfdfff",rc:"#7fa8ff",lc:"#ffffff" },
-    { world:"Inferno Depths",c:["Char Crab","Scorch Slug","Ember Eel"],    r:["Magma Mantis","Inferno Imp","Forge Fox"],  l:["Hellbound Hound","Brimstone Bird","Lava Lord","Inferno Idol","The Eternal Flame"], ce:"👹",re:"🔥",le:"💀", cc:"#ff2020",rc:"#ff5010",lc:"#ffd54a" },
-    { world:"Crystal Cavern",c:["Gem Gnat","Shard Shrew","Quartz Quail"],  r:["Crystal Cat","Prism Pup","Diamond Drake"], l:["Gemstone Giant","Crystal Colossus","Prism Phantom","Jewel Jaguar","The Gem God"],  ce:"💎",re:"🔷",le:"🌟", cc:"#40ffd0",rc:"#80ffff",lc:"#b14eff" },
-    { world:"Mirror Dim.",   c:["Echo Eel","Reflect Rat","Clone Cat"],     r:["Mirror Monster","Shadow Sprite","Twin Tiger"],l:["Reflection Reaper","Clone Colossus","Mirror Master","Doppel Deity","The Mirror"],ce:"🪞",re:"👁️",le:"✨", cc:"#e0e0ff",rc:"#a0a0ff",lc:"#ff3d9a" },
-    { world:"Galactic Core", c:["Stardust Slug","Pulsar Pup","Comet Cat"], r:["Galaxy Gecko","Quasar Quail","Nova Newt"],  l:["Cosmic Colossus","Galactic God","Stellar Sage","Universe Unicorn","The Cosmos"],  ce:"🌌",re:"⭐",le:"🌟", cc:"#ffd54a",rc:"#b14eff",lc:"#00e0ff" },
-    { world:"Time Rift",     c:["Chrono Cat","Epoch Eel","Era Eagle"],     r:["Temporal Tiger","Paradox Pup","Loop Lizard"],l:["Time Lord","Chrono Colossus","Epoch Entity","Paradox Phantom","The Timeless"],   ce:"⏳",re:"🕰️",le:"✨", cc:"#ffe080",rc:"#40ffd0",lc:"#ff3d9a" },
-    { world:"Gigachad Nexus",c:["Flex Frog","Gains Gecko","Pump Pup"],     r:["Bulk Beast","Mass Monster","Iron Imp"],    l:["Gigachad Ghost","Max Muscle","Ultra Gains","Omega Lifter","THE GIGACHAD"],        ce:"💪",re:"🏋️",le:"🌟", cc:"#ff1050",rc:"#ffd54a",lc:"#00e0ff" },
-    { world:"Final Stench",  c:["Doom Dog","End Eagle","Last Lizard"],     r:["Omega Ooze","Final Fox","Last Light"],     l:["Apocalypse Angel","Armageddon Ant","Omega Oracle","End Entity","THE FINAL ONE"],   ce:"👑",re:"💀",le:"✨", cc:"#ffd700",rc:"#ff00ff",lc:"#00ffd0" },
-];
-
-// Build WORLD_EGGS entries 5-19 from themes
-WORLD_PET_THEMES.forEach((t, i) => {
-    const w = i + 5;
-    const mk = (names, emojis, bases, odds, rarities) => names.map((n,j) => ({name:n, base:bases[j], odds:odds[j], rarity:rarities[j], emoji:emojis[j]}));
-    WORLD_EGGS[w] = [
-        { id:"common",    name:t.world+" Egg",        emoji:t.ce, color:t.cc, baseCost:800,   growth:2.2, pets:mk(
-            [t.c[0],t.c[1],t.c[2],t.c[0]+" Elite",t.r[0]],
-            ["🐣","🐾","✨","⚡","🌟"],
-            [1.1,1.3,1.8,3.0,6.0],[45,30,18,6,1],["common","common","rare","epic","legendary"]) },
-        { id:"rare",      name:t.world+" Rare Egg",   emoji:t.re, color:t.rc, baseCost:12000,  growth:2.4, pets:mk(
-            [t.r[0],t.r[1],t.r[2],t.l[0],t.l[1]],
-            ["💫","🔥","🌀","👑","💎"],
-            [2.4,3.6,5.5,9.0,18.0],[45,30,18,6,1],["rare","rare","epic","legendary","mythic"]) },
-        { id:"legendary", name:t.world+" Legend Egg", emoji:t.le, color:t.lc, baseCost:90000,  growth:2.6, pets:mk(
-            [t.l[0],t.l[1],t.l[2],t.l[3],t.l[4]],
-            ["🌟","✨","💥","👑","🔱"],
-            [7.0,12.0,22.0,45.0,120.0],[44,30,18,7,1],["epic","legendary","legendary","mythic","secret"]) }
-    ];
-});
-
-// Current world's egg templates
-function getEggTemplates() { return WORLD_EGGS[game.worldIdx] || WORLD_EGGS[0]; }
 
 function eggCost(t, world) { return Math.floor(t.baseCost * Math.pow(t.growth, world)); }
 // pet power: much flatter base values, gentler world scaling
 function petPower(base, world) { return +(Math.sqrt(base) * Math.pow(1.18, world)).toFixed(2); }
-function allPetsForWorld(w) {
-    const eggs = WORLD_EGGS[w !== undefined ? w : (game.worldIdx || 0)] || WORLD_EGGS[0];
+function allPetsForWorld() {
+    // flatten all egg pets (the 15 base pets)
     let arr = [];
-    eggs.forEach(e => e.pets.forEach(p => arr.push(p)));
+    EGG_TEMPLATES.forEach(e => e.pets.forEach(p => arr.push(p)));
     return arr;
 }
 function dexKey(world, name) { return world + ":" + name; }
@@ -1435,7 +1317,7 @@ function renderEggShop() {
     const sel = document.getElementById("egg-selection"); if (sel) sel.innerHTML = html;
 }
 function rollEggMulti(idx, count) {
-    const egg = getEggTemplates()[idx]; if (!egg) return;
+    const egg = EGG_TEMPLATES[idx]; if (!egg) return;
     const cost = eggCost(egg, game.worldIdx) * count;
     if (game.points < cost) { sfxError(); showToast("❌ Not enough Stink!", 1500); return; }
     game.points -= cost;
@@ -1459,7 +1341,7 @@ function pickFromEgg(egg) {
     return chosen;
 }
 function rollEgg(idx) {
-    const egg = getEggTemplates()[idx]; if (!egg) return;
+    const egg = EGG_TEMPLATES[idx]; if (!egg) return;
     const cost = eggCost(egg, game.worldIdx);
     if (game.points < cost) { sfxError(); showToast("❌ Not enough Stink!", 1500); return; }
     game.points -= cost;
@@ -1599,42 +1481,19 @@ function playHatch(pet, egg) {
             setTimeout(() => { sfxRare(tier); shake(); }, 200);
         }
         if (tier >= 4) {
-            emojiRain([pet.emoji,"🌟","✨","💫","⭐","💥"], 80);
+            emojiRain([pet.emoji,"🌟","✨","💫","⭐","💥"], 60);
             document.body.classList.add("slowmo");
             setTimeout(() => shockwave(r.color), 100);
             setTimeout(() => shockwave(r.color), 300);
-            setTimeout(() => shockwave(r.color), 500);
             setTimeout(() => { sfxRare(tier); }, 350);
-            setTimeout(() => screenFlash(r.color), 80);
-            setTimeout(() => screenFlash("#ffffff"), 250);
-            setTimeout(() => screenFlash(r.color), 500);
-            setTimeout(() => bigBanner("⚡ MYTHIC ⚡", r.color), 400);
-            burstAt(window.innerWidth/2, window.innerHeight*0.4, r.color, 60);
-            burstAt(window.innerWidth*0.2, window.innerHeight*0.3, r.color, 30);
-            burstAt(window.innerWidth*0.8, window.innerHeight*0.3, r.color, 30);
         }
         if (tier >= 5) {
-            emojiRain(["✦","💎",pet.emoji,"💥","🌈","🔱","⭐","🌟"], 140);
+            emojiRain(["✦","💎",pet.emoji,"💥","🌈"], 100);
             rainbowFlash();
             shockwave("#ffffff");
-            spawnConfetti("#ffffff", 100);
-            spawnConfetti(r.color, 100);
-            burstAt(window.innerWidth/2, window.innerHeight*0.4, "#ffffff", 80);
-            burstAt(window.innerWidth*0.1, window.innerHeight*0.5, r.color, 40);
-            burstAt(window.innerWidth*0.9, window.innerHeight*0.5, r.color, 40);
-            setTimeout(() => { shake(); rainbowFlash(); sfxRare(5); shockwave(r.color); }, 200);
-            setTimeout(() => { shake(); shockwave("#ffffff"); emojiRain(["✦","💎","🔱","👑","🌟"], 80); }, 500);
-            setTimeout(() => { rainbowFlash(); shockwave(r.color); sfxRare(5); }, 800);
-            setTimeout(() => { shake(); rainbowFlash(); shockwave("#ffffff"); }, 1100);
-            // dramatic blackout then color explosion
-            overlay.style.transition = "background 0.08s";
-            setTimeout(() => { overlay.style.background = "#000000f0"; }, 100);
-            setTimeout(() => { overlay.style.background = r.color + "bb"; rainbowFlash(); }, 300);
-            setTimeout(() => { overlay.style.background = "#000000f0"; }, 550);
-            setTimeout(() => { overlay.style.background = "radial-gradient(ellipse at center," + r.color + "55 0%,rgba(5,2,12,0.97) 65%)"; rainbowFlash(); }, 750);
-            setTimeout(() => bigBanner("✦ SECRET FOUND ✦", r.color), 250);
-            setTimeout(() => bigBanner("✦ " + pet.name + " ✦", "#ffffff"), 900);
-
+            spawnConfetti("#ffffff", 80);
+            setTimeout(() => { shake(); rainbowFlash(); sfxRare(5); }, 300);
+            setTimeout(() => { shake(); shockwave(r.color); }, 600);
         }
 
         // ---- PHASE 4: REVEAL ----
@@ -1898,8 +1757,7 @@ setInterval(() => { if (Math.random() < 0.5) spawnGoldenFart(); }, 35000);
 function spawnFlyingEgg() {
     const layer = fxLayer(); if (!layer) return;
     // pick a random egg template for current world
-    const eggs = getEggTemplates();
-    const egg = eggs[Math.floor(Math.random() * eggs.length)];
+    const egg = EGG_TEMPLATES[Math.floor(Math.random() * EGG_TEMPLATES.length)];
     const el = document.createElement("div");
     el.className = "golden-fart"; // reuse flying animation
     el.style.fontSize = "2.2rem";
